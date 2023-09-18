@@ -1,6 +1,6 @@
 ---
 title: "TAIPAN REPORT"
-author: "YOUR TEAM NAME AND MEMBERS HERE"
+author: "Aishwarya Anil Kumar, Arindom Baruah"
 format: html
 ---
 
