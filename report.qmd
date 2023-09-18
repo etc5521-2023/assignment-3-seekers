@@ -5,25 +5,6 @@ format: html
 ---
 
 
-```{r}
-library(galah)
-library(tidyverse)
-galah_config(email = "aani0005@student.monash.edu",
-             download_reason_id = 10, 
-             verbose = TRUE)
-taipan <- ala_occurrences(
-  taxa = select_taxa("Oxyuranus scutellatus scutellatus"))
-save(taipan, file=here::here("data-raw/taipan_raw.rda"))
-taipan <- taipan %>% 
-  rename(Longitude = decimalLongitude,
-         Latitude = decimalLatitude) %>%
-  mutate(eventDate = as.Date(eventDate)) %>%
-  filter(!is.na(eventDate)) %>%
-  filter(!is.na(Longitude)) %>%
-  filter(!is.na(Latitude))
-save(taipan, file=here::here("data/taipan.rda"))
-```
-
 ## Introduction
 
 <!-- 
@@ -40,6 +21,62 @@ save(taipan, file=here::here("data/taipan.rda"))
 2. Download all the occurrence records from the Atlas of Living Australia, ideally scripted using the `atlas_occurrences()` function from the `galah` package. Make sure you include date, time, collector identification details. Save this into a `data-raw` folder in your repo.
 -->
 
+```{r}
+library(galah)
+library(tidyverse)
+galah_config(email = "aani0005@student.monash.edu",
+             download_reason_id = 10, 
+             verbose = TRUE)
+taipan <- atlas_occurrences(
+  identify = galah_identify("Oxyuranus scutellatus scutellatus"))
+save(taipan, file=here::here("data-raw/taipan_raw.rda"))
+```
+
+```{r}
+glimpse(taipan)
+```
+
+### Description of the Variables in the Dataset
+
+The dataset contains data on observations of the Coastal Taipan Snake (*Oxyuranus scutellatus scutellatus*). The dataset has been organized into a tidy format. Below is a detailed description of each variable:
+
+| Variable Name    | Data Type | Description |
+|------------------|-----------|-------------|
+| Latitude         | dbl       | The latitude coordinate of the observation location. |
+| Longitude        | dbl       | The longitude coordinate of the observation location. |
+| eventDate        | date      | The date when the observation was made. |
+| scientificName   | chr       | The scientific name of the observed species. In this dataset, it's *Oxyuranus scutellatus scutellatus*. |
+| taxonConceptID   | chr       | A unique URL that provides information about the taxonomic concept for the species. |
+| recordID         | chr       | A unique identifier for each observation record. |
+| dataResourceName | chr       | The name of the data resource/provider. In this dataset, it is sourced from Queensland Museum for OZCAM. |
+| occurrenceStatus | chr       | The status of the observation, indicating if the species is present or absent at the location. |
+
+
+### Data Source and Cleaning Overview
+
+**Data Source:** The data was sourced from the [Atlas of Living Australia (ALA)](https://www.ala.org.au/) using the `galah` R package.
+
+**Data Cleaning Steps:**
+1. Columns datatypes are changed for easement of further analysis such as the case with variable 'eventDate'.
+2. Observations with missing event dates, longitude, or latitude were filtered out.
+
+
+**Methods to Check and Clean Data:**
+
+- **Validity Checks:** Ensure that the latitude and longitude values are within valid ranges. For latitude (-90 to 90) and for longitude (-180 to 180).
+- **Consistency Checks:** Make sure there aren't any discrepancies in the way data is represented across rows.
+- **Missing Value Analysis:** Any missing values should be analyzed to understand the reason behind them.
+- **Outlier Analysis:** Especially for numeric fields like latitude and longitude, outlier detection can help spot any unusual or erroneous data points.
+- **Date Consistency:** Ensure that the event dates fall within expected ranges and are formatted correctly.
+
+
+### Citations:
+
+1. **Atlas of Living Australia (ALA)** - https://www.ala.org.au/
+2. **The `galah` package** - available on CRAN and also on GitHub. This package has been instrumental in fetching the data directly into the R environment. 
+
+By exploring this data, researchers and enthusiasts can gain insights into the behavior, distribution, and occurrence patterns of the Coastal Taipan Snake, which can be useful for a range of ecological, environmental, and conservational studies.
+
 ## Initial data analysis
 
 <!--
@@ -47,6 +84,18 @@ save(taipan, file=here::here("data/taipan.rda"))
 
 Weather data pre-processing here too.
 -->
+```{r}
+taipan <- taipan %>% 
+  rename(Longitude = decimalLongitude,
+         Latitude = decimalLatitude) %>%
+  mutate(eventDate = as.Date(eventDate)) %>%
+  filter(!is.na(eventDate)) %>%
+  filter(!is.na(Longitude)) %>%
+  filter(!is.na(Latitude))
+save(taipan, file=here::here("data/taipan.rda"))
+
+```
+
 
 ## Exploratory data analysis
 
