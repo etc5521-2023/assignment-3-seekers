@@ -6,8 +6,8 @@ Author details 🕵️‍♂️📊
 
 Name: Arindom Baruah \
 ID: 32779267 \
-Monash E-Mail: abar0090@student.monash.edu \
+Monash E-Mail: abar0090@student.monash.edu 
 
 Name: Aishwarya Anil Kumar \
 ID: 32644329 \
-Monash E-mail: aani0050@student.monash.edu \
+Monash E-mail: aani0050@student.monash.edu 
