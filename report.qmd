@@ -2,10 +2,14 @@
 title: "TAIPAN REPORT"
 author: "Aishwarya Anil Kumar, Arindom Baruah"
 format: html
+bibliography: references.bib
+execute: 
+  warning: false
+  message: false
 ---
 
 
-```{r}
+```{r echo=FALSE,include=FALSE}
 library(galah)
 library(tidyverse)
 galah_config(email = "aani0005@student.monash.edu",
@@ -26,13 +30,28 @@ save(taipan, file=here::here("data/taipan.rda"))
 
 ## Introduction
 
-<!-- 
-1. For your assigned Australian wild thing, read all you can about it, and write a paragraph describing it's key features, such as it's habitat, usual active time, whether numbers are increasing or declining, and even things like, if it is common for tourists to travel to see them, or there are special spotting promotions occurring as is happening [this month for the platypus](https://platypus.asn.au/report-a-sighting/). The write five unique expectations on what you might find when you explore the data, for example: 
-<br><br>"We expect to see the occurrences only in the summer months."
-<br>"We expect to find the most occurrences near the coast."
-<br>"We expect to observe declining numbers since 1994."
-<br><br> Be as specific as reasonably possible for your wild thing!
--->
+The Taipan class of reptiles are indigenous to the land mass in Australia and are considered to be one of the deadliest snakes on the planet. The Taipan, scientifically known as the Oxyuranus genus, comprises several species, with the Coastal Taipan (Oxyuranus scutellatus) and the Inland Taipan (Oxyuranus microlepidotus) being the most renowned. These reptiles are highly venomous and belong to the elapid family, which includes other infamous snakes like the king cobra and the black mamba. According to @markwell2016killer, what sets the taipan apart, however, is its reputation as having the most toxic venom of any snake in the world !
+
+In our current analysis, we will be focusing on the occurrences of Coastal Taipan across the various states of Australia. The coastal Taipan which has been scientifically named as Oxyuranus scutellatus, is commonly found in the northern regions of Australia and is renowned for its agility and speed. It primarily feeds on small mammals, birds, and occasionally reptiles, using its potent venom to immobilize its prey swiftly. 
+
+Characterized by its slender body, shiny scales, and formidable fangs, the Taipan is a formidable predator. Despite its fearsome reputation, these snakes are generally reclusive and rarely encountered by humans. They prefer to inhabit coastal regions, woodlands, and savannas, blending seamlessly into their natural surroundings as can be observed in @fig-taipan.
+
+While the Coastal Taipans are not classified as endangered species, however, with rapid human activities such as urbanisation and encroachment of wildlife area for agricultural purposes, the habitat of these reptiles have been increasingly affected as a result of which, steps have been taken by wild life conservationists to preserve their natural habitats to the best extent possible.
+
+:::{.callout-note}
+# Key assumptions
+
+Based on the literature surveys for the Costal Taipan, here are our assumptions while moving forward with our analysis:
+
+1. Based on the information from the [Australia Museum](https://australian.museum/learn/animals/reptiles/coastal-taipan/), the Costal Taipans are __active throughout the year__ but are observed to be most __commonly encountered during late winter to spring (August to December of a calendar year)__.
+2. As can be inferred from its colloquial name, the Coastal Taipans are often observed __in the coastal regions of Australia and thrive in the monsoon wetlands and savannas__.
+3. Based on a study by [Billabong Sanctuary](https://www.billabongsanctuary.com.au/coastal-taipan/#:~:text=Coastal%20taipans%20are%20common%20in,animals%20like%20rats%20and%20mice.), the Coastal Taipans are __not endangered and have probably increased in numbers__ due to the growth in the number of rats (who are the primary prey) in areas close to the human settlements.
+:::
+
+![The coastal taipan (Oxyuranus scutellatus)](taipan.jpg){#fig-taipan}
+
+
+
 
 ## Data description
 
