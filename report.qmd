@@ -12,7 +12,8 @@ galah_config(email = "aani0005@student.monash.edu",
              download_reason_id = 10, 
              verbose = TRUE)
 taipan <- ala_occurrences(
-  taxa = select_taxa("Oxyuranus scutellatus"))
+  taxa = select_taxa("Oxyuranus scutellatus scutellatus"))
+save(taipan, file=here::here("data-raw/taipan_raw.rda"))
 taipan <- taipan %>% 
   rename(Longitude = decimalLongitude,
          Latitude = decimalLatitude) %>%
