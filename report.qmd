@@ -1,5 +1,5 @@
 ---
-title: "BARKING OWL REPORT"
+title: "TAIPAN REPORT"
 author: "YOUR TEAM NAME AND MEMBERS HERE"
 format: html
 ---
@@ -11,16 +11,16 @@ library(tidyverse)
 galah_config(email = "aani0005@student.monash.edu",
              download_reason_id = 10, 
              verbose = TRUE)
-owls <- ala_occurrences(
-  taxa = select_taxa("Ninox (Hieracoglaux) connivens"))
-owls <- owls %>% 
+taipan <- ala_occurrences(
+  taxa = select_taxa("Oxyuranus scutellatus"))
+taipan <- taipan %>% 
   rename(Longitude = decimalLongitude,
          Latitude = decimalLatitude) %>%
   mutate(eventDate = as.Date(eventDate)) %>%
   filter(!is.na(eventDate)) %>%
   filter(!is.na(Longitude)) %>%
   filter(!is.na(Latitude))
-save(owls, file=here::here("data/barkingowls.rda"))
+save(taipan, file=here::here("data/taipan.rda"))
 ```
 
 ## Introduction
