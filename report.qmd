@@ -1,8 +1,27 @@
 ---
-title: "MY WILD THING REPORT"
+title: "BARKING OWL REPORT"
 author: "YOUR TEAM NAME AND MEMBERS HERE"
 format: html
 ---
+
+
+```{r}
+library(galah)
+library(tidyverse)
+galah_config(email = "aani0005@student.monash.edu",
+             download_reason_id = 10, 
+             verbose = TRUE)
+owls <- ala_occurrences(
+  taxa = select_taxa("Ninox (Hieracoglaux) connivens"))
+owls <- owls %>% 
+  rename(Longitude = decimalLongitude,
+         Latitude = decimalLatitude) %>%
+  mutate(eventDate = as.Date(eventDate)) %>%
+  filter(!is.na(eventDate)) %>%
+  filter(!is.na(Longitude)) %>%
+  filter(!is.na(Latitude))
+save(owls, file=here::here("data/barkingowls.rda"))
+```
 
 ## Introduction
 
