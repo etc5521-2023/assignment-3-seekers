@@ -20,10 +20,16 @@ format: html
 <!--
 2. Download all the occurrence records from the Atlas of Living Australia, ideally scripted using the `atlas_occurrences()` function from the `galah` package. Make sure you include date, time, collector identification details. Save this into a `data-raw` folder in your repo.
 -->
-
 ```{r}
+#|warning: false
+#|message: false
 library(galah)
 library(tidyverse)
+```
+
+
+```{r}
+
 galah_config(email = "aani0005@student.monash.edu",
              download_reason_id = 10, 
              verbose = TRUE)
