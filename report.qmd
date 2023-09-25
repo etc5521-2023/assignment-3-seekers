@@ -35,9 +35,6 @@ Based on the literature surveys for the Coastal Taipan, here are our assumptions
 
 
 
-
-
-
 ## Data description
 
 <!--
@@ -55,7 +52,7 @@ galah_config(email = "aani0005@student.monash.edu",
              download_reason_id = 10, 
              verbose = TRUE)
 taipan <- atlas_occurrences(
-  identify = galah_identify("Oxyuranus scutellatus"),
+  identify = galah_identify("Oxyuranus scutellatus scutellatus"),
   select = galah_select(group = c("basic","event")))
 save(taipan, file=here::here("data-raw/taipan_raw.rda"))
 ```
@@ -113,6 +110,23 @@ By exploring this data, researchers and enthusiasts can gain insights into the b
 
 Weather data pre-processing here too.
 -->
+
+As we are primarily interested in analysing the wild sightings of the Coastal Taipans across Australia, hence, we will filter out the data obtained from museums and animal sanctuaries. This information has been provided in the `event ID` column which will be used to filter the required data as shown in the code chunk below. It has been additionally assumed that the occurences with no mention of the term "museum" have been considered as 
+
+```{r}
+taipan <- taipan %>% mutate(occurence = if_else(str_detect(taipan$eventID,"museum"),"Museum","Wild"))
+taipan$occurence <- replace_na(taipan$occurence,"Wild")
+taipan <- taipan %>% filter(occurence =="Wild") # Selecting only wild occurrences of Coastal Taipans
+```
+
+We have observed a total of `r taipan %>% nrow()` occurrences across Australia. However, this number has been obtained from the raw data which __will need to be cleaned further__.
+
+Based on the initial data analysis, we will need to perform the following data cleaning operations:
+
+1. Filter the data with valid sighting date for detailed temporal analysis.
+2. Filter the data with valid values of longitude and latitude for detailed spatial analysis.
+
+
 ```{r}
 taipan <- taipan %>% 
   rename(Longitude = decimalLongitude,
@@ -125,6 +139,7 @@ save(taipan, file=here::here("data/taipan.rda"))
 
 ```
 
+Upon performing the required data cleaning operation, we have a total of `r taipan %>% nrow()` wild sightings of Coastal Taipans across Australia.
 
 ## Exploratory data analysis
 

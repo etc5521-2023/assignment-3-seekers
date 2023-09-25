@@ -166,21 +166,21 @@ Key assumptions
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(taipan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 693
+<pre><code>Rows: 240
 Columns: 13
-$ decimalLatitude  &lt;dbl&gt; -34.58220, -34.58220, -34.16700, -33.41928, -32.42763…
-$ decimalLongitude &lt;dbl&gt; 150.7773, 150.7773, 140.7500, 149.5775, 151.5352, 152…
-$ eventDate        &lt;dttm&gt; 2017-03-14, 2017-03-14, NA, 2017-10-10, 2021-08-26, …
-$ scientificName   &lt;chr&gt; "Oxyuranus scutellatus", "Oxyuranus scutellatus", "Ox…
-$ taxonConceptID   &lt;chr&gt; "https://biodiversity.org.au/afd/taxa/c10b101c-0f8a-4…
-$ recordID         &lt;chr&gt; "21b8f969-103d-45ab-964e-b0af493ac95e", "69837e7a-9db…
-$ dataResourceName &lt;chr&gt; "NSW BioNet Atlas", "NSW BioNet Atlas", "Northern Ter…
+$ decimalLatitude  &lt;dbl&gt; -28.16667, -28.08333, -28.06667, -28.01667, -28.00000…
+$ decimalLongitude &lt;dbl&gt; 152.7667, 153.1833, 153.1500, 153.1833, 153.0667, 153…
+$ eventDate        &lt;dttm&gt; NA, 1993-12-28, NA, NA, NA, NA, NA, NA, NA, 1993-03-…
+$ scientificName   &lt;chr&gt; "Oxyuranus scutellatus scutellatus", "Oxyuranus scute…
+$ taxonConceptID   &lt;chr&gt; "https://biodiversity.org.au/afd/taxa/5bf4d1db-ea96-4…
+$ recordID         &lt;chr&gt; "7c5d1c3c-3316-4a56-bfb3-7c030f996c77", "4e15132b-6de…
+$ dataResourceName &lt;chr&gt; "Queensland Museum provider for OZCAM", "Queensland M…
 $ occurrenceStatus &lt;chr&gt; "PRESENT", "PRESENT", "PRESENT", "PRESENT", "PRESENT"…
-$ eventRemarks     &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ eventRemarks     &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
 $ eventTime        &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-$ eventID          &lt;chr&gt; NA, NA, NA, NA, NA, "urn:australianmuseum.net.au:Even…
+$ eventID          &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
 $ samplingEffort   &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-$ samplingProtocol &lt;chr&gt; NA, NA, NA, NA, NA, "PRE", NA, NA, NA, NA, NA, NA, NA…</code></pre>
+$ samplingProtocol &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…</code></pre>
 </div>
 </div>
 <section id="description-of-the-variables-in-the-dataset" class="level3">
@@ -277,16 +277,29 @@ $ samplingProtocol &lt;chr&gt; NA, NA, NA, NA, NA, "PRE", NA, NA, NA, NA, NA, NA
 
 Weather data pre-processing here too.
 -->
+<p>As we are primarily interested in analysing the wild sightings of the Coastal Taipans across Australia, hence, we will filter out the data obtained from museums and animal sanctuaries. This information has been provided in the <code>event ID</code> column which will be used to filter the required data as shown in the code chunk below. It has been additionally assumed that the occurences with no mention of the term “museum” have been considered as</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>taipan <span class="ot">&lt;-</span> taipan <span class="sc">%&gt;%</span> </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Longitude =</span> decimalLongitude,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">Latitude =</span> decimalLatitude) <span class="sc">%&gt;%</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">eventDate =</span> <span class="fu">as.Date</span>(eventDate)) <span class="sc">%&gt;%</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(eventDate)) <span class="sc">%&gt;%</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Longitude)) <span class="sc">%&gt;%</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Latitude))</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(taipan, <span class="at">file=</span>here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/taipan.rda"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>taipan <span class="ot">&lt;-</span> taipan <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">occurence =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(taipan<span class="sc">$</span>eventID,<span class="st">"museum"</span>),<span class="st">"Museum"</span>,<span class="st">"Wild"</span>))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>taipan<span class="sc">$</span>occurence <span class="ot">&lt;-</span> <span class="fu">replace_na</span>(taipan<span class="sc">$</span>occurence,<span class="st">"Wild"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>taipan <span class="ot">&lt;-</span> taipan <span class="sc">%&gt;%</span> <span class="fu">filter</span>(occurence <span class="sc">==</span><span class="st">"Wild"</span>) <span class="co"># Selecting only wild occurrences of Coastal Taipans</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>We have observed a total of 238 occurrences across Australia. However, this number has been obtained from the raw data which <strong>will need to be cleaned further</strong>.</p>
+<p>Based on the initial data analysis, we will need to perform the following data cleaning operations:</p>
+<ol type="1">
+<li>Filter the data with valid sighting date for detailed temporal analysis.</li>
+<li>Filter the data with valid values of longitude and latitude for detailed spatial analysis.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>taipan <span class="ot">&lt;-</span> taipan <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Longitude =</span> decimalLongitude,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">Latitude =</span> decimalLatitude) <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">eventDate =</span> <span class="fu">as.Date</span>(eventDate)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(eventDate)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Longitude)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Latitude))</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(taipan, <span class="at">file=</span>here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/taipan.rda"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Upon performing the required data cleaning operation, we have a total of 100 wild sightings of Coastal Taipans across Australia.</p>
 </section>
 <section id="exploratory-data-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="exploratory-data-analysis">Exploratory data analysis</h2>
