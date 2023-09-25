@@ -24,11 +24,13 @@ While the Coastal Taipans are not classified as endangered species, however, wit
 :::{.callout-note}
 # Key assumptions
 
-Based on the literature surveys for the Costal Taipan, here are our assumptions while moving forward with our analysis:
+Based on the literature surveys for the Coastal Taipan, here are our assumptions while moving forward with our analysis:
 
-1. Based on the information from the [Australia Museum](https://australian.museum/learn/animals/reptiles/coastal-taipan/), the Costal Taipans are __active throughout the year__ but are observed to be most __commonly encountered during late winter to spring (August to December of a calendar year)__.
-2. As can be inferred from its colloquial name, the Coastal Taipans are often observed __in the coastal regions of Australia and thrive in the monsoon wetlands and savannas__.
+1. Based on the information from the [Australia Museum](https://australian.museum/learn/animals/reptiles/coastal-taipan/), the Coastal Taipans are __active throughout the year__ but are observed to be most __commonly encountered during late winter to spring (August to December of a calendar year)__.
+2. As can be inferred from its colloquial name, the Coastal Taipans are often observed __in the coastal regions of Australia.__ 
 3. Based on a study by [Billabong Sanctuary](https://www.billabongsanctuary.com.au/coastal-taipan/#:~:text=Coastal%20taipans%20are%20common%20in,animals%20like%20rats%20and%20mice.), the Coastal Taipans are __not endangered and have probably increased in numbers__ due to the growth in the number of rats (who are the primary prey) in areas close to the human settlements.
+4. The Coastal Taipans __thrive in the areas of monsoon wetlands and savannas with a humid weather__.
+5. Coastal Taipans depend primarily on their venom as their defensive mechanism and consider human interactions as an act of aggression. Consequently, the number of sightings across Australia can be __considered to be limited to certain regions and in small numbers__.  
 :::
 
 
@@ -42,20 +44,19 @@ Based on the literature surveys for the Costal Taipan, here are our assumptions 
 2. Download all the occurrence records from the Atlas of Living Australia, ideally scripted using the `atlas_occurrences()` function from the `galah` package. Make sure you include date, time, collector identification details. Save this into a `data-raw` folder in your repo.
 -->
 ```{r}
-#|warning: false
-#|message: false
 library(galah)
 library(tidyverse)
 ```
 
 
-```{r}
+```{r include=FALSE}
 
 galah_config(email = "aani0005@student.monash.edu",
              download_reason_id = 10, 
              verbose = TRUE)
 taipan <- atlas_occurrences(
-  identify = galah_identify("Oxyuranus scutellatus scutellatus"))
+  identify = galah_identify("Oxyuranus scutellatus"),
+  select = galah_select(group = c("basic","event")))
 save(taipan, file=here::here("data-raw/taipan_raw.rda"))
 ```
 
@@ -84,7 +85,8 @@ The dataset contains data on observations of the Coastal Taipan Snake (*Oxyuranu
 **Data Source:** The data was sourced from the [Atlas of Living Australia (ALA)](https://www.ala.org.au/) using the `galah` R package.
 
 **Data Cleaning Steps:**
-1. Columns datatypes are changed for easement of further analysis such as the case with variable 'eventDate'.
+
+1. Columns datatypes are changed for ease of further analysis such as the case with variable 'eventDate'. \
 2. Observations with missing event dates, longitude, or latitude were filtered out.
 
 
@@ -102,7 +104,7 @@ The dataset contains data on observations of the Coastal Taipan Snake (*Oxyuranu
 1. **Atlas of Living Australia (ALA)** - https://www.ala.org.au/
 2. **The `galah` package** - available on CRAN and also on GitHub. This package has been instrumental in fetching the data directly into the R environment. 
 
-By exploring this data, researchers and enthusiasts can gain insights into the behavior, distribution, and occurrence patterns of the Coastal Taipan Snake, which can be useful for a range of ecological, environmental, and conservational studies.
+By exploring this data, researchers and enthusiasts can gain insights into the behavior, distribution, and occurrence patterns of the Coastal Taipan Snake, which can be useful for a range of ecological, environmental, and conservation studies.
 
 ## Initial data analysis
 
