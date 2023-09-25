@@ -24,15 +24,14 @@ While the Coastal Taipans are not classified as endangered species, however, wit
 :::{.callout-note}
 # Key assumptions
 
-Based on the literature surveys for the Costal Taipan, here are our assumptions while moving forward with our analysis:
+Based on the literature surveys for the Coastal Taipan, here are our assumptions while moving forward with our analysis:
 
-1. Based on the information from the [Australia Museum](https://australian.museum/learn/animals/reptiles/coastal-taipan/), the Costal Taipans are __active throughout the year__ but are observed to be most __commonly encountered during late winter to spring (August to December of a calendar year)__.
-2. As can be inferred from its colloquial name, the Coastal Taipans are often observed __in the coastal regions of Australia and thrive in the monsoon wetlands and savannas__.
+1. Based on the information from the [Australia Museum](https://australian.museum/learn/animals/reptiles/coastal-taipan/), the Coastal Taipans are __active throughout the year__ but are observed to be most __commonly encountered during late winter to spring (August to December of a calendar year)__.
+2. As can be inferred from its colloquial name, the Coastal Taipans are often observed __in the coastal regions of Australia.__ 
 3. Based on a study by [Billabong Sanctuary](https://www.billabongsanctuary.com.au/coastal-taipan/#:~:text=Coastal%20taipans%20are%20common%20in,animals%20like%20rats%20and%20mice.), the Coastal Taipans are __not endangered and have probably increased in numbers__ due to the growth in the number of rats (who are the primary prey) in areas close to the human settlements.
+4. The Coastal Taipans __thrive in the areas of monsoon wetlands and savannas with a humid weather__.
+5. Coastal Taipans depend primarily on their venom as their defensive mechanism and consider human interactions as an act of aggression. Consequently, the number of sightings across Australia can be __considered to be limited to certain regions and in small numbers__.  
 :::
-
-
-
 
 
 
@@ -42,20 +41,19 @@ Based on the literature surveys for the Costal Taipan, here are our assumptions 
 2. Download all the occurrence records from the Atlas of Living Australia, ideally scripted using the `atlas_occurrences()` function from the `galah` package. Make sure you include date, time, collector identification details. Save this into a `data-raw` folder in your repo.
 -->
 ```{r}
-#|warning: false
-#|message: false
 library(galah)
 library(tidyverse)
 ```
 
 
-```{r}
+```{r include=FALSE}
 
 galah_config(email = "aani0005@student.monash.edu",
              download_reason_id = 10, 
              verbose = TRUE)
 taipan <- atlas_occurrences(
-  identify = galah_identify("Oxyuranus scutellatus scutellatus"))
+  identify = galah_identify("Oxyuranus scutellatus scutellatus"),
+  select = galah_select(group = c("basic","event")))
 save(taipan, file=here::here("data-raw/taipan_raw.rda"))
 ```
 
@@ -77,6 +75,10 @@ The dataset contains data on observations of the Coastal Taipan Snake (*Oxyuranu
 | recordID         | chr       | A unique identifier for each observation record. |
 | dataResourceName | chr       | The name of the data resource/provider. In this dataset, it is sourced from Queensland Museum for OZCAM. |
 | occurrenceStatus | chr       | The status of the observation, indicating if the species is present or absent at the location. |
+| eventRemarks     | chr       | Special remarks related to the event sighting. |
+| eventTime        | datetime  | Time of the event sighting. |
+| eventID          | chr       | A unique ID for each event observation. |
+
 
 
 ### Data Source and Cleaning Overview
@@ -84,7 +86,8 @@ The dataset contains data on observations of the Coastal Taipan Snake (*Oxyuranu
 **Data Source:** The data was sourced from the [Atlas of Living Australia (ALA)](https://www.ala.org.au/) using the `galah` R package.
 
 **Data Cleaning Steps:**
-1. Columns datatypes are changed for easement of further analysis such as the case with variable 'eventDate'.
+
+1. Columns datatypes are changed for ease of further analysis such as the case with variable 'eventDate'. \
 2. Observations with missing event dates, longitude, or latitude were filtered out.
 
 
@@ -100,9 +103,9 @@ The dataset contains data on observations of the Coastal Taipan Snake (*Oxyuranu
 ### Citations:
 
 1. **Atlas of Living Australia (ALA)** - https://www.ala.org.au/
-2. **The `galah` package** - available on CRAN and also on GitHub. This package has been instrumental in fetching the data directly into the R environment. 
+2. **The [galah](https://galah.ala.org.au) package** - available on CRAN and also on GitHub. This package has been instrumental in fetching the data directly into the R environment. 
 
-By exploring this data, researchers and enthusiasts can gain insights into the behavior, distribution, and occurrence patterns of the Coastal Taipan Snake, which can be useful for a range of ecological, environmental, and conservational studies.
+By exploring this data, researchers and enthusiasts can gain insights into the behavior, distribution, and occurrence patterns of the Coastal Taipan Snake, which can be useful for a range of ecological, environmental, and conservation studies.
 
 ## Initial data analysis
 
@@ -111,6 +114,23 @@ By exploring this data, researchers and enthusiasts can gain insights into the b
 
 Weather data pre-processing here too.
 -->
+
+As we are primarily interested in analysing the wild sightings of the Coastal Taipans across Australia, hence, we will filter out the data obtained from museums and animal sanctuaries. This information has been provided in the `event ID` column which will be used to filter the required data as shown in the code chunk below. It has been additionally assumed that the occurences with no mention of the term "museum" have been considered as 
+
+```{r}
+taipan <- taipan %>% mutate(occurence = if_else(str_detect(taipan$eventID,"museum"),"Museum","Wild"))
+taipan$occurence <- replace_na(taipan$occurence,"Wild")
+taipan <- taipan %>% filter(occurence =="Wild") # Selecting only wild occurrences of Coastal Taipans
+```
+
+We have observed a total of `r taipan %>% nrow()` occurrences across Australia. However, this number has been obtained from the raw data which __will need to be cleaned further__.
+
+Based on the initial data analysis, we will need to perform the following data cleaning operations:
+
+1. Filter the data with valid sighting date for detailed temporal analysis.
+2. Filter the data with valid values of longitude and latitude for detailed spatial analysis.
+
+
 ```{r}
 taipan <- taipan %>% 
   rename(Longitude = decimalLongitude,
@@ -118,11 +138,12 @@ taipan <- taipan %>%
   mutate(eventDate = as.Date(eventDate)) %>%
   filter(!is.na(eventDate)) %>%
   filter(!is.na(Longitude)) %>%
-  filter(!is.na(Latitude))
+  filter(!is.na(Latitude)) %>% select(-c("samplingEffort","samplingProtocol"))
 save(taipan, file=here::here("data/taipan.rda"))
 
 ```
 
+Upon performing the required data cleaning operation, we have a total of `r taipan %>% nrow()` wild sightings of Coastal Taipans across Australia.
 
 ## Exploratory data analysis
 
