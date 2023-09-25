@@ -34,7 +34,7 @@ galah_config(email = "aani0005@student.monash.edu",
              download_reason_id = 10, 
              verbose = TRUE)
 taipan <- atlas_occurrences(
-  identify = galah_identify("Oxyuranus scutellatus scutellatus"))
+  identify = galah_identify("Oxyuranus scutellatus scutellatus"), select = galah_select(group = c("basic", "event")))
 save(taipan, file=here::here("data-raw/taipan_raw.rda"))
 ```
 
@@ -110,6 +110,33 @@ save(taipan, file=here::here("data/taipan.rda"))
 
 Weather data exploration here too.
 -->
+
+```{r}
+
+library(ggplot2)
+library(ggmap)
+library(maps)
+
+```
+
+```{r}
+australia_map <- map_data("world", region = "Australia")
+ggplot() + 
+  geom_polygon(data = australia_map, aes(x = long, y = lat, group = group), fill = "white", color = "black") +
+  geom_point(data = taipan, aes(x = Longitude, y = Latitude), color = "red") +
+  labs(title = "Animal Sightings in Australia") +
+  coord_fixed(1.3, xlim = c(110, 155), ylim = c(-45, -10))
+
+```
+```{r}
+library(leaflet)
+# Assuming your dataset is named `sightings` and has columns `latitude` and `longitude`
+leaflet(data = taipan) %>%
+  addTiles() %>%
+  addCircles(lng = ~Longitude, lat = ~Latitude, popup = ~scientificName, radius = 50, color = "red")
+
+```
+
 
 ## Summary 
 
