@@ -240,6 +240,21 @@ $ samplingProtocol &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N
 <td>chr</td>
 <td>The status of the observation, indicating if the species is present or absent at the location.</td>
 </tr>
+<tr class="odd">
+<td>eventRemarks</td>
+<td>chr</td>
+<td>Special remarks related to the event sighting.</td>
+</tr>
+<tr class="even">
+<td>eventTime</td>
+<td>datetime</td>
+<td>Time of the event sighting.</td>
+</tr>
+<tr class="odd">
+<td>eventID</td>
+<td>chr</td>
+<td>A unique ID for each event observation.</td>
+</tr>
 </tbody>
 </table>
 </section>
@@ -265,7 +280,7 @@ $ samplingProtocol &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N
 <h3 class="anchored" data-anchor-id="citations">Citations:</h3>
 <ol type="1">
 <li><strong>Atlas of Living Australia (ALA)</strong> - https://www.ala.org.au/</li>
-<li><strong>The <code>galah</code> package</strong> - available on CRAN and also on GitHub. This package has been instrumental in fetching the data directly into the R environment.</li>
+<li><strong>The <a href="https://galah.ala.org.au">galah</a> package</strong> - available on CRAN and also on GitHub. This package has been instrumental in fetching the data directly into the R environment.</li>
 </ol>
 <p>By exploring this data, researchers and enthusiasts can gain insights into the behavior, distribution, and occurrence patterns of the Coastal Taipan Snake, which can be useful for a range of ecological, environmental, and conservation studies.</p>
 </section>
@@ -296,7 +311,7 @@ Weather data pre-processing here too.
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">eventDate =</span> <span class="fu">as.Date</span>(eventDate)) <span class="sc">%&gt;%</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(eventDate)) <span class="sc">%&gt;%</span></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Longitude)) <span class="sc">%&gt;%</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Latitude))</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Latitude)) <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(<span class="st">"samplingEffort"</span>,<span class="st">"samplingProtocol"</span>))</span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(taipan, <span class="at">file=</span>here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/taipan.rda"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Upon performing the required data cleaning operation, we have a total of 100 wild sightings of Coastal Taipans across Australia.</p>
