@@ -185,7 +185,7 @@ $ samplingProtocol &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N
 </div>
 <section id="description-of-the-variables-in-the-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="description-of-the-variables-in-the-dataset">Description of the Variables in the Dataset</h3>
-<p>The dataset contains data on observations of the Coastal Taipan Snake (<em>Oxyuranus scutellatus scutellatus</em>). The dataset has been organized into a tidy format. Below is a detailed description of each variable:</p>
+<p>The dataset contains data on observations of the Coastal Taipans (<em>Oxyuranus scutellatus scutellatus</em>) in Australia. The dataset has been organized into a tidy format. Below is a detailed description of each salient variable:</p>
 <table class="table">
 <colgroup>
 <col style="width: 42%">
@@ -233,7 +233,7 @@ $ samplingProtocol &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N
 <tr class="odd">
 <td>dataResourceName</td>
 <td>chr</td>
-<td>The name of the data resource/provider. In this dataset, it is sourced from Queensland Museum for OZCAM.</td>
+<td>The name of the data resource/provider.</td>
 </tr>
 <tr class="even">
 <td>occurrenceStatus</td>
@@ -258,14 +258,21 @@ $ samplingProtocol &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N
 </tbody>
 </table>
 </section>
-<section id="data-source-and-cleaning-overview" class="level3">
-<h3 class="anchored" data-anchor-id="data-source-and-cleaning-overview">Data Source and Cleaning Overview</h3>
+</section>
+<section id="initial-data-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="initial-data-analysis">Initial data analysis</h2>
+<section id="data-source" class="level3">
+<h3 class="anchored" data-anchor-id="data-source">Data Source</h3>
 <p><strong>Data Source:</strong> The data was sourced from the <a href="https://www.ala.org.au/">Atlas of Living Australia (ALA)</a> using the <code>galah</code> R package.</p>
+</section>
+<section id="data-cleaning" class="level3">
+<h3 class="anchored" data-anchor-id="data-cleaning">Data Cleaning</h3>
 <p><strong>Data Cleaning Steps:</strong></p>
 <ol type="1">
-<li>Columns datatypes are changed for ease of further analysis such as the case with variable ‘eventDate’.<br>
+<li>The datatype for <code>eventDate</code> has been changed to datetime for accurate temporal analysis.<br>
 </li>
 <li>Observations with missing event dates, longitude, or latitude were filtered out.</li>
+<li>Redundant variables were dropped from the dataset to keep only the salient variables important for the current analysis.</li>
 </ol>
 <p><strong>Methods to Check and Clean Data:</strong></p>
 <ul>
@@ -275,35 +282,34 @@ $ samplingProtocol &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N
 <li><strong>Outlier Analysis:</strong> Especially for numeric fields like latitude and longitude, outlier detection can help spot any unusual or erroneous data points.</li>
 <li><strong>Date Consistency:</strong> Ensure that the event dates fall within expected ranges and are formatted correctly.</li>
 </ul>
-</section>
-<section id="citations" class="level3">
-<h3 class="anchored" data-anchor-id="citations">Citations:</h3>
-<ol type="1">
-<li><strong>Atlas of Living Australia (ALA)</strong> - https://www.ala.org.au/</li>
-<li><strong>The <a href="https://galah.ala.org.au">galah</a> package</strong> - available on CRAN and also on GitHub. This package has been instrumental in fetching the data directly into the R environment.</li>
-</ol>
-<p>By exploring this data, researchers and enthusiasts can gain insights into the behavior, distribution, and occurrence patterns of the Coastal Taipan Snake, which can be useful for a range of ecological, environmental, and conservation studies.</p>
-</section>
-</section>
-<section id="initial-data-analysis" class="level2">
-<h2 class="anchored" data-anchor-id="initial-data-analysis">Initial data analysis</h2>
 <!--
 3. Perform a data quality check, and then go ahead and clean the data, saving only the wild sightings. Save the resulting data in a `data` folder as an `WILD_THING_COMMON_NAME.rda` file, so that any special variable types are clearly available. (Replace `WILD_THING_COMMON_NAME` with lower case common name of your assigned wild thing.) *Note:* Some are museum or historical records or live in an animal sanctuary or zoo, which do not truly capture their wild behaviour. Downloading the event information (`galah_select(group = "event")`) can help identify wild sightings.
 
 Weather data pre-processing here too.
 -->
-<p>As we are primarily interested in analysing the wild sightings of the Coastal Taipans across Australia, hence, we will filter out the data obtained from museums and animal sanctuaries. This information has been provided in the <code>event ID</code> column which will be used to filter the required data as shown in the code chunk below. It has been additionally assumed that the occurences with no mention of the term “museum” have been considered as</p>
+</section>
+<section id="data-quality-check" class="level3">
+<h3 class="anchored" data-anchor-id="data-quality-check">Data Quality Check</h3>
+<!-- Create Vismiss map for all the variables
+
+-->
+</section>
+<section id="data-transformation-and-feature-selection" class="level3">
+<h3 class="anchored" data-anchor-id="data-transformation-and-feature-selection">Data transformation and feature selection</h3>
+<p>As we are primarily interested in analysing the wild sightings of the Coastal Taipans across Australia, hence, we will filter out the data obtained from museums and animal sanctuaries. This information has been provided in the <code>event ID</code> column which will be used to filter the required data as shown in the code chunk below. It has been additionally assumed that the occurrences with no mention of the term “museum” have been considered as wild sightings in the context of the current study.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>taipan <span class="ot">&lt;-</span> taipan <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">occurence =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(taipan<span class="sc">$</span>eventID,<span class="st">"museum"</span>),<span class="st">"Museum"</span>,<span class="st">"Wild"</span>))</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>taipan<span class="sc">$</span>occurence <span class="ot">&lt;-</span> <span class="fu">replace_na</span>(taipan<span class="sc">$</span>occurence,<span class="st">"Wild"</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>taipan <span class="ot">&lt;-</span> taipan <span class="sc">%&gt;%</span> <span class="fu">filter</span>(occurence <span class="sc">==</span><span class="st">"Wild"</span>) <span class="co"># Selecting only wild occurrences of Coastal Taipans</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>taipan <span class="ot">&lt;-</span> taipan <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">occurrence =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(taipan<span class="sc">$</span>eventID,<span class="st">"museum"</span>),<span class="st">"Museum"</span>,<span class="st">"Wild"</span>))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>taipan<span class="sc">$</span>occurrence <span class="ot">&lt;-</span> <span class="fu">replace_na</span>(taipan<span class="sc">$</span>occurrence,<span class="st">"Wild"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>taipan_wild <span class="ot">&lt;-</span> taipan <span class="sc">%&gt;%</span> <span class="fu">filter</span>(occurrence <span class="sc">==</span><span class="st">"Wild"</span>) <span class="co"># Selecting only wild occurrences of Coastal Taipans</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We have observed a total of 238 occurrences across Australia. However, this number has been obtained from the raw data which <strong>will need to be cleaned further</strong>.</p>
+<p>We have observed a total of <strong>240 occurrences across Australia</strong>. However, this number has been obtained from the raw data which <strong>will need to be cleaned further</strong>.</p>
+<div class="alert alert-block alert-warning">
 <p>Based on the initial data analysis, we will need to perform the following data cleaning operations:</p>
 <ol type="1">
 <li>Filter the data with valid sighting date for detailed temporal analysis.</li>
 <li>Filter the data with valid values of longitude and latitude for detailed spatial analysis.</li>
 </ol>
+</div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>taipan <span class="ot">&lt;-</span> taipan <span class="sc">%&gt;%</span> </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Longitude =</span> decimalLongitude,</span>
@@ -311,10 +317,13 @@ Weather data pre-processing here too.
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">eventDate =</span> <span class="fu">as.Date</span>(eventDate)) <span class="sc">%&gt;%</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(eventDate)) <span class="sc">%&gt;%</span></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Longitude)) <span class="sc">%&gt;%</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Latitude)) <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(<span class="st">"samplingEffort"</span>,<span class="st">"samplingProtocol"</span>))</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Latitude)) <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(<span class="st">"samplingEffort"</span>,<span class="st">"samplingProtocol"</span>,<span class="st">"taxonConceptID"</span>,<span class="st">"recordID"</span>,<span class="st">"dataResourceName"</span>))</span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(taipan, <span class="at">file=</span>here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/taipan.rda"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Upon performing the required data cleaning operation, we have a total of 100 wild sightings of Coastal Taipans across Australia.</p>
+<div class="alert alert-block alert-success">
+<p>‼️💡 Upon performing the required data cleaning operation, we have a total of <strong>100 wild sightings of Coastal Taipans across Australia</strong>. 💡‼️</p>
+</div>
+</section>
 </section>
 <section id="exploratory-data-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="exploratory-data-analysis">Exploratory data analysis</h2>
@@ -326,6 +335,16 @@ Weather data exploration here too.
 </section>
 <section id="summary" class="level2">
 <h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<section id="citations" class="level3">
+<h3 class="anchored" data-anchor-id="citations">Citations:</h3>
+<ol type="1">
+<li><strong>Atlas of Living Australia (ALA)</strong> - https://www.ala.org.au/</li>
+<li><strong>The <a href="https://galah.ala.org.au">galah</a> package</strong> - Westgate M, Kellie D, Stevenson M, Newman P (2023). <em>galah: Biodiversity Data from the Living Atlas Community</em>. R package version 1.5.3, <a href="https://CRAN.R-project.org/package=galah" class="uri">https://CRAN.R-project.org/package=galah</a>.</li>
+<li><strong>Tidyverse</strong> - Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G, Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL, Miller E, Bache SM, Müller K, Ooms J, Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo K, Yutani H (2019). “Welcome to the tidyverse.” <em>Journal of Open Source Software</em>, <em>4</em>(43), 1686. doi:10.21105/joss.01686 <a href="https://doi.org/10.21105/joss.01686" class="uri">https://doi.org/10.21105/joss.01686</a>.</li>
+<li><strong>ggplot2</strong> - H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.</li>
+</ol>
+<p>By exploring this data, researchers and enthusiasts can gain insights into the behavior, distribution, and occurrence patterns of the Coastal Taipan Snake, which can be useful for a range of ecological, environmental, and conservation studies.</p>
+</section>
 </section>
 <section id="references" class="level2 unnumbered">
 
