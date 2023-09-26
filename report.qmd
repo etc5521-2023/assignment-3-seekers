@@ -50,6 +50,7 @@ library(ggplot2)
 library(ggmap)
 library(maps)
 library(leaflet)
+library(lubridate)
 ```
 
 
@@ -166,14 +167,14 @@ Based on the initial data analysis, we will need to perform the following data c
 </div>
 
 ```{r}
-taipan <- taipan %>% 
+taipan_wild <- taipan_wild %>% 
   rename(Longitude = decimalLongitude,
          Latitude = decimalLatitude) %>%
   mutate(eventDate = as.Date(eventDate)) %>%
   filter(!is.na(eventDate)) %>%
   filter(!is.na(Longitude)) %>%
   filter(!is.na(Latitude)) %>% select(-c("samplingEffort","samplingProtocol","taxonConceptID","recordID","dataResourceName"))
-save(taipan, file=here::here("data/taipan.rda"))
+save(taipan_wild, file=here::here("data/taipan.rda"))
 
 ```
 
@@ -193,8 +194,17 @@ Weather data exploration here too.
 -->
 
 ```{r}
+# Monthly distribution of Taipan sightings
+# Extract the month from the eventDate
+taipan_wild$month <- month(taipan_wild$eventDate, label = TRUE)
 
-
+ggplot(taipan_wild, aes(x = month, fill = month)) +
+  geom_bar() +
+  labs(title = "Monthly Distribution of Taipan Sightings", 
+       x = "Month", 
+       y = "Number of Sightings") +
+  theme_classic() +
+  theme(legend.position = "none")
 
 ```
 
