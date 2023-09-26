@@ -44,6 +44,7 @@ Based on the literature surveys for the Coastal Taipan, here are our assumptions
 ```{r}
 library(galah)
 library(tidyverse)
+library(visdat)
 ```
 
 
@@ -115,10 +116,12 @@ Weather data pre-processing here too.
 -->
 ### Data Quality Check
 
-<!-- Create Vismiss map for all the variables
+```{r}
+vis_miss(taipan)
+```
+The `vis_miss()` function from the "visdat" package provides a visual representation of missing data in the dataset.
 
--->
-
+The plot indicates that many values for some variables are missing. Considering this, we need to consider imputation, or depending on the amount of missing data and the importance of the variable, we will have to drop it.
 
 ### Data transformation and feature selection
 
@@ -127,6 +130,24 @@ As we are primarily interested in analysing the wild sightings of the Coastal Ta
 ```{r}
 taipan <- taipan %>% mutate(occurrence = if_else(str_detect(taipan$eventID,"museum"),"Museum","Wild"))
 taipan$occurrence <- replace_na(taipan$occurrence,"Wild")
+
+
+ggplot(taipan, aes(x = occurrence)) +
+  geom_bar(aes(fill = occurrence)) +
+  labs(title = "Distribution of Taipan Sightings",
+       x = "Occurrence Type",
+       y = "Count") +
+  theme_classic() +
+  theme(legend.position = "none") +
+  coord_flip()
+
+```
+
+The above figure displays the distribution of Taipan sightings categorized into two types: Museum and Wild. It's evident from the figure that a portion of the data is sourced from museums, which means these observations don't represent the natural behavior or occurrence of Taipans in their wild habitats.
+
+For a comprehensive study of the natural behavior or occurrence patterns of Taipans, it's pertinent to focus solely on the "Wild" type data.
+
+```{r}
 taipan_wild <- taipan %>% filter(occurrence =="Wild") # Selecting only wild occurrences of Coastal Taipans
 ```
 
