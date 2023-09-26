@@ -45,6 +45,11 @@ Based on the literature surveys for the Coastal Taipan, here are our assumptions
 library(galah)
 library(tidyverse)
 library(visdat)
+library(ggplot2)
+library(ggplot2)
+library(ggmap)
+library(maps)
+library(leaflet)
 ```
 
 
@@ -189,9 +194,7 @@ Weather data exploration here too.
 
 ```{r}
 
-library(ggplot2)
-library(ggmap)
-library(maps)
+
 
 ```
 
@@ -206,7 +209,6 @@ ggplot() +
 ```
 
 ```{r}
-library(leaflet)
 # Assuming your dataset is named `sightings` and has columns `latitude` and `longitude`
 leaflet(data = taipan) %>%
   addTiles() %>%

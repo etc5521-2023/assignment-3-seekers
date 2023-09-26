@@ -87,6 +87,15 @@ div.csl-indent {
 <script src="report_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="report_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="report_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="report_files/libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<script src="report_files/libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<link href="report_files/libs/leaflet-1.3.1/leaflet.css" rel="stylesheet">
+<script src="report_files/libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="report_files/libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
+<script src="report_files/libs/proj4-2.6.2/proj4.min.js"></script>
+<script src="report_files/libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="report_files/libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
+<script src="report_files/libs/leaflet-binding-2.2.0/leaflet.js"></script>
 
 
 </head>
@@ -161,7 +170,13 @@ Key assumptions
 -->
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(galah)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(visdat)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggmap)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(maps)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(leaflet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(taipan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -290,17 +305,39 @@ Weather data pre-processing here too.
 </section>
 <section id="data-quality-check" class="level3">
 <h3 class="anchored" data-anchor-id="data-quality-check">Data Quality Check</h3>
-<!-- Create Vismiss map for all the variables
-
--->
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vis_miss</span>(taipan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="report_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The <code>vis_miss()</code> function from the “visdat” package provides a visual representation of missing data in the dataset.</p>
+<p>The plot indicates that many values for some variables are missing. Considering this, we need to consider imputation, or depending on the amount of missing data and the importance of the variable, we will have to drop it.</p>
 </section>
 <section id="data-transformation-and-feature-selection" class="level3">
 <h3 class="anchored" data-anchor-id="data-transformation-and-feature-selection">Data transformation and feature selection</h3>
 <p>As we are primarily interested in analysing the wild sightings of the Coastal Taipans across Australia, hence, we will filter out the data obtained from museums and animal sanctuaries. This information has been provided in the <code>event ID</code> column which will be used to filter the required data as shown in the code chunk below. It has been additionally assumed that the occurrences with no mention of the term “museum” have been considered as wild sightings in the context of the current study.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>taipan <span class="ot">&lt;-</span> taipan <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">occurrence =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(taipan<span class="sc">$</span>eventID,<span class="st">"museum"</span>),<span class="st">"Museum"</span>,<span class="st">"Wild"</span>))</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>taipan<span class="sc">$</span>occurrence <span class="ot">&lt;-</span> <span class="fu">replace_na</span>(taipan<span class="sc">$</span>occurrence,<span class="st">"Wild"</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>taipan_wild <span class="ot">&lt;-</span> taipan <span class="sc">%&gt;%</span> <span class="fu">filter</span>(occurrence <span class="sc">==</span><span class="st">"Wild"</span>) <span class="co"># Selecting only wild occurrences of Coastal Taipans</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>taipan <span class="ot">&lt;-</span> taipan <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">occurrence =</span> <span class="fu">if_else</span>(<span class="fu">str_detect</span>(taipan<span class="sc">$</span>eventID,<span class="st">"museum"</span>),<span class="st">"Museum"</span>,<span class="st">"Wild"</span>))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>taipan<span class="sc">$</span>occurrence <span class="ot">&lt;-</span> <span class="fu">replace_na</span>(taipan<span class="sc">$</span>occurrence,<span class="st">"Wild"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(taipan, <span class="fu">aes</span>(<span class="at">x =</span> occurrence)) <span class="sc">+</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">fill =</span> occurrence)) <span class="sc">+</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribution of Taipan Sightings"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Occurrence Type"</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Count"</span>) <span class="sc">+</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="report_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The above figure displays the distribution of Taipan sightings categorized into two types: Museum and Wild. It’s evident from the figure that a portion of the data is sourced from museums, which means these observations don’t represent the natural behavior or occurrence of Taipans in their wild habitats.</p>
+<p>For a comprehensive study of the natural behavior or occurrence patterns of Taipans, it’s pertinent to focus solely on the “Wild” type data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>taipan_wild <span class="ot">&lt;-</span> taipan <span class="sc">%&gt;%</span> <span class="fu">filter</span>(occurrence <span class="sc">==</span><span class="st">"Wild"</span>) <span class="co"># Selecting only wild occurrences of Coastal Taipans</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We have observed a total of <strong>240 occurrences across Australia</strong>. However, this number has been obtained from the raw data which <strong>will need to be cleaned further</strong>.</p>
 <div class="alert alert-block alert-warning">
@@ -311,14 +348,14 @@ Weather data pre-processing here too.
 </ol>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>taipan <span class="ot">&lt;-</span> taipan <span class="sc">%&gt;%</span> </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Longitude =</span> decimalLongitude,</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">Latitude =</span> decimalLatitude) <span class="sc">%&gt;%</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">eventDate =</span> <span class="fu">as.Date</span>(eventDate)) <span class="sc">%&gt;%</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(eventDate)) <span class="sc">%&gt;%</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Longitude)) <span class="sc">%&gt;%</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Latitude)) <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(<span class="st">"samplingEffort"</span>,<span class="st">"samplingProtocol"</span>,<span class="st">"taxonConceptID"</span>,<span class="st">"recordID"</span>,<span class="st">"dataResourceName"</span>))</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(taipan, <span class="at">file=</span>here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/taipan.rda"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>taipan <span class="ot">&lt;-</span> taipan <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Longitude =</span> decimalLongitude,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">Latitude =</span> decimalLatitude) <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">eventDate =</span> <span class="fu">as.Date</span>(eventDate)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(eventDate)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Longitude)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Latitude)) <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(<span class="st">"samplingEffort"</span>,<span class="st">"samplingProtocol"</span>,<span class="st">"taxonConceptID"</span>,<span class="st">"recordID"</span>,<span class="st">"dataResourceName"</span>))</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(taipan, <span class="at">file=</span>here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/taipan.rda"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="alert alert-block alert-success">
 <p>‼️💡 Upon performing the required data cleaning operation, we have a total of <strong>100 wild sightings of Coastal Taipans across Australia</strong>. 💡‼️</p>
@@ -332,6 +369,27 @@ Weather data pre-processing here too.
 
 Weather data exploration here too.
 -->
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>australia_map <span class="ot">&lt;-</span> <span class="fu">map_data</span>(<span class="st">"world"</span>, <span class="at">region =</span> <span class="st">"Australia"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_polygon</span>(<span class="at">data =</span> australia_map, <span class="fu">aes</span>(<span class="at">x =</span> long, <span class="at">y =</span> lat, <span class="at">group =</span> group), <span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> taipan, <span class="fu">aes</span>(<span class="at">x =</span> Longitude, <span class="at">y =</span> Latitude), <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Animal Sightings in Australia"</span>) <span class="sc">+</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_fixed</span>(<span class="fl">1.3</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">110</span>, <span class="dv">155</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">45</span>, <span class="sc">-</span><span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="report_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Assuming your dataset is named `sightings` and has columns `latitude` and `longitude`</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">leaflet</span>(<span class="at">data =</span> taipan) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addTiles</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addCircles</span>(<span class="at">lng =</span> <span class="sc">~</span>Longitude, <span class="at">lat =</span> <span class="sc">~</span>Latitude, <span class="at">popup =</span> <span class="sc">~</span>scientificName, <span class="at">radius =</span> <span class="dv">50</span>, <span class="at">color =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="leaflet html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-a3b105707420da5e1687" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-a3b105707420da5e1687">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"https://openstreetmap.org/copyright/\">OpenStreetMap<\/a>,  <a href=\"https://opendatacommons.org/licenses/odbl/\">ODbL<\/a>"}]},{"method":"addCircles","args":[[-28.083333,-27.4,-27.333333,-27.2985415,-27.266667,-27.2,-27.1152092,-27.066667,-26.9318755,-26.766667,-26.666667,-26.6,-26.566667,-26.35,-26.283333,-26.25,-25.983333,-25.975,-25.966667,-25.7485426,-25.733333,-24.5,-24.333333,-24.25,-23.95,-23.85,-23.774722,-23.516667,-23.466667,-22.75,-22.683333,-21.066667,-20.966667,-20.954167,-20.95,-20.35,-20.316667,-19.683333,-19.633333,-19.5,-19.433333,-19.415252,-19.331389,-19.329206,-19.216667,-19.183333,-19.183333,-19.066667,-19.0402556,-19.025556,-19.007778,-18.9985885,-18.944722,-17.933333,-17.866389,-17.816667,-17.683333,-17.650833,-17.6,-17.133333,-16.916667,-16.838333,-16.82274,-16.683333,-16.583333,-16.533333,-16.466667,-16.416667,-15.766667,-15.683333,-15.6152723,-15.4986059,-15.466667,-15.466667,-15.465273,-15.465273,-15.433333,-15.4319394,-15.431667,-15.429722,-15.429722,-15.421667,-15.416667,-15.416667,-15.412778,-15.3486798,-15.308611,-15.2986799,-15.2986071,-15.266667,-15.1,-14.966667,-14.5053538,-13.9486175,-13.933333,-12.754722,-12.733333,-12.6,-12.383333,-10.883333],[153.183333,152.866667,152.85,152.6341297,152.983333,152.833333,152.5507968,152.583333,152.5507958,151.816667,152.466667,152.216667,152.25,152.733333,152.883333,152.733333,152.833333,152.858333,153.116667,153.0841145,153.083333,151.7,154.433333,151.5,151.316667,151.133333,151.133611,150.333333,150.416667,150.533333,150.433333,148.933333,148.808333,148.847222,148.847222,148.755556,148.55,147.35,146.783333,146.983333,146.933333,146.8341706,146.754444,146.772795,146.616667,146.55,146.533333,146.833333,146.1258449,146.405556,146.361667,146.2008439,146.278056,145.933333,145.753611,146,145,145.3175,145.75,145.15,145.416667,145.688611,145.693485,145.333333,145.283333,145.483333,145.383333,144.766667,144.983333,145.2,145.2508454,145.2175125,145.25,145.25,145.250845,145.250845,145.1,145.1675129,145.115,145.118889,145.118889,145.094167,145.116667,145.066667,145.061111,145.0342404,145.058056,145.1175734,145.1175132,145.15,145.216667,145.083333,143.4203663,143.2008647,143.2,143.081944,143.283333,143.416667,131.166667,142.4],50,null,null,{"interactive":true,"className":"","stroke":true,"color":"red","weight":5,"opacity":0.5,"fill":true,"fillColor":"red","fillOpacity":0.2},["Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus","Oxyuranus scutellatus scutellatus"],null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null,null]}],"limits":{"lat":[-28.083333,-10.883333],"lng":[131.166667,154.433333]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
 </section>
 <section id="summary" class="level2">
 <h2 class="anchored" data-anchor-id="summary">Summary</h2>
