@@ -1,19 +1,40 @@
 ---
-title: "TAIPAN REPORT"
+title: "The Enigmatic Coastal Taipan: Australia's Deadly Serpent 🐍"
 author: "Aishwarya Anil Kumar, Arindom Baruah"
 format: html
+bibliography: references.bib
+execute: 
+  warning: false
+  message: false
 ---
 
 
 ## Introduction
 
-<!-- 
-1. For your assigned Australian wild thing, read all you can about it, and write a paragraph describing it's key features, such as it's habitat, usual active time, whether numbers are increasing or declining, and even things like, if it is common for tourists to travel to see them, or there are special spotting promotions occurring as is happening [this month for the platypus](https://platypus.asn.au/report-a-sighting/). The write five unique expectations on what you might find when you explore the data, for example: 
-<br><br>"We expect to see the occurrences only in the summer months."
-<br>"We expect to find the most occurrences near the coast."
-<br>"We expect to observe declining numbers since 1994."
-<br><br> Be as specific as reasonably possible for your wild thing!
--->
+The Taipan class of reptiles are indigenous to the land mass of Australia as well as Papua New Guinea, and are considered to be one of the deadliest snakes on the planet. The Taipan, scientifically known as the Oxyuranus genus, comprises several species, with the Coastal Taipan (Oxyuranus scutellatus) and the Inland Taipan (Oxyuranus microlepidotus) being the most renowned. These reptiles are highly venomous and belong to the elapid family, which includes other infamous snakes like the king cobra and the black mamba. According to @markwell2016killer, what sets the taipan apart, however, is its reputation as having the most toxic venom of any snake in the world !
+
+In our current analysis, we will be focusing on the occurrences of Coastal Taipan across the various states of Australia. The coastal Taipan which has been scientifically named as Oxyuranus scutellatus, is commonly found in the northern regions of Australia and is renowned for its agility and speed. It primarily feeds on small mammals, birds, and occasionally reptiles, using its potent venom to immobilize its prey swiftly. 
+
+![The coastal taipan (Oxyuranus scutellatus)](taipan.jpg){#fig-taipan}
+
+Characterized by its slender body, shiny scales, and formidable fangs, the Taipan is a formidable predator. Despite its fearsome reputation, these snakes are generally reclusive and rarely encountered by humans. They prefer to inhabit coastal regions, woodlands, and savannas, blending seamlessly into their natural surroundings as can be observed in @fig-taipan.
+
+While the Coastal Taipans are not classified as endangered species, however, with rapid human activities such as urbanisation and encroachment of wildlife area for agricultural purposes, the habitat of these reptiles have been increasingly affected as a result of which, steps have been taken by wild life conservationists to preserve their natural habitats to the best extent possible.
+
+:::{.callout-note}
+# Key assumptions
+
+Based on the literature surveys for the Coastal Taipan, here are our assumptions while moving forward with our analysis:
+
+
+1. Based on the information from the [Australia Museum](https://australian.museum/learn/animals/reptiles/coastal-taipan/), the Coastal Taipans are __active throughout the year__ but are observed to be most __commonly encountered during late winter to spring (August to December of a calendar year)__.
+2. As can be inferred from its colloquial name, the Coastal Taipans are often observed __in the coastal regions of Australia.__ 
+3. Based on a study by [Billabong Sanctuary](https://www.billabongsanctuary.com.au/coastal-taipan/#:~:text=Coastal%20taipans%20are%20common%20in,animals%20like%20rats%20and%20mice.), the Coastal Taipans are __not endangered and have probably increased in numbers__ due to the growth in the number of rats (who are the primary prey) in areas close to the human settlements.
+4. The Coastal Taipans __thrive in the areas of monsoon wetlands and savannas with a humid weather__.
+5. Coastal Taipans depend primarily on their venom as their defensive mechanism and consider human interactions as an act of aggression. Consequently, the number of sightings across Australia can be __considered to be limited to certain regions and in small numbers__.  
+:::
+
+
 
 ## Data description
 
@@ -21,20 +42,25 @@ format: html
 2. Download all the occurrence records from the Atlas of Living Australia, ideally scripted using the `atlas_occurrences()` function from the `galah` package. Make sure you include date, time, collector identification details. Save this into a `data-raw` folder in your repo.
 -->
 ```{r}
-#|warning: false
-#|message: false
 library(galah)
 library(tidyverse)
+library(visdat)
+library(ggplot2)
+library(ggplot2)
+library(ggmap)
+library(maps)
+library(leaflet)
 ```
 
 
-```{r}
+```{r include=FALSE}
 
 galah_config(email = "aani0005@student.monash.edu",
              download_reason_id = 10, 
              verbose = TRUE)
 taipan <- atlas_occurrences(
-  identify = galah_identify("Oxyuranus scutellatus scutellatus"), select = galah_select(group = c("basic", "event")))
+  identify = galah_identify("Oxyuranus scutellatus scutellatus"),
+  select = galah_select(group = c("basic","event")))
 save(taipan, file=here::here("data-raw/taipan_raw.rda"))
 ```
 
@@ -44,7 +70,7 @@ glimpse(taipan)
 
 ### Description of the Variables in the Dataset
 
-The dataset contains data on observations of the Coastal Taipan Snake (*Oxyuranus scutellatus scutellatus*). The dataset has been organized into a tidy format. Below is a detailed description of each variable:
+The dataset contains data on observations of the Coastal Taipans (*Oxyuranus scutellatus scutellatus*) in Australia. The dataset has been organized into a tidy format. Below is a detailed description of each salient variable:
 
 | Variable Name    | Data Type | Description |
 |------------------|-----------|-------------|
@@ -54,17 +80,26 @@ The dataset contains data on observations of the Coastal Taipan Snake (*Oxyuranu
 | scientificName   | chr       | The scientific name of the observed species. In this dataset, it's *Oxyuranus scutellatus scutellatus*. |
 | taxonConceptID   | chr       | A unique URL that provides information about the taxonomic concept for the species. |
 | recordID         | chr       | A unique identifier for each observation record. |
-| dataResourceName | chr       | The name of the data resource/provider. In this dataset, it is sourced from Queensland Museum for OZCAM. |
+| dataResourceName | chr       | The name of the data resource/provider. |
 | occurrenceStatus | chr       | The status of the observation, indicating if the species is present or absent at the location. |
+| eventRemarks     | chr       | Special remarks related to the event sighting. |
+| eventTime        | datetime  | Time of the event sighting. |
+| eventID          | chr       | A unique ID for each event observation. |
 
 
-### Data Source and Cleaning Overview
+## Initial data analysis
+
+### Data Source 
 
 **Data Source:** The data was sourced from the [Atlas of Living Australia (ALA)](https://www.ala.org.au/) using the `galah` R package.
 
+### Data Cleaning
+
 **Data Cleaning Steps:**
-1. Columns datatypes are changed for easement of further analysis such as the case with variable 'eventDate'.
+
+1. The datatype for `eventDate` has been changed to datetime for accurate temporal analysis. \
 2. Observations with missing event dates, longitude, or latitude were filtered out.
+3. Redundant variables were dropped from the dataset to keep only the salient variables important for the current analysis.
 
 
 **Methods to Check and Clean Data:**
@@ -76,20 +111,60 @@ The dataset contains data on observations of the Coastal Taipan Snake (*Oxyuranu
 - **Date Consistency:** Ensure that the event dates fall within expected ranges and are formatted correctly.
 
 
-### Citations:
 
-1. **Atlas of Living Australia (ALA)** - https://www.ala.org.au/
-2. **The `galah` package** - available on CRAN and also on GitHub. This package has been instrumental in fetching the data directly into the R environment. 
 
-By exploring this data, researchers and enthusiasts can gain insights into the behavior, distribution, and occurrence patterns of the Coastal Taipan Snake, which can be useful for a range of ecological, environmental, and conservational studies.
-
-## Initial data analysis
 
 <!--
 3. Perform a data quality check, and then go ahead and clean the data, saving only the wild sightings. Save the resulting data in a `data` folder as an `WILD_THING_COMMON_NAME.rda` file, so that any special variable types are clearly available. (Replace `WILD_THING_COMMON_NAME` with lower case common name of your assigned wild thing.) *Note:* Some are museum or historical records or live in an animal sanctuary or zoo, which do not truly capture their wild behaviour. Downloading the event information (`galah_select(group = "event")`) can help identify wild sightings.
 
 Weather data pre-processing here too.
 -->
+### Data Quality Check
+
+```{r}
+vis_miss(taipan)
+```
+The `vis_miss()` function from the "visdat" package provides a visual representation of missing data in the dataset.
+
+The plot indicates that many values for some variables are missing. Considering this, we need to consider imputation, or depending on the amount of missing data and the importance of the variable, we will have to drop it.
+
+### Data transformation and feature selection
+
+As we are primarily interested in analysing the wild sightings of the Coastal Taipans across Australia, hence, we will filter out the data obtained from museums and animal sanctuaries. This information has been provided in the `event ID` column which will be used to filter the required data as shown in the code chunk below. It has been additionally assumed that the occurrences with no mention of the term "museum" have been considered as wild sightings in the context of the current study. 
+
+```{r}
+taipan <- taipan %>% mutate(occurrence = if_else(str_detect(taipan$eventID,"museum"),"Museum","Wild"))
+taipan$occurrence <- replace_na(taipan$occurrence,"Wild")
+
+
+ggplot(taipan, aes(x = occurrence)) +
+  geom_bar(aes(fill = occurrence)) +
+  labs(title = "Distribution of Taipan Sightings",
+       x = "Occurrence Type",
+       y = "Count") +
+  theme_classic() +
+  theme(legend.position = "none") +
+  coord_flip()
+
+```
+
+The above figure displays the distribution of Taipan sightings categorized into two types: Museum and Wild. It's evident from the figure that a portion of the data is sourced from museums, which means these observations don't represent the natural behavior or occurrence of Taipans in their wild habitats.
+
+For a comprehensive study of the natural behavior or occurrence patterns of Taipans, it's pertinent to focus solely on the "Wild" type data.
+
+```{r}
+taipan_wild <- taipan %>% filter(occurrence =="Wild") # Selecting only wild occurrences of Coastal Taipans
+```
+
+We have observed a total of __`r taipan %>% nrow()` occurrences across Australia__. However, this number has been obtained from the raw data which __will need to be cleaned further__.
+
+<div class="alert alert-block alert-warning">
+Based on the initial data analysis, we will need to perform the following data cleaning operations:
+
+1. Filter the data with valid sighting date for detailed temporal analysis.
+2. Filter the data with valid values of longitude and latitude for detailed spatial analysis.
+</div>
+
 ```{r}
 taipan <- taipan %>% 
   rename(Longitude = decimalLongitude,
@@ -97,10 +172,16 @@ taipan <- taipan %>%
   mutate(eventDate = as.Date(eventDate)) %>%
   filter(!is.na(eventDate)) %>%
   filter(!is.na(Longitude)) %>%
-  filter(!is.na(Latitude))
+  filter(!is.na(Latitude)) %>% select(-c("samplingEffort","samplingProtocol","taxonConceptID","recordID","dataResourceName"))
 save(taipan, file=here::here("data/taipan.rda"))
 
 ```
+
+<div class="alert alert-block alert-success">
+‼️💡
+Upon performing the required data cleaning operation, we have a total of __`r taipan %>% nrow()` wild sightings of Coastal Taipans across Australia__.
+💡‼️
+</div>
 
 
 ## Exploratory data analysis
@@ -113,9 +194,7 @@ Weather data exploration here too.
 
 ```{r}
 
-library(ggplot2)
-library(ggmap)
-library(maps)
+
 
 ```
 
@@ -128,8 +207,8 @@ ggplot() +
   coord_fixed(1.3, xlim = c(110, 155), ylim = c(-45, -10))
 
 ```
+
 ```{r}
-library(leaflet)
 # Assuming your dataset is named `sightings` and has columns `latitude` and `longitude`
 leaflet(data = taipan) %>%
   addTiles() %>%
@@ -139,5 +218,18 @@ leaflet(data = taipan) %>%
 
 
 ## Summary 
+
+### Citations:
+
+1. **Atlas of Living Australia (ALA)** - https://www.ala.org.au/
+2. **The [galah](https://galah.ala.org.au) package** - Westgate M, Kellie D, Stevenson M, Newman P (2023). _galah: Biodiversity Data from the Living Atlas Community_. R package version 1.5.3,
+  <https://CRAN.R-project.org/package=galah>.
+3. __Tidyverse__ - Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G, Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL, Miller E, Bache SM,
+  Müller K, Ooms J, Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo K, Yutani H (2019). “Welcome to the tidyverse.” _Journal of
+  Open Source Software_, *4*(43), 1686. doi:10.21105/joss.01686 <https://doi.org/10.21105/joss.01686>.
+4. __ggplot2__ - H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
+
+By exploring this data, researchers and enthusiasts can gain insights into the behavior, distribution, and occurrence patterns of the Coastal Taipan Snake, which can be useful for a range of ecological, environmental, and conservation studies.
+
 
 ## References
