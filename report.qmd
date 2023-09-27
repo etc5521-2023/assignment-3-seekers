@@ -72,6 +72,8 @@ library(ggplot2)
 library(ggmap)
 library(maps)
 library(leaflet)
+library(ggpubr)
+library(ggthemes)
 ```
 
 
@@ -220,6 +222,45 @@ Weather data exploration here too.
 -->
 
 
+### When are the Coastal Taipans most likely to be observed ?
+
+```{r}
+#| label: fig-sightnum
+#| fig-cap: "Monthly number of Coastal Taipan sightings in Australia"
+taipan_grouped <- taipan %>% group_by(month(eventDate,label=TRUE)) %>% summarise(sightings = n())
+
+taipan_grouped <- taipan_grouped %>% rename("month" = `month(eventDate, label = TRUE)`)
+
+
+
+ggdotchart(taipan_grouped, y = "sightings", 
+           x = "month",
+           color = "sightings",                       
+           add = "segments",
+           add.params = list(color = "lightgray", size = 2),                             
+           dot.size = 8,
+           rotate=FALSE,
+           label = "sightings",
+           group = "month",                                
+           font.label = list(color = "white", size = 8, 
+                             vjust = 0, face = 'bold'),               
+           ggtheme = theme_economist()                        
+           ) + theme(legend.position = "none",panel.background = element_rect(fill = 'cornsilk'),axis.text = element_text(face = "bold"),axis.text.x = element_text(angle=45,vjust = 1)) +
+  geom_hline(yintercept = 0, linetype = 2, color = "lightgray") + labs(y = "Number of sightings", 
+                                                                       x= "Month of sighting",
+                                                                       caption = "Source: ALA") + ggtitle("Total number of \n Coastal Taipan sightings in Australia") 
+```
+
+
+
+
+
+
+
+
+
+
+
 ```{r}
 australia_map <- map_data("world", region = "Australia")
 ggplot() + 
@@ -239,6 +280,9 @@ leaflet(data = taipan) %>%
                                                               "Longitude:",taipan$Longitude,"<br>"), radius = 50, color = "red")
 
 ```
+
+
+
 
 
 ## Summary 
