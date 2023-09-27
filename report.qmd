@@ -10,7 +10,7 @@ execute:
 ---
 
 
-## Introduction
+## Introduction {#sec-ref1}
 
 The Taipan class of reptiles are indigenous to the land mass of Australia as well as Papua New Guinea, and are considered to be one of the deadliest snakes on the planet. The Taipan, scientifically known as the Oxyuranus genus, comprises several species, with the Coastal Taipan (Oxyuranus scutellatus) and the Inland Taipan (Oxyuranus microlepidotus) being the most renowned. These reptiles are highly venomous and belong to the elapid family, which includes other infamous snakes like the king cobra and the black mamba. According to @markwell2016killer, what sets the taipan apart, however, is its reputation as having the __most toxic venom of any snake in the world !__
 
@@ -250,9 +250,20 @@ ggdotchart(taipan_grouped, y = "sightings",
                                                                        x= "Month of sighting",
                                                                        caption = "Source: ALA") + ggtitle("Total number of \n Coastal Taipan sightings in Australia") 
 ```
+<div class="alert alert-block alert-warning">
 
+💡
+@fig-sightnum illustrates the number of Coastal Taipans reported till date for each month. We can observe that the sightings are __higher between the months of July to December__ when compared to the rest of the year. This can be a result of the prevailing monsoon conditions in Australia which closely corroborates with our assumption stated in @sec-ref1.
 
+Some of the reasons why the Coastal Taipans are observed to be more active are as follows:
 
+1. __Breeding season__: The Coastal Taipans are highly active during the breeding season which closely conincides with the monsoon season in Australia.
+2. __Increased prey availability__: The monsoon season in northern Australia typically brings heavy rainfall, which can lead to flooding in some areas. This flooding forces small mammals, reptiles, and other prey animals out of their burrows and hiding places, making them more accessible to Coastal Taipans. The increased prey availability during the monsoon can lead to an uptick in snake activity as they take advantage of the abundance of food.
+3. __Temperature and humidity__: Reptiles are ectothermic in nature, meaning their body temperature is highly influenced by the environmental temperature. Monsoon season generally brings about warm and humid conditions. These conditions additionally improve the metabolism and mobility in reptiles which allows for higher activity and increased number of Coastal Taipan sightings.
+4. __Migratory behaviour__: Due to increased mobility in the reptiles during the monsoon season, some Coastal Taipans exhibit migrate behaviour for better conditions and availability of prey. Migrations can often lead to human interactions and hence, their consequent sightings.
+
+💡
+</div>
 
 
 
