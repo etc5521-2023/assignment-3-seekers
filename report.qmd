@@ -207,6 +207,53 @@ ggplot(taipan_wild, aes(x = month, fill = month)) +
   theme(legend.position = "none")
 
 ```
+##### code for weather stations
+```{r}
+library(rnoaa)
+aus_stations <- ghcnd_stations() |>
+  filter(str_starts(id, "ASN")) |>
+  filter(last_year >= 2020) |>
+  mutate(wmo_id = as.numeric(wmo_id),
+         name = str_to_lower(name)) |>
+  select(-state, -gsn_flag) |>
+  filter(element %in% c("PRCP", "TMAX", "TMIN")) |>
+  nest(element: last_year) |>
+  rowwise() |>
+  filter(nrow(data) == 3) |>
+  select(-data) 
+```
+```{r}
+library(sf)
+library(dplyr)
+
+# Convert the datasets into spatial objects
+taipan_sf <- st_as_sf(taipan_wild, coords = c("Longitude", "Latitude"), crs = 4326)
+aus_stations_sf <- st_as_sf(aus_stations, coords = c("longitude", "latitude"), crs = 4326)
+
+# Perform the nearest neighbor join
+nearest_stations <- st_nearest_feature(taipan_sf, aus_stations_sf)
+
+# Combine the datasets
+combined_data <- cbind(taipan_wild, aus_stations[nearest_stations, ])
+
+combined_data <- as.data.frame(combined_data)
+unique_id <- unique(combined_data$id)
+```
+
+
+```{r}
+narrogin <- aus_stations |>
+  filter(id %in% c(combined_data$id)) |>
+  rowwise() |>
+  mutate(ts = list(meteo_pull_monitors(
+    monitors = id, var = c("PRCP", "TMAX", "TMIN"),
+    date_min = "2004-01-01",
+    date_max = "2023-09-13") |>
+      select(-id))) |>
+  rename(lat = latitude, long = longitude, elev = elevation) |> select(id, long, lat, elev, name, wmo_id, ts) %>%
+  unnest(ts) |>
+  mutate(tmax = tmax/10, tmin = tmin/ 10)
+```
 
 ```{r}
 australia_map <- map_data("world", region = "Australia")
