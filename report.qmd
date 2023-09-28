@@ -74,6 +74,8 @@ library(maps)
 library(leaflet)
 library(ggpubr)
 library(ggthemes)
+library(lubridate)
+
 ```
 
 
@@ -195,14 +197,14 @@ Based on the initial data analysis, we will need to perform the following data c
 </div>
 
 ```{r}
-taipan <- taipan %>% 
+taipan_wild <- taipan_wild %>% 
   rename(Longitude = decimalLongitude,
          Latitude = decimalLatitude) %>%
   mutate(eventDate = as.Date(eventDate)) %>%
   filter(!is.na(eventDate)) %>%
   filter(!is.na(Longitude)) %>%
   filter(!is.na(Latitude)) %>% select(-c("samplingEffort","samplingProtocol","taxonConceptID","recordID","dataResourceName"))
-save(taipan, file=here::here("data/taipan.rda"))
+save(taipan_wild, file=here::here("data/taipan.rda"))
 
 ```
 
@@ -249,7 +251,73 @@ ggdotchart(taipan_grouped, y = "sightings",
   geom_hline(yintercept = 0, linetype = 2, color = "lightgray") + labs(y = "Number of sightings", 
                                                                        x= "Month of sighting",
                                                                        caption = "Source: ALA") + ggtitle("Total number of \n Coastal Taipan sightings in Australia") 
+
+# Monthly distribution of Taipan sightings
+# Extract the month from the eventDate
+taipan_wild$month <- month(taipan_wild$eventDate, label = TRUE)
+
+ggplot(taipan_wild, aes(x = month, fill = month)) +
+  geom_bar() +
+  labs(title = "Monthly Distribution of Taipan Sightings", 
+       x = "Month", 
+       y = "Number of Sightings") +
+  theme_classic() +
+  theme(legend.position = "none")
+
 ```
+
+
+##### code for weather stations
+```{r}
+library(rnoaa)
+aus_stations <- ghcnd_stations() |>
+  filter(str_starts(id, "ASN")) |>
+  filter(last_year >= 2020) |>
+  mutate(wmo_id = as.numeric(wmo_id),
+         name = str_to_lower(name)) |>
+  select(-state, -gsn_flag) |>
+  filter(element %in% c("PRCP", "TMAX", "TMIN")) |>
+  nest(element: last_year) |>
+  rowwise() |>
+  filter(nrow(data) == 3) |>
+  select(-data) 
+```
+
+```{r}
+library(sf)
+library(dplyr)
+
+# Convert the datasets into spatial objects
+taipan_sf <- st_as_sf(taipan_wild, coords = c("Longitude", "Latitude"), crs = 4326)
+aus_stations_sf <- st_as_sf(aus_stations, coords = c("longitude", "latitude"), crs = 4326)
+
+# Perform the nearest neighbor join
+nearest_stations <- st_nearest_feature(taipan_sf, aus_stations_sf)
+
+# Combine the datasets
+combined_data <- cbind(taipan_wild, aus_stations[nearest_stations, ])
+
+combined_data <- as.data.frame(combined_data)
+unique_id <- unique(combined_data$id)
+```
+
+
+```{r}
+narrogin <- aus_stations |>
+  filter(id %in% c(combined_data$id)) |>
+  rowwise() |>
+  mutate(ts = list(meteo_pull_monitors(
+    monitors = id, var = c("PRCP", "TMAX", "TMIN"),
+    date_min = "2004-01-01",
+    date_max = "2023-09-13") |>
+      select(-id))) |>
+  rename(lat = latitude, long = longitude, elev = elevation) |> select(id, long, lat, elev, name, wmo_id, ts) %>%
+  unnest(ts) |>
+  mutate(tmax = tmax/10, tmin = tmin/ 10)
+
+```
+
+
 <div class="alert alert-block alert-warning">
 
 💡
@@ -276,7 +344,7 @@ Some of the reasons why the Coastal Taipans are observed to be more active are a
 australia_map <- map_data("world", region = "Australia")
 ggplot() + 
   geom_polygon(data = australia_map, aes(x = long, y = lat, group = group), fill = "white", color = "black") +
-  geom_point(data = taipan, aes(x = Longitude, y = Latitude), color = "red") +
+  geom_point(data = taipan, aes(x = decimalLongitude, y = decimalLatitude), color = "red") +
   labs(title = "Animal Sightings in Australia") +
   coord_fixed(1.3, xlim = c(110, 155), ylim = c(-45, -10))
 
@@ -286,7 +354,7 @@ ggplot() +
 # Assuming your dataset is named `sightings` and has columns `latitude` and `longitude`
 leaflet(data = taipan) %>%
   addTiles() %>%
-  addCircles(lng = ~Longitude, lat = ~Latitude, popup = paste("Scientific name:",taipan$scientificName, "<br>",
+  addCircles(lng = ~decimalLongitude, lat = ~decimalLatitude, popup = paste("Scientific name:",taipan$scientificName, "<br>",
                                                               "Latitude:",taipan$Latitude,"<br>",
                                                               "Longitude:",taipan$Longitude,"<br>"), radius = 50, color = "red")
 
