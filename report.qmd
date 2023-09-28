@@ -218,6 +218,94 @@ Upon performing the required data cleaning operation, we have a total of __`r ta
 </div>
 
 
+#### Combining data of sightings with weather data ⛈️
+
+In order to explore the prevailing weather conditions during the sighting, we will need to merge the datasets from two different sources. Here, we will utilise the weather data reported from the various weather stations in Australia by utilising the RNOAA package which is maintained by the National Oceanic and Atmospheric Administration (NOAA). The following code chunk allows us to obtain the weather conditions, namely precipitation (PRCP), maximum temperature (TMAX) and minimum temperature (TMIN). In order to utilise data from active weather stations, we have filtered those data whose last reported conditions were relayed after the year of 2020.
+```{r}
+
+aus_stations <- ghcnd_stations() |>
+  filter(str_starts(id, "ASN")) |>
+  filter(last_year >= 2020) |>
+  mutate(wmo_id = as.numeric(wmo_id),
+         name = str_to_lower(name)) |>
+  select(-state, -gsn_flag) |>
+  filter(element %in% c("PRCP", "TMAX", "TMIN")) |>
+  nest(element: last_year) |>
+  rowwise() |>
+  filter(nrow(data) == 3) |>
+  select(-data) 
+```
+Once we have obtained the weather data, we need to merge the sighting data with the weather conditions. For this purpose, we can utilise the geographical data (latitude and longitude) to merge the closest weather station data with the location of the Coastal Taipan sighting.
+
+<div class="alert alert-block alert-warning">
+‼️
+Since it is difficult to exactly match the latitude and longitude of the sighting to the weather station, hence, we will convert the geographical data into spatial objects and then utilise the nearest feature function to merge the weather conditions of the location of the sighting to the closest weather reporting station. This has been done in the following code chunk.
+‼️
+</div>
+
+```{r}
+
+
+# Convert the datasets into spatial objects
+taipan_sf <- st_as_sf(taipan_wild, coords = c("Longitude", "Latitude"), crs = 4326)
+aus_stations_sf <- st_as_sf(aus_stations, coords = c("longitude", "latitude"), crs = 4326)
+
+# Perform the nearest neighbor join
+nearest_stations <- st_nearest_feature(taipan_sf, aus_stations_sf)
+
+# Combine the datasets
+combined_data <- cbind(taipan_wild, aus_stations[nearest_stations, ])
+
+combined_data <- as.data.frame(combined_data)
+unique_id <- unique(combined_data$id)
+```
+
+
+Once we have successfully mapped the sighting data with each of the weather stations, let us try to observe the most frequent sightings with respect to its closest weather station. 
+
+
+```{r}
+#| label: fig-wstation
+#| fig-cap: "Number of sightings for each weather station"
+combined_count <- combined_data %>% group_by(name) %>% summarise(Count = n())
+top_2 <- c("cooktown airport","townsville aero")
+
+ggplot(combined_count,aes(x = reorder(name,Count),y = Count)) + geom_col() + coord_flip() + theme_classic() + ggtitle("Number of Coastal Taipan sightings \n for each weather station")  + geom_col(data = ~filter(.x, name %in% top_2),fill = "darkred") + geom_label(data = ~filter(.x, name %in% top_2),aes(label = Count),vjust=0.8) +  labs(x = "Weather station name",y = "Number of Coastal Taipan sightings",caption = "Source: National Climatic Data Center and Atlas of Living Australia")
+```
+
+@fig-wstation illustrates the number of Coastal Taipan sightings for each of the weather stations in Australia. Based on the illustration, we will be able to narrow down our search for the location with frequent sightings of the reptile and can drill down our analysis to obtain weather information. 
+
+Here, we observe that the weather stations Cooktown Airport and Townsville Aero have significantly higher number of sightings when compared to the rest of the data. Let us pull the weather information for these weather stations through the below code chunk.
+
+
+```{r}
+narrogin <- aus_stations |>
+  filter(name %in% top_2) |>
+  rowwise() |>
+  mutate(ts = list(meteo_pull_monitors(
+    monitors = id, var = c("PRCP", "TMAX", "TMIN"),
+    date_min = "1950-01-01",
+    date_max = "2023-09-13") |>
+      select(-id))) |>
+  rename(Latitude = latitude, Longitude = longitude, elev = elevation) |> select(id, Longitude, Latitude, elev, name, wmo_id, ts) %>%
+  unnest(ts) |>
+  mutate(tmax = tmax/10, tmin = tmin/ 10)
+
+```
+In the next part, we will create a new variable called `sighting` with values of either 0 or 1 to mark the sighting of the Coastal Taipan. This variable is important because,
+
+<div class="alert alert-block alert-warning">
+the weather data obtained is for all the possible dates which match our time period filter. __This does not necessarily mean that a Coastal Taipan was observed on that particular day__. Hence, upon merging the weather and the sighting dataset, it is __important to distinguish the days (obtained by `eventDate`) which mark the sighting of a Coastal Taipan__. We will be primarily interested to analyse the prevailing weather conditions on these particular days for the choice of our weather stations.
+
+</div>
+
+```{r}
+subset_combined_data <- combined_data %>% filter(name %in% top_2)
+taipan_weather <- right_join(subset_combined_data,narrogin,by = c("id","eventDate"="date"))
+taipan_weather <- taipan_weather %>% mutate(sighting = if_else(!is.na(occurrenceStatus) ,1,0))
+save(taipan_weather, file=here::here("data/taipan_weather_sighting.rda"))
+```
+
 ## Exploratory data analysis
 
 <!--
@@ -275,77 +363,11 @@ Some of the reasons why the Coastal Taipans are observed to be more active are a
 
 
 
-##### code for weather stations
-```{r}
-
-aus_stations <- ghcnd_stations() |>
-  filter(str_starts(id, "ASN")) |>
-  filter(last_year >= 2020) |>
-  mutate(wmo_id = as.numeric(wmo_id),
-         name = str_to_lower(name)) |>
-  select(-state, -gsn_flag) |>
-  filter(element %in% c("PRCP", "TMAX", "TMIN")) |>
-  nest(element: last_year) |>
-  rowwise() |>
-  filter(nrow(data) == 3) |>
-  select(-data) 
-```
-
-
-
-```{r}
-
-
-# Convert the datasets into spatial objects
-taipan_sf <- st_as_sf(taipan_wild, coords = c("Longitude", "Latitude"), crs = 4326)
-aus_stations_sf <- st_as_sf(aus_stations, coords = c("longitude", "latitude"), crs = 4326)
-
-# Perform the nearest neighbor join
-nearest_stations <- st_nearest_feature(taipan_sf, aus_stations_sf)
-
-# Combine the datasets
-combined_data <- cbind(taipan_wild, aus_stations[nearest_stations, ])
-
-combined_data <- as.data.frame(combined_data)
-unique_id <- unique(combined_data$id)
-```
 
 
 
 
-```{r}
-#| label: fig-wstation
-#| fig-cap: "Number of sightings for each weather station"
-combined_count <- combined_data %>% group_by(id) %>% summarise(Count = n())
-top_3 <- c("ASN00031209","ASN00032040","ASN00040856")
 
-ggplot(combined_count,aes(x = reorder(id,Count),y = Count)) + geom_col() + coord_flip() + theme_classic() + ggtitle("Number of Coastal Taipan sightings \n for each weather station")  + geom_col(data = ~filter(.x, id %in% top_3),fill = "darkred") + geom_label(data = ~filter(.x, id %in% top_3),aes(label = Count),vjust=0.8) + labs(x = "Weather station ID",y = "Number of Coastal Taipan sightings",caption = "Source: Atlas of Living Australia (ALA)")
-```
-
-@fig-wstation illustrates the number of Coastal Taipan sightings for each of the weather stations in Australia. Based on the illustration, we will be able to narrow down our search for the location with frequent sightings of the reptile and can drill down our analysis to obtain weather information.
-
-```{r}
-narrogin <- aus_stations |>
-  filter(id %in% unique(combined_count$id)) |>
-  rowwise() |>
-  mutate(ts = list(meteo_pull_monitors(
-    monitors = id, var = c("PRCP", "TMAX", "TMIN"),
-    date_min = "2004-01-01",
-    date_max = "2023-09-13") |>
-      select(-id))) |>
-  rename(Latitude = latitude, Longitude = longitude, elev = elevation) |> select(id, Longitude, Latitude, elev, name, wmo_id, ts) %>%
-  unnest(ts) |>
-  mutate(tmax = tmax/10, tmin = tmin/ 10)
-
-```
-
-
-```{r}
-subset_combined_data <- combined_data %>% filter(id %in% top_3)
-taipan_weather <- full_join(combined_data,narrogin,by = c("id","eventDate"="date"))
-taipan_weather <- taipan_weather %>% mutate(sighting = if_else(!is.na(occurrenceStatus),1,0))
-
-```
 
 
 
