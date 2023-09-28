@@ -291,6 +291,8 @@ aus_stations <- ghcnd_stations() |>
   select(-data) 
 ```
 
+
+
 ```{r}
 
 
@@ -307,11 +309,16 @@ combined_data <- cbind(taipan_wild, aus_stations[nearest_stations, ])
 combined_data <- as.data.frame(combined_data)
 unique_id <- unique(combined_data$id)
 ```
+
+
+
+
 ```{r}
 #| label: fig-wstation
 #| fig-cap: "Number of sightings for each weather station"
 combined_count <- combined_data %>% group_by(id) %>% summarise(Count = n())
 top_3 <- c("ASN00031209","ASN00032040","ASN00040856")
+
 ggplot(combined_count,aes(x = reorder(id,Count),y = Count)) + geom_col() + coord_flip() + theme_classic() + ggtitle("Number of Coastal Taipan sightings \n for each weather station")  + geom_col(data = ~filter(.x, id %in% top_3),fill = "darkred") + geom_label(data = ~filter(.x, id %in% top_3),aes(label = Count),vjust=0.8) + labs(x = "Weather station ID",y = "Number of Coastal Taipan sightings",caption = "Source: Atlas of Living Australia (ALA)")
 ```
 
@@ -319,19 +326,26 @@ ggplot(combined_count,aes(x = reorder(id,Count),y = Count)) + geom_col() + coord
 
 ```{r}
 narrogin <- aus_stations |>
-  filter(id %in% top_3) |>
+  filter(id %in% unique(combined_count$id)) |>
   rowwise() |>
   mutate(ts = list(meteo_pull_monitors(
     monitors = id, var = c("PRCP", "TMAX", "TMIN"),
     date_min = "2004-01-01",
     date_max = "2023-09-13") |>
       select(-id))) |>
-  rename(lat = latitude, long = longitude, elev = elevation) |> select(id, long, lat, elev, name, wmo_id, ts) %>%
+  rename(Latitude = latitude, Longitude = longitude, elev = elevation) |> select(id, Longitude, Latitude, elev, name, wmo_id, ts) %>%
   unnest(ts) |>
   mutate(tmax = tmax/10, tmin = tmin/ 10)
 
 ```
 
+
+```{r}
+subset_combined_data <- combined_data %>% filter(id %in% top_3)
+taipan_weather <- full_join(combined_data,narrogin,by = c("id","eventDate"="date"))
+taipan_weather <- taipan_weather %>% mutate(sighting = if_else(!is.na(occurrenceStatus),1,0))
+
+```
 
 
 
