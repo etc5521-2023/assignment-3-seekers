@@ -369,10 +369,11 @@ Some of the reasons why the Coastal Taipans are observed to be more active are a
 
 
 
-
-
+### Where are the Coastal Taipans most commonly observed in Australia?
 
 ```{r}
+#| label: fig-sightloc
+#| fig-cap: "Regions of Coastal Taipan sightings in Australia"
 # Assuming your dataset is named `sightings` and has columns `latitude` and `longitude`
 leaflet(data = taipan) %>%
   addTiles() %>%
@@ -383,8 +384,16 @@ leaflet(data = taipan) %>%
 ```
 
 
+```{r}
+sourceSightings <- taipan %>% 
+                   group_by(dataResourceName) %>% 
+                   summarise(count = n())
+sourceSightings
+```
 
+@fig-sightloc illustrates that, in alignment with its name, most Coastal Taipan sightings occur in coastal regions. Additionally, considering that a significant portion of the data comes from the "Queensland Museum provider for OZCAM," it's evident that a majority of these sightings are concentrated in the coastal areas of Queensland.
 
+The Coastal Taipan's preference for coastal regions in Australia can be attributed to the habitat, climate, and prey availability in these areas. Coastal regions provide a favorable environment with adequate warmth, humidity, and shelter. These conditions are conducive for the Taipan's survival and reproduction. Additionally, coastal areas offer a rich biodiversity, ensuring ample prey for the snake. The vegetation in these regions, like grasslands and woodlands, offers suitable hiding spots for the snake and its prey, leading to a higher likelihood of the Taipan being found in these areas.
 
 ## Summary 
 
