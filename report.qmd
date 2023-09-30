@@ -395,6 +395,36 @@ sourceSightings
 
 The Coastal Taipan's preference for coastal regions in Australia can be attributed to the habitat, climate, and prey availability in these areas. Coastal regions provide a favorable environment with adequate warmth, humidity, and shelter. These conditions are conducive for the Taipan's survival and reproduction. Additionally, coastal areas offer a rich biodiversity, ensuring ample prey for the snake. The vegetation in these regions, like grasslands and woodlands, offers suitable hiding spots for the snake and its prey, leading to a higher likelihood of the Taipan being found in these areas.
 
+
+### Has there been a rise in the number of Coastal Taipans in Australia over the years?
+
+```{r}
+#| label: fig-trend
+#| fig-cap: "Trend of Coastal Taipan Sightings Over the Years"
+population_count <- taipan_wild %>% 
+  mutate(year = year(eventDate)) %>% 
+  group_by(year) %>% 
+  filter(year != "1915") %>%
+  summarise(count = n())
+
+ggplot(population_count, aes(x = year, y = count)) +
+  geom_line(aes(color = "Yearly Count"), size = 1) +
+  geom_smooth(aes(color = "Trend Line"), method = "loess", se = FALSE, size = 1.5) +
+  labs(title = "Trend of Coastal Taipan Sightings Over the Years",
+       x = "Year",
+       y = "Number of Sightings",
+       color = "Legend") +
+  theme_classic()
+
+```
+@fig-trend demonstrates a noticeable increase in sightings over the years, potentially suggesting a growth in the Coastal Taipan population, indicating they might not be "endangered." However, there are caveats to consider:
+
+_Sightings vs. Population_: The number of sightings does not necessarily equate to the actual population. An increase in sightings could be due to increased human activity in the taipan's habitat or better reporting mechanisms.
+
+_Incomplete Data_: The dataset might not cover all sightings, especially as it has limited data sources or regions.
+
+_External Factors_: Factors like urban development, habitat destruction, or climate change can influence the habitats and distribution of species, which can subsequently influence sighting reports.
+
 ## Summary 
 
 ## Citations:
