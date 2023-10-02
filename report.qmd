@@ -79,6 +79,8 @@ library(rnoaa)
 library(sf)
 library(dplyr)
 library(ggrepel)
+library(broom)
+library(nullabor)
 ```
 
 
@@ -369,7 +371,7 @@ Some of the reasons why the Coastal Taipans are observed to be more active are a
 
 
 
-### Where are the Coastal Taipans most commonly observed in Australia?
+### Where are the Coastal Taipans most commonly observed in Australia? {#sec-ref2}
 
 ```{r}
 #| label: fig-sightloc
@@ -393,8 +395,11 @@ sourceSightings
 
 @fig-sightloc illustrates that, in alignment with its name, most Coastal Taipan sightings occur in coastal regions. Additionally, considering that a significant portion of the data comes from the "Queensland Museum provider for OZCAM," it's evident that a majority of these sightings are concentrated in the coastal areas of Queensland.
 
-The Coastal Taipan's preference for coastal regions in Australia can be attributed to the habitat, climate, and prey availability in these areas. Coastal regions provide a favorable environment with adequate warmth, humidity, and shelter. These conditions are conducive for the Taipan's survival and reproduction. Additionally, coastal areas offer a rich biodiversity, ensuring ample prey for the snake. The vegetation in these regions, like grasslands and woodlands, offers suitable hiding spots for the snake and its prey, leading to a higher likelihood of the Taipan being found in these areas.
+<div class="alert alert-block alert-warning">
 
+💡💡
+The Coastal Taipan's preference for coastal regions in Australia can be attributed to the habitat, climate, and prey availability in these areas. Coastal regions provide a favorable environment with adequate warmth, humidity, and shelter. These conditions are conducive for the Taipan's survival and reproduction. Additionally, coastal areas offer a rich biodiversity, ensuring ample prey for the snake. The vegetation in these regions, like grasslands and woodlands, offers suitable hiding spots for the snake and its prey, leading to a higher likelihood of the Taipan being found in these areas.
+</div>
 
 ### Has there been a rise in the number of Coastal Taipans in Australia over the years?
 
@@ -419,11 +424,44 @@ ggplot(population_count, aes(x = year, y = count)) +
 ```
 @fig-trend demonstrates a noticeable increase in sightings over the years, potentially suggesting a growth in the Coastal Taipan population, indicating they might not be "endangered." However, there are caveats to consider:
 
-_Sightings vs. Population_: The number of sightings does not necessarily equate to the actual population. An increase in sightings could be due to increased human activity in the taipan's habitat or better reporting mechanisms.
+__Sightings vs. Population__: The number of sightings does not necessarily equate to the actual population. An increase in sightings could be due to increased human activity in the taipan's habitat or better reporting mechanisms.
 
-_Incomplete Data_: The dataset might not cover all sightings, especially as it has limited data sources or regions.
+__Incomplete Data__: The dataset might not cover all sightings, especially as it has limited data sources or regions.
 
-_External Factors_: Factors like urban development, habitat destruction, or climate change can influence the habitats and distribution of species, which can subsequently influence sighting reports.
+__External Factors__: Factors like urban development, habitat destruction, or climate change can influence the habitats and distribution of species, which can subsequently influence sighting reports.
+
+
+### Are the Coastal Taipans limited to certain regions of Australia ?
+
+In @sec-ref2, we were able to observe that the Coastal Taipans are observed to be sighted close to the coasts. In this section, we will be focussed on assessing whether the sighting locations of the Coastal Taipans suggest that these reptiles are limited to certain regions of Australia only. The same will be assessed through the generation of a null plot and testing a hypothesis. The hypothesis and the null generating mechanism are as follows:
+
+<div class="alert alert-block alert-warning">
+$H_o$ : Coastal Taipans are not limited to a single region and can be sighted all over Australia
+$H_1$ : Coastal Taipans are limited to certain regions of Australia, particularly in humid and warm conditions
+
+Null generating mechanism: Usage of the "null_permute" function to permute the latitude values of the Coastal Taipan sightings.
+</div>
+
+```{r}
+#| label: fig-nullplot
+#| fig-cap: "Null lineup plot for occurrences of Coastal Taipan sightings"
+set.seed(1232536)
+australia_map <- map_data("world", region = "Australia")
+
+
+# Overlay the soccer pitch as a custom annotation on the scatter plot
+map_null_plot <- ggplot() + geom_polygon(data = australia_map, aes(x = long, y = lat, group = group), fill = "white", color = "black") +
+   geom_point(data = lineup(null_permute("Latitude"),taipan_wild, n = 20),
+                      aes(x = Longitude,y = Latitude),color = "red") + facet_wrap(~.sample) + theme_classic() + theme(
+    legend.position = "none",
+    axis.title = element_blank(),
+    axis.text = element_blank())
+map_null_plot
+```
+Upon analysing the plot null lineup plots in @fig-nullplot, we observed that of the 8 test cases, 7 people were able to recognise the plot 4 as the most unique plot due to the scatter points (sighting locations) being limited to only the coastal regions of Australia. The P-value for the following result is __`r pvisual(7,8,20)[3]`__ which __suggests that the null hypothesis can be rejected__ and we can conclude that there is significant evidence in the data to suggest that Coastal Taipans are __majorly limited to the North-Eastern coast of Australia.__
+
+
+
 
 ## Summary 
 
