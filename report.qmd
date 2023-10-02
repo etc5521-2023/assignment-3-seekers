@@ -485,6 +485,8 @@ rain_plot + scale_fill_brewer(palette = "Set3")
 ```
 Based on our analysis of @fig-rain, we can observe that of the 27 observations, __23 of the sightings took place on days with no recorded precipitation__ while __only 4 sightings took place on days with recorded precipitation__. This suggests that the __precipitation may not have a strong association with the Coastal Taipan sightings__. However, it must also be kept in mind that the current sample of the dataset is too small to generate any strong conclusions from the data and we may require further data to support our analysis. 
 
+#### How are the temperatures during the days of sightings ? ☀️
+
 
 ## Summary 
 
