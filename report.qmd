@@ -380,8 +380,8 @@ Some of the reasons why the Coastal Taipans are observed to be more active are a
 leaflet(data = taipan) %>%
   addTiles() %>%
   addCircles(lng = ~decimalLongitude, lat = ~decimalLatitude, popup = paste("Scientific name:",taipan$scientificName, "<br>",
-                                                              "Latitude:",taipan$Latitude,"<br>",
-                                                              "Longitude:",taipan$Longitude,"<br>"), radius = 50, color = "red")
+                                                              "Latitude:",taipan$decimalLatitude,"<br>",
+                                                              "Longitude:",taipan$decimalLongitude,"<br>"), radius = 50, color = "red")
 
 ```
 
@@ -452,7 +452,7 @@ australia_map <- map_data("world", region = "Australia")
 # Overlay the soccer pitch as a custom annotation on the scatter plot
 map_null_plot <- ggplot() + geom_polygon(data = australia_map, aes(x = long, y = lat, group = group), fill = "white", color = "black") +
    geom_point(data = lineup(null_permute("Latitude"),taipan_wild, n = 20),
-                      aes(x = Longitude,y = Latitude),color = "red") + facet_wrap(~.sample) + theme_classic() + theme(
+                      aes(x = Longitude,y = Latitude),color = "red",alpha = 0.4) + facet_wrap(~.sample) + theme_classic() + theme(
     legend.position = "none",
     axis.title = element_blank(),
     axis.text = element_blank())
@@ -460,7 +460,30 @@ map_null_plot
 ```
 Upon analysing the plot null lineup plots in @fig-nullplot, we observed that of the 8 test cases, 7 people were able to recognise the plot 4 as the most unique plot due to the scatter points (sighting locations) being limited to only the coastal regions of Australia. The P-value for the following result is __`r pvisual(7,8,20)[3]`__ which __suggests that the null hypothesis can be rejected__ and we can conclude that there is significant evidence in the data to suggest that Coastal Taipans are __majorly limited to the North-Eastern coast of Australia.__
 
+### How are the weather conditions like in the areas with Coastal Taipan sightings ? 
 
+
+In this section, we will be interested to find any insights with respect to the weather in the locations with high Coastal Taipan sightings.
+
+#### Does rain play a role in the sightings of the Coastal Taipans ? ⛈️
+
+```{r}
+#| label: fig-rain
+#| fig-cap: "Number of Coastal Taipan sightings on days of observed precipitation"
+taipan_rain <- taipan_weather %>% filter(sighting == 1) %>% mutate(rain = if_else(!is.na(prcp) & prcp> 0,"Rain recorded","No rain recorded"))
+
+taipan_rain_group <-
+  taipan_rain %>% group_by(rain) %>% summarise(Total = n())
+rain_plot <-
+  ggplot(data = taipan_rain_group, aes(
+    x = as.factor(rain),
+    y = Total,
+    fill = factor(rain)
+  )) + geom_col(color='black') + geom_label(aes(label = Total)) + theme_classic() + theme(legend.position = "none") +
+  labs(x = "Rain indication for the day of sighting",y = "Total number of sightings")
+rain_plot + scale_fill_brewer(palette = "Set3")
+```
+Based on our analysis of @fig-rain, we can observe that of the 27 observations, __23 of the sightings took place on days with no recorded precipitation__ while __only 4 sightings took place on days with recorded precipitation__. This suggests that the __precipitation may not have a strong association with the Coastal Taipan sightings__. However, it must also be kept in mind that the current sample of the dataset is too small to generate any strong conclusions from the data and we may require further data to support our analysis. 
 
 
 ## Summary 
