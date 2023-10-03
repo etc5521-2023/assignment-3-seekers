@@ -82,6 +82,7 @@ library(ggrepel)
 library(broom)
 library(nullabor)
 library(ggalt)
+library(kableExtra)
 ```
 
 
@@ -391,7 +392,12 @@ leaflet(data = taipan) %>%
 sourceSightings <- taipan %>% 
                    group_by(dataResourceName) %>% 
                    summarise(count = n())
-sourceSightings
+colnames(sourceSightings) <- c("Data Source", "Number of Sightings")
+
+kable(sourceSightings, format = "html", table.attr = "class='table'") %>% 
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover"), position = "center") %>%
+  column_spec(1, border_right = TRUE) %>%  # Add a line between columns
+  row_spec(0, bold = TRUE, color = "white", background = "lightblue")
 ```
 
 @fig-sightloc illustrates that, in alignment with its name, most Coastal Taipan sightings occur in coastal regions. Additionally, considering that a significant portion of the data comes from the "Queensland Museum provider for OZCAM," it's evident that a majority of these sightings are concentrated in the coastal areas of Queensland.
@@ -570,7 +576,9 @@ Upon analysing the maximum and minimum temperatures on the days of Coastal Taipa
 
 The average maximum and minimum temperatures visualised by the two vertical lines in the plot are 28.1 and 19 degree celsius respectively, suggesting warm conditions.
 </div>
+
 ## Summary 
+Upon analyzing the dataset, it's evident that coastal taipans predominantly inhabit the warm coastal regions of Australia, rather than being widespread across the continent. Their activity peaks during the summer months. Contrary to concerns, these snakes do not appear to be endangered, as there has been a noticeable increase in sightings over the years. Their consistent presence in the same regions also suggests their territorial nature, indicating that they don't frequently migrate to new areas.
 
 ## Citations:
 
