@@ -81,6 +81,7 @@ library(dplyr)
 library(ggrepel)
 library(broom)
 library(nullabor)
+library(ggalt)
 ```
 
 
@@ -487,7 +488,54 @@ Based on our analysis of @fig-rain, we can observe that of the 27 observations, 
 
 #### How are the temperatures during the days of sightings ? ☀️
 
+Let us now explore the minimum and maximum temperatures on the given day of Coastal Taipan sightings and analyse any further insights. 
 
+
+```{r warning=FALSE}
+#| label: fig-temp
+#| fig-cap: "Temperature range on the days of Coastal Taipan sightings"
+taipan_weather1 <- taipan_weather %>% filter(sighting == 1) 
+taipan_weather1 <- taipan_weather1 %>% mutate(observation = 1:nrow(taipan_weather1))
+taipan_weather1$observation <- factor(taipan_weather1$observation)
+pl_temp <- ggplot(taipan_weather1, aes(y = observation)) +
+  geom_dumbbell(aes(x = tmin, xend = tmax),
+                color = "darkgray",
+                size = 1, dot_guide = FALSE, 
+                size_x = 3,  size_xend = 3,
+                colour_xend = "#F69541", colour_x = "#699DC6") +
+    geom_text(aes(x = tmin, label = tmin), hjust = 1.5) +
+  geom_text(aes(x = tmax, label = tmax), hjust = -0.2) +
+  xlim(0,40) + labs(x = "Minimum and maximum temperatures observed (degree Celsius)",
+                                      y = "Coastal Taipan sighting unique observation")  + theme_classic()
+   
+pl_temp + geom_vline(xintercept = mean(taipan_weather1$tmax,na.rm = TRUE),alpha = 0.5,linetype =2,color = 'red') +  
+  geom_vline(xintercept = mean(taipan_weather1$tmin,na.rm = TRUE),alpha = 0.5,linetype =2,color = 'blue') +
+    scale_linetype_manual(values = "Mean Temperature", name = "Line Type") +
+    annotate(
+    "text",
+    x = 35,
+    y = 8,
+    colour = "red",
+    label = paste0("Average maximum temperature:",round(mean(taipan_weather1$tmax,na.rm = TRUE),1)),
+    size = unit(3, "pt") 
+  ) +
+      annotate(
+    "text",
+    x = 5,
+    y = 14,
+    colour = "blue",
+    label = paste0("Average minimum temperature:",round(mean(taipan_weather1$tmin,na.rm = TRUE),1)),
+    size = unit(3, "pt")
+      )
+  
+
+```
+
+<div class="alert alert-block alert-warning">
+Upon analysing the maximum and minimum temperatures on the days of Coastal Taipan sightings as illustrated by @fig-temp, we can observe that the majority of the sightings were recorded on days with relatively higher maximum and minimum temperatures. This suggests that the __mobility of the reptiles are higher during warmer conditions__ leading to higher probability of their sightings. __Higher temperatures also induce lower mobility among the prey of the Taipans to protect themselves from the heat, as a result of which, the reptiles are also on the move to hunt__.
+
+The average maximum and minimum temperatures visualised by the two vertical lines in the plot are 28.1 and 19 degree celsius respectively, suggesting warm conditions.
+</div>
 ## Summary 
 
 ## Citations:
