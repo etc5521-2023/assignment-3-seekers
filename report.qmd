@@ -9,7 +9,10 @@ execute:
   message: false
 ---
 
-
+:::{.callout-note}
+# Motivation
+By exploring the current data and performing a detailed analysis, researchers and enthusiasts can gain insights into the behavior, distribution, and occurrence patterns of the Coastal Taipans in Australia, which can be useful for a range of ecological, environmental, and conservation studies.
+:::
 ## Introduction {#sec-ref1}
 
 The Taipan class of reptiles are indigenous to the land mass of Australia as well as Papua New Guinea, and are considered to be one of the deadliest snakes on the planet. The Taipan, scientifically known as the Oxyuranus genus, comprises several species, with the Coastal Taipan (Oxyuranus scutellatus) and the Inland Taipan (Oxyuranus microlepidotus) being the most renowned. These reptiles are highly venomous and belong to the elapid family, which includes other infamous snakes like the king cobra and the black mamba. According to @markwell2016killer, what sets the taipan apart, however, is its reputation as having the __most toxic venom of any snake in the world !__
@@ -78,7 +81,6 @@ library(lubridate)
 library(rnoaa)
 library(sf)
 library(dplyr)
-library(ggrepel)
 library(broom)
 library(nullabor)
 library(ggalt)
@@ -389,6 +391,8 @@ leaflet(data = taipan) %>%
 
 
 ```{r}
+#| label: tbl-source
+#| tbl-cap: "Number of sightings reported by each data source"
 sourceSightings <- taipan %>% 
                    group_by(dataResourceName) %>% 
                    summarise(count = n())
@@ -400,7 +404,7 @@ kable(sourceSightings, format = "html", table.attr = "class='table'") %>%
   row_spec(0, bold = TRUE, color = "white", background = "lightblue")
 ```
 
-@fig-sightloc illustrates that, in alignment with its name, most Coastal Taipan sightings occur in coastal regions. Additionally, considering that a significant portion of the data comes from the "Queensland Museum provider for OZCAM," it's evident that a majority of these sightings are __concentrated in the coastal areas of Queensland.__ It is also particularly interesting to note that __one sighting observed in the Northern Territory indicating a possibility of migration and future possibilities of higher sightings in this region.__
+@fig-sightloc illustrates that, in alignment with its name, most Coastal Taipan sightings occur in coastal regions. Additionally, considering that a significant portion of the data comes from the "Queensland Museum provider for OZCAM" as observed by @tbl-source, it can be determined that a majority of these sightings are __concentrated in the coastal areas of Queensland.__ It is also particularly interesting to note that __one sighting observed in the Northern Territory indicating a possibility of migration and future possibilities of higher sightings in this region.__
 
 <div class="alert alert-block alert-warning">
 
@@ -412,7 +416,7 @@ The Coastal Taipan's preference for coastal regions in Australia can be attribut
 
 ```{r}
 #| label: fig-trend
-#| fig-cap: "Trend of Coastal Taipan Sightings Over the Years"
+#| fig-cap: "Trend of Coastal Taipan Sightings Over the years of 1915-2020"
 population_count <- taipan_wild %>% 
   mutate(year = year(eventDate)) %>% 
   group_by(year) %>% 
@@ -421,7 +425,7 @@ population_count <- taipan_wild %>%
 
 ggplot(population_count, aes(x = year, y = count)) +
   geom_line(aes(color = "Yearly Count"), linewidth = 1) +
-  geom_smooth(aes(color = "Trend Line"), method = "loess", se = FALSE, size = 1.5) +
+  geom_smooth(aes(color = "Trend Line"), method = "loess", se = FALSE, size = 1.5,linetype = 'dashed') +
   labs(title = "Trend of Coastal Taipan Sightings Over the Years",
        x = "Year",
        y = "Number of Sightings",
@@ -531,7 +535,10 @@ rain_plot <-
   labs(x = "Rain indication for the day of sighting",y = "Total number of sightings")
 rain_plot + scale_fill_brewer(palette = "Set3")
 ```
+:::{.callout-note}
+# Key takeaway
 Based on our analysis of @fig-rain, we can observe that of the 27 observations, __23 of the sightings took place on days with no recorded precipitation__ while __only 4 sightings took place on days with recorded precipitation__. This suggests that the __precipitation may not have a strong association with the Coastal Taipan sightings__. However, it must also be kept in mind that the current sample of the dataset is too small to generate any strong conclusions from the data and we may require further data to support our analysis. 
+:::
 
 #### How are the temperatures during the days of sightings ? ☀️
 
@@ -578,17 +585,34 @@ pl_temp + geom_vline(xintercept = mean(taipan_weather1$tmax,na.rm = TRUE),alpha 
 
 ```
 
-<div class="alert alert-block alert-warning">
+:::{.callout-note}
+# Key takeaway
 Upon analysing the maximum and minimum temperatures on the days of Coastal Taipan sightings as illustrated by @fig-temp, we can observe that the majority of the sightings were recorded on days with relatively higher maximum and minimum temperatures. This suggests that the __mobility of the reptiles are higher during warmer conditions__ leading to higher probability of their sightings. __Higher temperatures also induce lower mobility among the prey of the Taipans to protect themselves from the heat, as a result of which, the reptiles are also on the move to hunt__.
 
 The average maximum and minimum temperatures visualised by the two vertical lines in the plot are 28.1 and 19 degree celsius respectively, suggesting warm conditions.
-</div>
+:::
 
 ## Summary 
 
+
 Based on our detailed analysis of the Coastal Taipans sightigs, following are our key takeaways:
 
-Upon analyzing the dataset, it's evident that coastal taipans predominantly inhabit the warm coastal regions of Australia, rather than being widespread across the continent. Their activity peaks during the summer months. Contrary to concerns, these snakes do not appear to be endangered, as there has been a noticeable increase in sightings over the years. Their consistent presence in the same regions also suggests their territorial nature, indicating that they don't frequently migrate to new areas.
+
+<div class="alert alert-block alert-warning">
+
+💡💡
+1. The spatial analysis suggests that the Coastal Taipans are territorial in nature, thereby inhabiting the coastal regions of Queensland with possibility of migration towards Northern Territory in the future.
+
+2. Based on the frequency of sightings, the Coastal Taipans are not endagered. However, they are extremely reclusive and avoid human contact. Hence, their occurrences and sightings are rare as they are mostly confined to their habitats.
+
+3. While migration of the Coastal Taipans maybe a possibility in the future, based on the data, there is not enough strong evidence to suggest that there has been a significant change in the Coastal Taipan's habitat.
+
+4. Contrary to popular belief, the data does not exhibit a strong evidence to suggest that the sightings of Coastal Taipans are higher on days of recorded precipitation. However, the Coastal Taipans do exhibit higher mobility during the monsoon period resulting in higher sightings.
+
+5. Coastal Taipans appear to be especially active on warm days, possibly due to their increased mobility and metabolism, consequently resulting in higher sightings on these days. 
+
+💡💡
+</div>
 
 ## Citations:
 
@@ -599,8 +623,25 @@ Upon analyzing the dataset, it's evident that coastal taipans predominantly inha
   Müller K, Ooms J, Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo K, Yutani H (2019). “Welcome to the tidyverse.” _Journal of
   Open Source Software_, *4*(43), 1686. doi:10.21105/joss.01686 <https://doi.org/10.21105/joss.01686>.
 4. __ggplot2__ - H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
-
-By exploring this data, researchers and enthusiasts can gain insights into the behavior, distribution, and occurrence patterns of the Coastal Taipan Snake, which can be useful for a range of ecological, environmental, and conservation studies.
-
+5. __rnoaa__ - Chamberlain S, Hocking D (2023). _rnoaa: 'NOAA' Weather Data from R_. R package version 1.4.0, <https://CRAN.R-project.org/package=rnoaa>.
+6. __broom__ - Robinson D, Hayes A, Couch S (2023). _broom: Convert Statistical Objects into Tidy Tibbles_. R package version 1.0.5,
+  <https://CRAN.R-project.org/package=broom>.
+7. __leaflet__ - Cheng J, Schloerke B, Karambelkar B, Xie Y (2023). _leaflet: Create Interactive Web Maps with the JavaScript 'Leaflet' Library_. R package version
+  2.2.0, <https://CRAN.R-project.org/package=leaflet>.
+8. __ggalt__ - Rudis B, Bolker B, Schulz J (2017). _ggalt: Extra Coordinate Systems, 'Geoms', Statistical Transformations, Scales and Fonts for 'ggplot2'_. R package
+  version 0.4.0, <https://CRAN.R-project.org/package=ggalt>.
+9. __ggpubr__ - Kassambara A (2023). _ggpubr: 'ggplot2' Based Publication Ready Plots_. R package version 0.6.0, <https://CRAN.R-project.org/package=ggpubr>.
+10. __kableExtra__ - Zhu H (2021). _kableExtra: Construct Complex Table with 'kable' and Pipe Syntax_. R package version 1.3.4,
+  <https://CRAN.R-project.org/package=kableExtra>.
+11. __nullabor__ -Buja, A., Cook, D., Hofmann, H., Lawrence, M., Lee, E.-K., Swayne, D. F, Wickham, H. (2009) Statistical Inference for Exploratory Data Analysis and
+  Model Diagnostics Royal Society Philosophical Transactions A, 367(1906):4361-4383. URL
+  http://rsta.royalsocietypublishing.org/content/367/1906/4361.article-info
+12. __ggmap__ -  D. Kahle and H. Wickham. ggmap: Spatial Visualization with ggplot2. The R Journal, 5(1), 144-161. URL
+  http://journal.r-project.org/archive/2013-1/kahle-wickham.pdf
+  
+13. __maps__ - Becker OScbRA, Minka ARWRvbRBEbTP, Deckmyn. A (2022). _maps: Draw Geographical Maps_. R package version 3.4.1,
+  <https://CRAN.R-project.org/package=maps>.
+14. __ggthemes__ -Arnold J (2021). _ggthemes: Extra Themes, Scales and Geoms for 'ggplot2'_. R package version 4.2.4, <https://CRAN.R-project.org/package=ggthemes>.
+15. __sf__ - Pebesma, E., & Bivand, R. (2023). Spatial Data Science: With Applications in R. Chapman and Hall/CRC. https://doi.org/10.1201/9780429459016
 
 ## References
