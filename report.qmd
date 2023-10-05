@@ -345,7 +345,7 @@ ggdotchart(taipan_grouped, y = "sightings",
            ) + theme(legend.position = "none",panel.background = element_rect(fill = 'cornsilk'),axis.text = element_text(face = "bold"),axis.text.x = element_text(angle=45,vjust = 1)) +
   geom_hline(yintercept = 0, linetype = 2, color = "lightgray") + labs(y = "Number of sightings", 
                                                                        x= "Month of sighting",
-                                                                       caption = "Source: Atlas of Linving Australia (ALA)") + ggtitle("Total number of \n Coastal Taipan sightings in Australia") 
+                                                                       caption = "Source: Atlas of Linving Australia (ALA)",subtitle = "Time period: 1915-2020") + ggtitle("Total number of \n Coastal Taipan sightings in Australia")  
 
 ```
 
@@ -400,7 +400,7 @@ kable(sourceSightings, format = "html", table.attr = "class='table'") %>%
   row_spec(0, bold = TRUE, color = "white", background = "lightblue")
 ```
 
-@fig-sightloc illustrates that, in alignment with its name, most Coastal Taipan sightings occur in coastal regions. Additionally, considering that a significant portion of the data comes from the "Queensland Museum provider for OZCAM," it's evident that a majority of these sightings are concentrated in the coastal areas of Queensland.
+@fig-sightloc illustrates that, in alignment with its name, most Coastal Taipan sightings occur in coastal regions. Additionally, considering that a significant portion of the data comes from the "Queensland Museum provider for OZCAM," it's evident that a majority of these sightings are __concentrated in the coastal areas of Queensland.__ It is also particularly interesting to note that __one sighting observed in the Northern Territory indicating a possibility of migration and future possibilities of higher sightings in this region.__
 
 <div class="alert alert-block alert-warning">
 
@@ -420,7 +420,7 @@ population_count <- taipan_wild %>%
   summarise(count = n())
 
 ggplot(population_count, aes(x = year, y = count)) +
-  geom_line(aes(color = "Yearly Count"), size = 1) +
+  geom_line(aes(color = "Yearly Count"), linewidth = 1) +
   geom_smooth(aes(color = "Trend Line"), method = "loess", se = FALSE, size = 1.5) +
   labs(title = "Trend of Coastal Taipan Sightings Over the Years",
        x = "Year",
@@ -429,14 +429,16 @@ ggplot(population_count, aes(x = year, y = count)) +
   theme_classic()
 
 ```
-@fig-trend demonstrates a noticeable increase in sightings over the years, potentially suggesting a growth in the Coastal Taipan population, indicating they might not be "endangered." However, there are caveats to consider:
+@fig-trend demonstrates a noticeable increase in sightings over the years, potentially suggesting a growth in the Coastal Taipan population, indicating they __might not be "endangered".__ However, there are caveats to consider.
 
+:::{.callout-warning}
+# Caveats
 __Sightings vs. Population__: The number of sightings does not necessarily equate to the actual population. An increase in sightings could be due to increased human activity in the taipan's habitat or better reporting mechanisms.
 
 __Incomplete Data__: The dataset might not cover all sightings, especially as it has limited data sources or regions.
 
 __External Factors__: Factors like urban development, habitat destruction, or climate change can influence the habitats and distribution of species, which can subsequently influence sighting reports.
-
+:::
 
 ### Are the Coastal Taipans limited to certain regions of Australia ?
 
@@ -465,18 +467,20 @@ map_null_plot <- ggplot() + geom_polygon(data = australia_map, aes(x = long, y =
     axis.text = element_blank())
 map_null_plot
 ```
-Upon analysing the plot null lineup plots in @fig-nullplot, we observed that of the 8 test cases, 7 people were able to recognise the plot 4 as the most unique plot due to the scatter points (sighting locations) being limited to only the coastal regions of Australia. The P-value for the following result is __`r pvisual(7,8,20)[3]`__ which __suggests that the null hypothesis can be rejected__ and we can conclude that there is significant evidence in the data to suggest that Coastal Taipans are __majorly limited to the North-Eastern coast of Australia.__
-
+:::{.callout-note}
+# Key takeaway
+Upon analysing the plot null lineup plots in @fig-nullplot, we observed that of the 8 test cases, __7 people were able to recognise the plot 4 as the most unique plot__ due to the scatter points (sighting locations) being limited to only the coastal regions of Australia. The P-value for the following result is __`r pvisual(7,8,20)[3]`__ which __suggests that the null hypothesis can be rejected__ and we can conclude that there is significant evidence in the data to suggest that Coastal Taipans are __majorly limited to the North-Eastern coast of Australia.__
+:::
 
 ### Has the geographical distribution of Coastal Taipans remained consistent over the years?
 
 Snakes are typically reclusive and territorial. Given this characteristic, it's intriguing to consider whether coastal taipans exhibit similar behavior. Specifically, it's of interest to determine if coastal taipans remain in their established habitats due to their inherent nature or external factors or if there are distinct regions they consistently inhabit. This investigation will be facilitated by generating a null plot and conducting hypothesis testing. The pertinent hypotheses and the mechanism for generating the null distribution are outlined as follows:
 
 <div class="alert alert-block alert-warning">
-$H0$: The geographical distribution of Coastal Taipan sightings has remained consistent over the years, with no significant difference in distribution between the periods pre-2000s and post-2000s.
-$Ha$: The geographical distribution of Coastal Taipan sightings has changed between the periods pre-2000s and post-2000s.
+$H_o$: The geographical distribution of Coastal Taipan sightings has remained consistent over the years, with no significant difference in distribution between the periods pre-2000s and post-2000s.
+$H_1$: The geographical distribution of Coastal Taipan sightings has changed between the periods pre-2000s and post-2000s.
 
-Null generating mechanism: Usage of the "null_permute" function to permute the eventDate values of the Coastal Taipan sightings.
+Null generating mechanism: Usage of the "null_permute" function to permute the eventCategory (Pre or Post 2000s categorisation) values of the Coastal Taipan sightings.
 </div>
 
 ```{r}
@@ -499,8 +503,11 @@ ggplot(lineup(null_permute('eventCategory'), taipan_wild), aes(x = Longitude, y=
 
 
 ```
-Upon analysing the plot null lineup plots in @fig-lineup, we observed that of the 8 test cases, only 2 people were able to recognise the plot 19 as the most unique plot due to the scatter points being limited to only the coastal regions of Australia. The P-value for the following result is __`r pvisual(2,8,20)[3]`__ which __suggests that the null hypothesis cannot be rejected__ and we can conclude that there is significant evidence in the data to suggest that Coastal Taipans are __consistently sighted in the same regions in Australia over the years.__
 
+:::{.callout- note}
+# Key takeaway
+Upon analysing the plot null lineup plots in @fig-lineup, we observed that of the 8 test cases, __only 2 people were able to recognise the plot 19 as the most unique plot due to the scatter points being limited to only the coastal regions of Australia.__ The P-value for the following result is __`r pvisual(2,8,20)[3]`__ which __suggests that the null hypothesis cannot be rejected__ and we can conclude that there is significant evidence in the data to suggest that Coastal Taipans are __consistently sighted in the same regions in Australia over the years.__
+:::
 
 ### How are the weather conditions like in the areas with Coastal Taipan sightings ? 
 
@@ -578,6 +585,9 @@ The average maximum and minimum temperatures visualised by the two vertical line
 </div>
 
 ## Summary 
+
+Based on our detailed analysis of the Coastal Taipans sightigs, following are our key takeaways:
+
 Upon analyzing the dataset, it's evident that coastal taipans predominantly inhabit the warm coastal regions of Australia, rather than being widespread across the continent. Their activity peaks during the summer months. Contrary to concerns, these snakes do not appear to be endangered, as there has been a noticeable increase in sightings over the years. Their consistent presence in the same regions also suggests their territorial nature, indicating that they don't frequently migrate to new areas.
 
 ## Citations:
