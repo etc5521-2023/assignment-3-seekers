@@ -89,6 +89,8 @@ library(broom)
 library(nullabor)
 library(ggalt)
 library(kableExtra)
+library(plotly)
+library(DT)
 ```
 
 
@@ -104,7 +106,7 @@ save(taipan, file=here::here("data-raw/taipan_raw.rda"))
 ```
 
 ```{r}
-glimpse(taipan)
+taipan %>% head() %>% DT::datatable()
 ```
 
 ### Description of the Variables in the Dataset
@@ -113,8 +115,8 @@ The dataset contains data on observations of the Coastal Taipans (*Oxyuranus scu
 
 | Variable Name    | Data Type | Description |
 |------------------|-----------|-------------|
-| Latitude         | dbl       | The latitude coordinate of the observation location. |
-| Longitude        | dbl       | The longitude coordinate of the observation location. |
+| decimalLatitude  | dbl       | The latitude coordinate of the observation location. |
+| decimalLongitude | dbl       | The longitude coordinate of the observation location. |
 | eventDate        | date      | The date when the observation was made. |
 | scientificName   | chr       | The scientific name of the observed species. In this dataset, it's *Oxyuranus scutellatus scutellatus*. |
 | taxonConceptID   | chr       | A unique URL that provides information about the taxonomic concept for the species. |
@@ -124,6 +126,8 @@ The dataset contains data on observations of the Coastal Taipans (*Oxyuranus scu
 | eventRemarks     | chr       | Special remarks related to the event sighting. |
 | eventTime        | datetime  | Time of the event sighting. |
 | eventID          | chr       | A unique ID for each event observation. |
+| samplingEffort   | chr       | An variable to indicate the sampling technique used. |
+| samplingProtocol | chr       | A remark for the type of sighting. |
 
 
 ## Initial data analysis
@@ -151,12 +155,6 @@ The weather station data to study impact of weather conditions on sightings was 
 - **Date Consistency:** Ensure that the event dates fall within expected ranges and are formatted correctly.
 
 
-
-<!--
-3. Perform a data quality check, and then go ahead and clean the data, saving only the wild sightings. Save the resulting data in a `data` folder as an `WILD_THING_COMMON_NAME.rda` file, so that any special variable types are clearly available. (Replace `WILD_THING_COMMON_NAME` with lower case common name of your assigned wild thing.) *Note:* Some are museum or historical records or live in an animal sanctuary or zoo, which do not truly capture their wild behaviour. Downloading the event information (`galah_select(group = "event")`) can help identify wild sightings.
-
-Weather data pre-processing here too.
--->
 ### Data Quality Check
 
 ```{r}
@@ -169,8 +167,8 @@ The `vis_miss()` function from the "visdat" package provides a visual representa
 The plot illustrated in @fig-vismiss indicates __that about half of the total dataset has missing values__. These missing values can be observed majorly in the variables of eventRemarks,eventTime and eventID. In order to improve the quality of the overall data, we will consider either transforming these variables or removing them as a part of feature selection in the following sections.
 
 ```{r}
-#| label: fig-fivenum
-#| fig-cap: "Representation of five number summary of values in the dataset"
+#| label: tbl-fivenum
+#| tbl-cap: "Representation of five number summary of values in the dataset"
 lat_summary <- taipan$decimalLatitude %>% fivenum()
 long_summary <- taipan$decimalLongitude %>% fivenum()
 
@@ -178,14 +176,17 @@ summary_table <- tibble(
   Statistic = c("Minimum", "1st Quartile", "Median", "3rd Quartile", "Maximum"),
   Latitude = lat_summary,
   Longitude = long_summary
-)
+) 
 
-print(summary_table)
+kable(summary_table, format = "html", table.attr = "class='table'") %>% 
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover"), position = "center") %>%
+  column_spec(1, border_right = TRUE) %>%  # Add a line between columns
+  row_spec(0, bold = TRUE, color = "white", background = "lightblue")
 
 ```
 The `fivenum()` function in R provides a summary of five-number statistics: the minimum, lower-hinge (25th percentile or first quartile), median (50th percentile), upper-hinge (75th percentile or third quartile), and the maximum.
 
-By analyzing these statistics in @fig-fivenum, we can get an overview of the distribution of latitudes and longitudes in the dataset. 
+By analyzing these statistics in @tbl-fivenum, we can get an overview of the distribution of latitudes and longitudes in the dataset. __The five number summary of the latitude and longitude values further allows us to validate the values with each latitude and longitude observation being within the maximum and minimum possible limits.__
 
 ### Data transformation and feature selection
 
@@ -445,7 +446,7 @@ population_count <- taipan_wild %>%
   filter(year != "1915") %>%
   summarise(count = n())
 
-ggplot(population_count, aes(x = year, y = count)) +
+trend <- ggplot(population_count, aes(x = year, y = count)) +
   geom_line(aes(color = "Yearly Count"), linewidth = 1) +
   geom_smooth(aes(color = "Trend Line"), method = "loess", se = FALSE, size = 1.5,linetype = 'dashed') +
   labs(title = "Trend of Coastal Taipan Sightings Over the Years",
@@ -453,6 +454,7 @@ ggplot(population_count, aes(x = year, y = count)) +
        y = "Number of Sightings",
        color = "Legend") +
   theme_classic()
+ggplotly(trend)
 
 ```
 @fig-trend demonstrates a noticeable increase in sightings over the years, potentially suggesting a growth in the Coastal Taipan population, indicating they __might not be "endangered".__ However, there are caveats to consider.
@@ -617,7 +619,7 @@ The average maximum and minimum temperatures visualised by the two vertical line
 ## Summary 
 
 
-Based on our detailed analysis of the Coastal Taipans sightigs, following are our key takeaways:
+Based on our detailed analysis of the Coastal Taipan sightings, following are our key takeaways:
 
 
 <div class="alert alert-block alert-warning">
@@ -639,7 +641,7 @@ Based on our detailed analysis of the Coastal Taipans sightigs, following are ou
 
 ## Citations:
 
-1. **Atlas of Living Australia (ALA)** - https://www.ala.org.au/
+1. **Atlas of Living Australia (ALA)** - Belbin L, Wallis E, Hobern D, Zerger A (2021) The Atlas of Living Australia: History, current state and future directions. Biodiversity Data Journal 9: e65023. https://doi.org/10.3897/BDJ.9.e65023. 
 2. **The [galah](https://galah.ala.org.au) package** - Westgate M, Kellie D, Stevenson M, Newman P (2023). _galah: Biodiversity Data from the Living Atlas Community_. R package version 1.5.3,
   <https://CRAN.R-project.org/package=galah>.
 3. __Tidyverse__ - Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G, Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL, Miller E, Bache SM,
@@ -666,5 +668,6 @@ Based on our detailed analysis of the Coastal Taipans sightigs, following are ou
   <https://CRAN.R-project.org/package=maps>.
 14. __ggthemes__ -Arnold J (2021). _ggthemes: Extra Themes, Scales and Geoms for 'ggplot2'_. R package version 4.2.4, <https://CRAN.R-project.org/package=ggthemes>.
 15. __sf__ - Pebesma, E., & Bivand, R. (2023). Spatial Data Science: With Applications in R. Chapman and Hall/CRC. https://doi.org/10.1201/9780429459016
+16. __R Studio__ - Integrated Development for R. RStudio, PBC, Boston, MA URL http://www.rstudio.com/.
+17. __plotly__ - C. Sievert. Interactive Web-Based Data Visualization with R, plotly, and shiny. Chapman and Hall/CRC Florida, 2020.
 
-## References
