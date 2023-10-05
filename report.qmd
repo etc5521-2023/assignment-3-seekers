@@ -25,7 +25,11 @@ Characterized by its slender body, shiny scales, and formidable fangs, the Taipa
 
 While the Coastal Taipans are not classified as endangered species, however, with rapid human activities such as urbanisation and encroachment of wildlife area for agricultural purposes, the habitat of these reptiles have been increasingly affected as a result of which, steps have been taken by wild life conservationists to preserve their natural habitats to the best extent possible.
 
+### Data source:
 
+- The data was sourced from the [Atlas of Living Australia (ALA)](https://www.ala.org.au/) using the `galah` R package.
+
+- The weather station data to study impact of weather conditions on sightings was sourced from [National Climatic Data Centre (NCDC)](https://www.ncdc.noaa.gov/cdo-web/datasets) using `rnoaa` package in R.
 
 :::{.callout-note}
 # Key assumptions
@@ -36,8 +40,8 @@ Based on the literature surveys for the Coastal Taipan, here are our assumptions
 1. Based on the information from the [Australia Museum](https://australian.museum/learn/animals/reptiles/coastal-taipan/), the Coastal Taipans are __active throughout the year__ but are observed to be most __commonly encountered during late winter to spring (August to December of a calendar year)__.
 2. As can be inferred from its colloquial name, the Coastal Taipans are often observed __in the coastal regions of Australia.__ 
 3. Based on a study by [Billabong Sanctuary](https://www.billabongsanctuary.com.au/coastal-taipan/#:~:text=Coastal%20taipans%20are%20common%20in,animals%20like%20rats%20and%20mice.), the Coastal Taipans are __not endangered and have probably increased in numbers__ due to the growth in the number of rats (who are the primary prey) in areas close to the human settlements.
-4. The Coastal Taipans __thrive in the areas of monsoon wetlands and savannas with a humid weather__.
-5. Coastal Taipans depend primarily on their venom as their defensive mechanism and consider human interactions as an act of aggression. Consequently, the number of sightings across Australia can be __considered to be limited to certain regions and in small numbers__.  
+4. Coastal Taipans depend primarily on their venom as their defensive mechanism and consider human interactions as an act of aggression. Consequently, the number of sightings across Australia can be __considered to be limited to certain regions and in small numbers__.
+5. The Coastal Taipans, like any other snakes are __territorial in nature and do not migrate from their region over the years__.
 :::
 
 Although we will attempt to accurately analyse the data by obtaining it from reliable repositories, however, it is important to consider the limitations of the dataset while making critical conclusions based on the data in hand. Some of the limitations of the current dataset are delineated as follows:
@@ -128,6 +132,8 @@ The dataset contains data on observations of the Coastal Taipans (*Oxyuranus scu
 
 **Data Source:** The data was sourced from the [Atlas of Living Australia (ALA)](https://www.ala.org.au/) using the `galah` R package.
 
+The weather station data to study impact of weather conditions on sightings was sourced from [National Climatic Data Centre (NCDC)](https://www.ncdc.noaa.gov/cdo-web/datasets) using `rnoaa` package in R.
+
 ### Data Cleaning
 
 **Data Cleaning Steps:**
@@ -139,13 +145,10 @@ The dataset contains data on observations of the Coastal Taipans (*Oxyuranus scu
 
 **Methods to Check and Clean Data:**
 
-- **Validity Checks:** Ensure that the latitude and longitude values are within valid ranges. For latitude (-90 to 90) and for longitude (-180 to 180).
+- **Validity Checks and outlier analysis:** Ensure that the latitude and longitude values are within valid ranges. For latitude (-90 to 90) and for longitude (-180 to 180). This would help detect any unusual or erroneous data points.
 - **Consistency Checks:** Make sure there aren't any discrepancies in the way data is represented across rows.
 - **Missing Value Analysis:** Any missing values should be analyzed to understand the reason behind them.
-- **Outlier Analysis:** Especially for numeric fields like latitude and longitude, outlier detection can help spot any unusual or erroneous data points.
 - **Date Consistency:** Ensure that the event dates fall within expected ranges and are formatted correctly.
-
-
 
 
 
@@ -164,6 +167,25 @@ vis_miss(taipan)
 The `vis_miss()` function from the "visdat" package provides a visual representation of missing data in the dataset.
 
 The plot illustrated in @fig-vismiss indicates __that about half of the total dataset has missing values__. These missing values can be observed majorly in the variables of eventRemarks,eventTime and eventID. In order to improve the quality of the overall data, we will consider either transforming these variables or removing them as a part of feature selection in the following sections.
+
+```{r}
+#| label: fig-fivenum
+#| fig-cap: "Representation of five number summary of values in the dataset"
+lat_summary <- taipan$decimalLatitude %>% fivenum()
+long_summary <- taipan$decimalLongitude %>% fivenum()
+
+summary_table <- tibble(
+  Statistic = c("Minimum", "1st Quartile", "Median", "3rd Quartile", "Maximum"),
+  Latitude = lat_summary,
+  Longitude = long_summary
+)
+
+print(summary_table)
+
+```
+The `fivenum()` function in R provides a summary of five-number statistics: the minimum, lower-hinge (25th percentile or first quartile), median (50th percentile), upper-hinge (75th percentile or third quartile), and the maximum.
+
+By analyzing these statistics in @fig-fivenum, we can get an overview of the distribution of latitudes and longitudes in the dataset. 
 
 ### Data transformation and feature selection
 
