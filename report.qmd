@@ -17,7 +17,7 @@ By exploring the current data and performing a detailed analysis, researchers an
 
 The Taipan class of reptiles are indigenous to the land mass of Australia as well as Papua New Guinea, and are considered to be one of the deadliest snakes on the planet. The Taipan, scientifically known as the Oxyuranus genus, comprises several species, with the Coastal Taipan (Oxyuranus scutellatus) and the Inland Taipan (Oxyuranus microlepidotus) being the most renowned. These reptiles are highly venomous and belong to the elapid family, which includes other infamous snakes like the king cobra and the black mamba. According to @markwell2016killer, what sets the taipan apart, however, is its reputation as having the __most toxic venom of any snake in the world !__
 
-In our current analysis, we will be focusing on the occurrences of Coastal Taipan across the various states of Australia. The coastal Taipan which has been scientifically named as Oxyuranus scutellatus, is commonly found in the northern regions of Australia and is renowned for its agility and speed. It primarily feeds on small mammals, birds, and occasionally reptiles, using its potent venom to immobilize its prey swiftly. 
+In our current analysis, we will be focusing on the occurrences of a specific subspecies of the Coastal Taipan across the various states of Australia. The subgroup of the Coastal Taipans which has been scientifically named as Oxyuranus Scutellatus Scutellatus, is commonly found in the northern regions of Australia and is renowned for its agility and speed. It primarily feeds on small mammals, birds, and occasionally reptiles, using its potent venom to immobilize its prey swiftly. 
 
 ![The coastal taipan (Oxyuranus scutellatus)](taipan.jpg){#fig-taipan}
 
