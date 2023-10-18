@@ -639,6 +639,35 @@ Based on our detailed analysis of the Coastal Taipan sightings, following are ou
 💡💡
 </div>
 
+
+# part b
+```{r}
+#download the tourism data
+load("data/tourism.rda")
+glimpse(tourism)
+```
+
+```{r}
+#subset the tourism data to align with the sighting
+region_summary <- tourism %>% 
+  filter(grepl("Townsville", Region)) %>% 
+  group_by(Region) %>% 
+  summarize(sum = sum(Trips))
+region_summary
+```
+
+- The **Townsville City - North Ward** region is the prime candidate for in-depth analysis due to its remarkable lead in the sum of trips, a crucial metric. This data-centric choice prioritizes regions of particular interest for further analysis and significance within the broader analysis. The notably higher number of trips in this region suggests its pivotal role as a major tourism hub as compared to other parts of our study. Focusing on this region is strategic for uncovering valuable insights and patterns of sightings for Australia's Deadly Serpent(The Enigmatic Coastal Taipan). 
+
+
+
+
+
+
+
+
+
+
+
 ## Citations:
 
 1. **Atlas of Living Australia (ALA)** - Belbin L, Wallis E, Hobern D, Zerger A (2021) The Atlas of Living Australia: History, current state and future directions. Biodiversity Data Journal 9: e65023. https://doi.org/10.3897/BDJ.9.e65023. 
