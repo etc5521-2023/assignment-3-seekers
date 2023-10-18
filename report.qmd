@@ -7,69 +7,148 @@ number-sections: true
 execute: 
   warning: false
   message: false
+editor: 
+  markdown: 
+    wrap: 72
 ---
 
-:::{.callout-note}
+::: callout-note
 # Motivation
-By exploring the current data and performing a detailed analysis, researchers and enthusiasts can gain insights into the behavior, distribution, and occurrence patterns of the Coastal Taipans in Australia, which can be useful for a range of ecological, environmental, and conservation studies.
+
+By exploring the current data and performing a detailed analysis,
+researchers and enthusiasts can gain insights into the behavior,
+distribution, and occurrence patterns of the Coastal Taipans in
+Australia, which can be useful for a range of ecological, environmental,
+and conservation studies.
 :::
+
 ## Introduction {#sec-ref1}
 
-The Taipan class of reptiles are indigenous to the land mass of Australia as well as Papua New Guinea, and are considered to be one of the deadliest snakes on the planet. The Taipan, scientifically known as the Oxyuranus genus, comprises several species, with the Coastal Taipan (Oxyuranus scutellatus) and the Inland Taipan (Oxyuranus microlepidotus) being the most renowned. These reptiles are highly venomous and belong to the elapid family, which includes other infamous snakes like the king cobra and the black mamba. According to @markwell2016killer, what sets the taipan apart, however, is its reputation as having the __most toxic venom of any snake in the world !__
+The Taipan class of reptiles are indigenous to the land mass of
+Australia as well as Papua New Guinea, and are considered to be one of
+the deadliest snakes on the planet. The Taipan, scientifically known as
+the Oxyuranus genus, comprises several species, with the Coastal Taipan
+(Oxyuranus scutellatus) and the Inland Taipan (Oxyuranus microlepidotus)
+being the most renowned. These reptiles are highly venomous and belong
+to the elapid family, which includes other infamous snakes like the king
+cobra and the black mamba. According to @markwell2016killer, what sets
+the taipan apart, however, is its reputation as having the **most toxic
+venom of any snake in the world !**
 
-In our current analysis, we will be focusing on the occurrences of a specific subspecies of the Coastal Taipan across the various states of Australia. The subgroup of the Coastal Taipans which has been scientifically named as Oxyuranus Scutellatus Scutellatus, is commonly found in the northern regions of Australia and is renowned for its agility and speed. It primarily feeds on small mammals, birds, and occasionally reptiles, using its potent venom to immobilize its prey swiftly. 
+In our current analysis, we will be focusing on the occurrences of a
+specific subspecies of the Coastal Taipan across the various states of
+Australia. The subgroup of the Coastal Taipans which has been
+scientifically named as Oxyuranus Scutellatus Scutellatus, is commonly
+found in the northern regions of Australia and is renowned for its
+agility and speed. It primarily feeds on small mammals, birds, and
+occasionally reptiles, using its potent venom to immobilize its prey
+swiftly.
 
 ![The coastal taipan (Oxyuranus scutellatus)](taipan.jpg){#fig-taipan}
 
-Characterized by its slender body, shiny scales, and formidable fangs, the Taipan is a formidable predator. Despite its fearsome reputation, these snakes are generally reclusive and rarely encountered by humans. They prefer to inhabit coastal regions, woodlands, and savannas, blending seamlessly into their natural surroundings as can be observed in @fig-taipan.
+Characterized by its slender body, shiny scales, and formidable fangs,
+the Taipan is a formidable predator. Despite its fearsome reputation,
+these snakes are generally reclusive and rarely encountered by humans.
+They prefer to inhabit coastal regions, woodlands, and savannas,
+blending seamlessly into their natural surroundings as can be observed
+in @fig-taipan.
 
-While the Coastal Taipans are not classified as endangered species, however, with rapid human activities such as urbanisation and encroachment of wildlife area for agricultural purposes, the habitat of these reptiles have been increasingly affected as a result of which, steps have been taken by wild life conservationists to preserve their natural habitats to the best extent possible.
+While the Coastal Taipans are not classified as endangered species,
+however, with rapid human activities such as urbanisation and
+encroachment of wildlife area for agricultural purposes, the habitat of
+these reptiles have been increasingly affected as a result of which,
+steps have been taken by wild life conservationists to preserve their
+natural habitats to the best extent possible.
 
 ### Data source:
 
-- The data was sourced from the [Atlas of Living Australia (ALA)](https://www.ala.org.au/) using the `galah` R package.
+-   The data was sourced from the [Atlas of Living Australia
+    (ALA)](https://www.ala.org.au/) using the `galah` R package.
 
-- The weather station data to study impact of weather conditions on sightings was sourced from [National Climatic Data Centre (NCDC)](https://www.ncdc.noaa.gov/cdo-web/datasets) using `rnoaa` package in R.
+-   The weather station data to study impact of weather conditions on
+    sightings was sourced from [National Climatic Data Centre
+    (NCDC)](https://www.ncdc.noaa.gov/cdo-web/datasets) using `rnoaa`
+    package in R.
 
-:::{.callout-note}
+::: callout-note
 # Key assumptions
 
-Based on the literature surveys for the Coastal Taipan, here are our assumptions while moving forward with our analysis:
+Based on the literature surveys for the Coastal Taipan, here are our
+assumptions while moving forward with our analysis:
 
-
-1. Based on the information from the [Australia Museum](https://australian.museum/learn/animals/reptiles/coastal-taipan/), the Coastal Taipans are __active throughout the year__ but are observed to be most __commonly encountered during late winter to spring (August to December of a calendar year)__.
-2. As can be inferred from its colloquial name, the Coastal Taipans are often observed __in the coastal regions of Australia.__ 
-3. Based on a study by [Billabong Sanctuary](https://www.billabongsanctuary.com.au/coastal-taipan/#:~:text=Coastal%20taipans%20are%20common%20in,animals%20like%20rats%20and%20mice.), the Coastal Taipans are __not endangered and have probably increased in numbers__ due to the growth in the number of rats (who are the primary prey) in areas close to the human settlements.
-4. Coastal Taipans depend primarily on their venom as their defensive mechanism and consider human interactions as an act of aggression. Consequently, the number of sightings across Australia can be __considered to be limited to certain regions and in small numbers__.
-5. The Coastal Taipans, like any other snakes are __territorial in nature and do not migrate from their region over the years__.
+1.  Based on the information from the [Australia
+    Museum](https://australian.museum/learn/animals/reptiles/coastal-taipan/),
+    the Coastal Taipans are **active throughout the year** but are
+    observed to be most **commonly encountered during late winter to
+    spring (August to December of a calendar year)**.
+2.  As can be inferred from its colloquial name, the Coastal Taipans are
+    often observed **in the coastal regions of Australia.**
+3.  Based on a study by [Billabong
+    Sanctuary](https://www.billabongsanctuary.com.au/coastal-taipan/#:~:text=Coastal%20taipans%20are%20common%20in,animals%20like%20rats%20and%20mice.),
+    the Coastal Taipans are **not endangered and have probably increased
+    in numbers** due to the growth in the number of rats (who are the
+    primary prey) in areas close to the human settlements.
+4.  Coastal Taipans depend primarily on their venom as their defensive
+    mechanism and consider human interactions as an act of aggression.
+    Consequently, the number of sightings across Australia can be
+    **considered to be limited to certain regions and in small
+    numbers**.
+5.  The Coastal Taipans, like any other snakes are **territorial in
+    nature and do not migrate from their region over the years**.
 :::
 
-Although we will attempt to accurately analyse the data by obtaining it from reliable repositories, however, it is important to consider the limitations of the dataset while making critical conclusions based on the data in hand. Some of the limitations of the current dataset are delineated as follows:
+Although we will attempt to accurately analyse the data by obtaining it
+from reliable repositories, however, it is important to consider the
+limitations of the dataset while making critical conclusions based on
+the data in hand. Some of the limitations of the current dataset are
+delineated as follows:
 
-:::{.callout-warning}
+::: callout-warning
 # Limitations of the data
 
-1. Since the data which has been obtained from the [Atlast of Living Australia](https://www.ala.org.au) falls under the category of __observational data__, there could be instances of missing values. These instances will need to be filtered out while analysing the data from the repository.
+1.  Since the data which has been obtained from the [Atlast of Living
+    Australia](https://www.ala.org.au) falls under the category of
+    **observational data**, there could be instances of missing values.
+    These instances will need to be filtered out while analysing the
+    data from the repository.
 
-2. Since the data is obtained from various sources, there could be inconsistencies in reporting the data.
+2.  Since the data is obtained from various sources, there could be
+    inconsistencies in reporting the data.
 
-3. While the data collection was done in an extensive and granular manner, there could be a lack of precision of the observations made for the exact latitude and longitude.
+3.  While the data collection was done in an extensive and granular
+    manner, there could be a lack of precision of the observations made
+    for the exact latitude and longitude.
 
-4. The dataset obtained from the Atlas of Living Australia __only reports for all the Coastal Taipans that have been sighted and recorded__. Hence, it does not report the entire population of these reptiles across the various regions of Australia. This may lead to inaccurate conclusions post analysis of the limited data in hand.
+4.  The dataset obtained from the Atlas of Living Australia **only
+    reports for all the Coastal Taipans that have been sighted and
+    recorded**. Hence, it does not report the entire population of these
+    reptiles across the various regions of Australia. This may lead to
+    inaccurate conclusions post analysis of the limited data in hand.
 
+5.  The dataset here consist of **observational data** and in
+    particular, occurrences data. Some of the limitations that are
+    prevalent in such datasets are as follows :
 
-5. The dataset here consist of __observational data__ and in particular, occurrences data. Some of the limitations that are prevalent in such datasets are as follows :
-     - The data here is obtained from various sources. As a result, there may be __non-uniformity in the data provided__. Each reporting authority may have their own interpretations of the data they may have provided.
-     - The current dataset obtained is a subset of an observational data. These types of data are often plagued with lack of randomisation during the selection of        data. This may lead to biases in the dataset such as selection and systematic bias.
-     - The data maybe misclassified or filled in non-uniform units by the various sources, leading to lack of accuracy of the overall dataset.
-
+    -   The data here is obtained from various sources. As a result,
+        there may be **non-uniformity in the data provided**. Each
+        reporting authority may have their own interpretations of the
+        data they may have provided.
+    -   The current dataset obtained is a subset of an observational
+        data. These types of data are often plagued with lack of
+        randomisation during the selection of data. This may lead to
+        biases in the dataset such as selection and systematic bias.
+    -   The data maybe misclassified or filled in non-uniform units by
+        the various sources, leading to lack of accuracy of the overall
+        dataset.
 :::
 
 ## Data description
 
+```{=html}
 <!--
 2. Download all the occurrence records from the Atlas of Living Australia, ideally scripted using the `atlas_occurrences()` function from the `galah` package. Make sure you include date, time, collector identification details. Save this into a `data-raw` folder in your repo.
 -->
+```
 ```{r echo=FALSE}
 library(galah)
 library(tidyverse)
@@ -93,7 +172,6 @@ library(plotly)
 library(DT)
 ```
 
-
 ```{r include=FALSE}
 
 galah_config(email = "aani0005@student.monash.edu",
@@ -111,49 +189,62 @@ taipan %>% head() %>% DT::datatable()
 
 ### Description of the Variables in the Dataset
 
-The dataset contains data on observations of the Coastal Taipans (*Oxyuranus scutellatus scutellatus*) in Australia. The dataset has been organized into a tidy format. Below is a detailed description of each salient variable:
+The dataset contains data on observations of the Coastal Taipans
+(*Oxyuranus scutellatus scutellatus*) in Australia. The dataset has been
+organized into a tidy format. Below is a detailed description of each
+salient variable:
 
-| Variable Name    | Data Type | Description |
-|------------------|-----------|-------------|
-| decimalLatitude  | dbl       | The latitude coordinate of the observation location. |
-| decimalLongitude | dbl       | The longitude coordinate of the observation location. |
-| eventDate        | date      | The date when the observation was made. |
+| Variable Name    | Data Type | Description                                                                                             |
+|-------------------------------|-------------------|----------------------|
+| decimalLatitude  | dbl       | The latitude coordinate of the observation location.                                                    |
+| decimalLongitude | dbl       | The longitude coordinate of the observation location.                                                   |
+| eventDate        | date      | The date when the observation was made.                                                                 |
 | scientificName   | chr       | The scientific name of the observed species. In this dataset, it's *Oxyuranus scutellatus scutellatus*. |
-| taxonConceptID   | chr       | A unique URL that provides information about the taxonomic concept for the species. |
-| recordID         | chr       | A unique identifier for each observation record. |
-| dataResourceName | chr       | The name of the data resource/provider. |
-| occurrenceStatus | chr       | The status of the observation, indicating if the species is present or absent at the location. |
-| eventRemarks     | chr       | Special remarks related to the event sighting. |
-| eventTime        | datetime  | Time of the event sighting. |
-| eventID          | chr       | A unique ID for each event observation. |
-| samplingEffort   | chr       | An variable to indicate the sampling technique used. |
-| samplingProtocol | chr       | A remark for the type of sighting. |
-
+| taxonConceptID   | chr       | A unique URL that provides information about the taxonomic concept for the species.                     |
+| recordID         | chr       | A unique identifier for each observation record.                                                        |
+| dataResourceName | chr       | The name of the data resource/provider.                                                                 |
+| occurrenceStatus | chr       | The status of the observation, indicating if the species is present or absent at the location.          |
+| eventRemarks     | chr       | Special remarks related to the event sighting.                                                          |
+| eventTime        | datetime  | Time of the event sighting.                                                                             |
+| eventID          | chr       | A unique ID for each event observation.                                                                 |
+| samplingEffort   | chr       | An variable to indicate the sampling technique used.                                                    |
+| samplingProtocol | chr       | A remark for the type of sighting.                                                                      |
 
 ## Initial data analysis
 
-### Data Source 
+### Data Source
 
-**Data Source:** The data was sourced from the [Atlas of Living Australia (ALA)](https://www.ala.org.au/) using the `galah` R package.
+**Data Source:** The data was sourced from the [Atlas of Living
+Australia (ALA)](https://www.ala.org.au/) using the `galah` R package.
 
-The weather station data to study impact of weather conditions on sightings was sourced from [National Climatic Data Centre (NCDC)](https://www.ncdc.noaa.gov/cdo-web/datasets) using `rnoaa` package in R.
+The weather station data to study impact of weather conditions on
+sightings was sourced from [National Climatic Data Centre
+(NCDC)](https://www.ncdc.noaa.gov/cdo-web/datasets) using `rnoaa`
+package in R.
 
 ### Data Cleaning
 
 **Data Cleaning Steps:**
 
-1. The datatype for `eventDate` has been changed to datetime for accurate temporal analysis. \
-2. Observations with missing event dates, longitude, or latitude were filtered out.
-3. Redundant variables were dropped from the dataset to keep only the salient variables important for the current analysis.
-
+1.  The datatype for `eventDate` has been changed to datetime for
+    accurate temporal analysis.\
+2.  Observations with missing event dates, longitude, or latitude were
+    filtered out.
+3.  Redundant variables were dropped from the dataset to keep only the
+    salient variables important for the current analysis.
 
 **Methods to Check and Clean Data:**
 
-- **Validity Checks and outlier analysis:** Ensure that the latitude and longitude values are within valid ranges. For latitude (-90 to 90) and for longitude (-180 to 180). This would help detect any unusual or erroneous data points.
-- **Consistency Checks:** Make sure there aren't any discrepancies in the way data is represented across rows.
-- **Missing Value Analysis:** Any missing values should be analyzed to understand the reason behind them.
-- **Date Consistency:** Ensure that the event dates fall within expected ranges and are formatted correctly.
-
+-   **Validity Checks and outlier analysis:** Ensure that the latitude
+    and longitude values are within valid ranges. For latitude (-90
+    to 90) and for longitude (-180 to 180). This would help detect any
+    unusual or erroneous data points.
+-   **Consistency Checks:** Make sure there aren't any discrepancies in
+    the way data is represented across rows.
+-   **Missing Value Analysis:** Any missing values should be analyzed to
+    understand the reason behind them.
+-   **Date Consistency:** Ensure that the event dates fall within
+    expected ranges and are formatted correctly.
 
 ### Data Quality Check
 
@@ -162,9 +253,16 @@ The weather station data to study impact of weather conditions on sightings was 
 #| fig-cap: "Representation of missing values in the dataset"
 vis_miss(taipan)
 ```
-The `vis_miss()` function from the "visdat" package provides a visual representation of missing data in the dataset.
 
-The plot illustrated in @fig-vismiss indicates __that about half of the total dataset has missing values__. These missing values can be observed majorly in the variables of eventRemarks,eventTime and eventID. In order to improve the quality of the overall data, we will consider either transforming these variables or removing them as a part of feature selection in the following sections.
+The `vis_miss()` function from the "visdat" package provides a visual
+representation of missing data in the dataset.
+
+The plot illustrated in @fig-vismiss indicates **that about half of the
+total dataset has missing values**. These missing values can be observed
+majorly in the variables of eventRemarks,eventTime and eventID. In order
+to improve the quality of the overall data, we will consider either
+transforming these variables or removing them as a part of feature
+selection in the following sections.
 
 ```{r}
 #| label: tbl-fivenum
@@ -184,13 +282,27 @@ kable(summary_table, format = "html", table.attr = "class='table'") %>%
   row_spec(0, bold = TRUE, color = "white", background = "lightblue")
 
 ```
-The `fivenum()` function in R provides a summary of five-number statistics: the minimum, lower-hinge (25th percentile or first quartile), median (50th percentile), upper-hinge (75th percentile or third quartile), and the maximum.
 
-By analyzing these statistics in @tbl-fivenum, we can get an overview of the distribution of latitudes and longitudes in the dataset. __The five number summary of the latitude and longitude values further allows us to validate the values with each latitude and longitude observation being within the maximum and minimum possible limits.__
+The `fivenum()` function in R provides a summary of five-number
+statistics: the minimum, lower-hinge (25th percentile or first
+quartile), median (50th percentile), upper-hinge (75th percentile or
+third quartile), and the maximum.
+
+By analyzing these statistics in @tbl-fivenum, we can get an overview of
+the distribution of latitudes and longitudes in the dataset. **The five
+number summary of the latitude and longitude values further allows us to
+validate the values with each latitude and longitude observation being
+within the maximum and minimum possible limits.**
 
 ### Data transformation and feature selection
 
-As we are primarily interested in analysing the wild sightings of the Coastal Taipans across Australia, hence, we will filter out the data obtained from museums and animal sanctuaries. This information has been provided in the `event ID` column which will be used to filter the required data as shown in the code chunk below. It has been additionally assumed that the occurrences with no mention of the term "museum" have been considered as wild sightings in the context of the current study. 
+As we are primarily interested in analysing the wild sightings of the
+Coastal Taipans across Australia, hence, we will filter out the data
+obtained from museums and animal sanctuaries. This information has been
+provided in the `event ID` column which will be used to filter the
+required data as shown in the code chunk below. It has been additionally
+assumed that the occurrences with no mention of the term "museum" have
+been considered as wild sightings in the context of the current study.
 
 ```{r}
 #| label: fig-dist
@@ -210,23 +322,33 @@ ggplot(taipan_occurrs, aes(x = occurrence,y = Count)) +
 
 ```
 
-Figure @fig-dist displays the distribution of Taipan sightings categorized into two types: Museum and Wild. It's evident from the figure that a portion of the data is sourced from museums, which means these observations don't represent the natural behavior or occurrence of Taipans in their wild habitats.
+Figure @fig-dist displays the distribution of Taipan sightings
+categorized into two types: Museum and Wild. It's evident from the
+figure that a portion of the data is sourced from museums, which means
+these observations don't represent the natural behavior or occurrence of
+Taipans in their wild habitats.
 
-For a comprehensive study of the natural behavior or occurrence patterns of Taipans, it's pertinent to focus solely on the "Wild" type data.
+For a comprehensive study of the natural behavior or occurrence patterns
+of Taipans, it's pertinent to focus solely on the "Wild" type data.
 
 ```{r}
  # Selecting only wild occurrences of Coastal Taipans
 taipan_wild <- taipan %>% filter(occurrence =="Wild")
 ```
 
-We have observed a total of __`r taipan %>% nrow()` occurrences across Australia__. However, this number has been obtained from the raw data which __will need to be cleaned further__.
+We have observed a total of **`r taipan %>% nrow()` occurrences across
+Australia**. However, this number has been obtained from the raw data
+which **will need to be cleaned further**.
 
-<div class="alert alert-block alert-warning">
-Based on the initial data analysis, we will need to perform the following data cleaning operations:
+::: {.alert .alert-block .alert-warning}
+Based on the initial data analysis, we will need to perform the
+following data cleaning operations:
 
-1. Filter the data with valid sighting date for detailed temporal analysis.
-2. Filter the data with valid values of longitude and latitude for detailed spatial analysis.
-</div>
+1.  Filter the data with valid sighting date for detailed temporal
+    analysis.
+2.  Filter the data with valid values of longitude and latitude for
+    detailed spatial analysis.
+:::
 
 ```{r}
 taipan_wild <- taipan_wild %>% 
@@ -240,16 +362,25 @@ save(taipan_wild, file=here::here("data/taipan.rda"))
 
 ```
 
-<div class="alert alert-block alert-success">
-‼️💡
-Upon performing the required data cleaning operation, we have a total of __`r taipan_wild %>% nrow()` wild sightings of Coastal Taipans across Australia__.
-💡‼️
-</div>
-
+::: {.alert .alert-block .alert-success}
+‼️💡 Upon performing the required data cleaning operation, we have a
+total of **`r taipan_wild %>% nrow()` wild sightings of Coastal Taipans
+across Australia**. 💡‼️
+:::
 
 #### Combining data of sightings with weather data ⛈️
 
-In order to explore the prevailing weather conditions during the sighting, we will need to merge the datasets from two different sources. Here, we will utilise the weather data reported from the various weather stations in Australia by utilising the RNOAA package which is maintained by the National Oceanic and Atmospheric Administration (NOAA). The following code chunk allows us to obtain the weather conditions, namely precipitation (PRCP), maximum temperature (TMAX) and minimum temperature (TMIN). In order to utilise data from active weather stations, we have filtered those data whose last reported conditions were relayed after the year of 2020.
+In order to explore the prevailing weather conditions during the
+sighting, we will need to merge the datasets from two different sources.
+Here, we will utilise the weather data reported from the various weather
+stations in Australia by utilising the RNOAA package which is maintained
+by the National Oceanic and Atmospheric Administration (NOAA). The
+following code chunk allows us to obtain the weather conditions, namely
+precipitation (PRCP), maximum temperature (TMAX) and minimum temperature
+(TMIN). In order to utilise data from active weather stations, we have
+filtered those data whose last reported conditions were relayed after
+the year of 2020.
+
 ```{r}
 
 aus_stations <- ghcnd_stations() |>
@@ -264,13 +395,20 @@ aus_stations <- ghcnd_stations() |>
   filter(nrow(data) == 3) |>
   select(-data) 
 ```
-Once we have obtained the weather data, we need to merge the sighting data with the weather conditions. For this purpose, we can utilise the geographical data (latitude and longitude) to merge the closest weather station data with the location of the Coastal Taipan sighting.
 
-<div class="alert alert-block alert-warning">
-‼️
-Since it is difficult to exactly match the latitude and longitude of the sighting to the weather station, hence, we will convert the geographical data into spatial objects and then utilise the nearest feature function to merge the weather conditions of the location of the sighting to the closest weather reporting station. This has been done in the following code chunk.
-‼️
-</div>
+Once we have obtained the weather data, we need to merge the sighting
+data with the weather conditions. For this purpose, we can utilise the
+geographical data (latitude and longitude) to merge the closest weather
+station data with the location of the Coastal Taipan sighting.
+
+::: {.alert .alert-block .alert-warning}
+‼️ Since it is difficult to exactly match the latitude and longitude of
+the sighting to the weather station, hence, we will convert the
+geographical data into spatial objects and then utilise the nearest
+feature function to merge the weather conditions of the location of the
+sighting to the closest weather reporting station. This has been done in
+the following code chunk. ‼️
+:::
 
 ```{r}
 
@@ -289,9 +427,9 @@ combined_data <- as.data.frame(combined_data)
 unique_id <- unique(combined_data$id)
 ```
 
-
-Once we have successfully mapped the sighting data with each of the weather stations, let us try to observe the most frequent sightings with respect to its closest weather station. 
-
+Once we have successfully mapped the sighting data with each of the
+weather stations, let us try to observe the most frequent sightings with
+respect to its closest weather station.
 
 ```{r}
 #| label: fig-wstation
@@ -302,10 +440,16 @@ top_2 <- c("cooktown airport","townsville aero")
 ggplot(combined_count,aes(x = reorder(name,Count),y = Count)) + geom_col() + coord_flip() + theme_classic() + ggtitle("Number of Coastal Taipan sightings \n for each weather station")  + geom_col(data = ~filter(.x, name %in% top_2),fill = "darkred") + geom_label(data = ~filter(.x, name %in% top_2),aes(label = Count),vjust=0.8) +  labs(x = "Weather station name",y = "Number of Coastal Taipan sightings",caption = "Source: National Climatic Data Center and Atlas of Living Australia")
 ```
 
-@fig-wstation illustrates the number of Coastal Taipan sightings for each of the weather stations in Australia. Based on the illustration, we will be able to narrow down our search for the location with frequent sightings of the reptile and can drill down our analysis to obtain weather information. 
+@fig-wstation illustrates the number of Coastal Taipan sightings for
+each of the weather stations in Australia. Based on the illustration, we
+will be able to narrow down our search for the location with frequent
+sightings of the reptile and can drill down our analysis to obtain
+weather information.
 
-Here, we observe that the weather stations Cooktown Airport and Townsville Aero have significantly higher number of sightings when compared to the rest of the data. Let us pull the weather information for these weather stations through the below code chunk.
-
+Here, we observe that the weather stations Cooktown Airport and
+Townsville Aero have significantly higher number of sightings when
+compared to the rest of the data. Let us pull the weather information
+for these weather stations through the below code chunk.
 
 ```{r}
 narrogin <- aus_stations |>
@@ -321,12 +465,21 @@ narrogin <- aus_stations |>
   mutate(tmax = tmax/10, tmin = tmin/ 10)
 
 ```
-In the next part, we will create a new variable called `sighting` with values of either 0 or 1 to mark the sighting of the Coastal Taipan. This variable is important because,
 
-<div class="alert alert-block alert-warning">
-the weather data obtained is for all the possible dates which match our time period filter. __This does not necessarily mean that a Coastal Taipan was observed on that particular day__. Hence, upon merging the weather and the sighting dataset, it is __important to distinguish the days (obtained by `eventDate`) which mark the sighting of a Coastal Taipan__. We will be primarily interested to analyse the prevailing weather conditions on these particular days for the choice of our weather stations.
+In the next part, we will create a new variable called `sighting` with
+values of either 0 or 1 to mark the sighting of the Coastal Taipan. This
+variable is important because,
 
-</div>
+::: {.alert .alert-block .alert-warning}
+the weather data obtained is for all the possible dates which match our
+time period filter. **This does not necessarily mean that a Coastal
+Taipan was observed on that particular day**. Hence, upon merging the
+weather and the sighting dataset, it is **important to distinguish the
+days (obtained by `eventDate`) which mark the sighting of a Coastal
+Taipan**. We will be primarily interested to analyse the prevailing
+weather conditions on these particular days for the choice of our
+weather stations.
+:::
 
 ```{r}
 subset_combined_data <- combined_data %>% filter(name %in% top_2)
@@ -337,13 +490,13 @@ save(taipan_weather, file=here::here("data/taipan_weather_sighting.rda"))
 
 ## Exploratory data analysis
 
+```{=html}
 <!--
 4. Make plots of the data to check each of your expectations, and report what you learn. *Note:* This might also be a place where visual inference methods *may* be useful to determine if what is seen agrees or disputes what you expected. 
 
 Weather data exploration here too.
 -->
-
-
+```
 ### When are the Coastal Taipans most likely to be observed ?
 
 ```{r}
@@ -374,29 +527,41 @@ ggdotchart(taipan_grouped, y = "sightings",
 
 ```
 
+::: {.alert .alert-block .alert-warning}
+💡 @fig-sightnum illustrates the number of Coastal Taipans reported till
+date for each month. We can observe that the sightings are **higher
+between the months of July to December** when compared to the rest of
+the year. This can be a result of the prevailing monsoon conditions in
+Australia which closely corroborates with our assumption stated in
+@sec-ref1.
 
-<div class="alert alert-block alert-warning">
+Some of the reasons why the Coastal Taipans are observed to be more
+active are as follows:
+
+1.  **Breeding season**: The Coastal Taipans are highly active during
+    the breeding season which closely conincides with the monsoon season
+    in Australia.
+2.  **Increased prey availability**: The monsoon season in northern
+    Australia typically brings heavy rainfall, which can lead to
+    flooding in some areas. This flooding forces small mammals,
+    reptiles, and other prey animals out of their burrows and hiding
+    places, making them more accessible to Coastal Taipans. The
+    increased prey availability during the monsoon can lead to an uptick
+    in snake activity as they take advantage of the abundance of food.
+3.  **Temperature and humidity**: Reptiles are ectothermic in nature,
+    meaning their body temperature is highly influenced by the
+    environmental temperature. Monsoon season generally brings about
+    warm and humid conditions. These conditions additionally improve the
+    metabolism and mobility in reptiles which allows for higher activity
+    and increased number of Coastal Taipan sightings.
+4.  **Migratory behaviour**: Due to increased mobility in the reptiles
+    during the monsoon season, some Coastal Taipans exhibit migrate
+    behaviour for better conditions and availability of prey. Migrations
+    can often lead to human interactions and hence, their consequent
+    sightings.
 
 💡
-@fig-sightnum illustrates the number of Coastal Taipans reported till date for each month. We can observe that the sightings are __higher between the months of July to December__ when compared to the rest of the year. This can be a result of the prevailing monsoon conditions in Australia which closely corroborates with our assumption stated in @sec-ref1.
-
-Some of the reasons why the Coastal Taipans are observed to be more active are as follows:
-
-1. __Breeding season__: The Coastal Taipans are highly active during the breeding season which closely conincides with the monsoon season in Australia.
-2. __Increased prey availability__: The monsoon season in northern Australia typically brings heavy rainfall, which can lead to flooding in some areas. This flooding forces small mammals, reptiles, and other prey animals out of their burrows and hiding places, making them more accessible to Coastal Taipans. The increased prey availability during the monsoon can lead to an uptick in snake activity as they take advantage of the abundance of food.
-3. __Temperature and humidity__: Reptiles are ectothermic in nature, meaning their body temperature is highly influenced by the environmental temperature. Monsoon season generally brings about warm and humid conditions. These conditions additionally improve the metabolism and mobility in reptiles which allows for higher activity and increased number of Coastal Taipan sightings.
-4. __Migratory behaviour__: Due to increased mobility in the reptiles during the monsoon season, some Coastal Taipans exhibit migrate behaviour for better conditions and availability of prey. Migrations can often lead to human interactions and hence, their consequent sightings.
-
-💡
-</div>
-
-
-
-
-
-
-
-
+:::
 
 ### Where are the Coastal Taipans most commonly observed in Australia? {#sec-ref2}
 
@@ -412,7 +577,6 @@ leaflet(data = taipan) %>%
 
 ```
 
-
 ```{r}
 #| label: tbl-source
 #| tbl-cap: "Number of sightings reported by each data source"
@@ -427,13 +591,27 @@ kable(sourceSightings, format = "html", table.attr = "class='table'") %>%
   row_spec(0, bold = TRUE, color = "white", background = "lightblue")
 ```
 
-@fig-sightloc illustrates that, in alignment with its name, most Coastal Taipan sightings occur in coastal regions. Additionally, considering that a significant portion of the data comes from the "Queensland Museum provider for OZCAM" as observed by @tbl-source, it can be determined that a majority of these sightings are __concentrated in the coastal areas of Queensland.__ It is also particularly interesting to note that __one sighting observed in the Northern Territory indicating a possibility of migration and future possibilities of higher sightings in this region.__
+@fig-sightloc illustrates that, in alignment with its name, most Coastal
+Taipan sightings occur in coastal regions. Additionally, considering
+that a significant portion of the data comes from the "Queensland Museum
+provider for OZCAM" as observed by @tbl-source, it can be determined
+that a majority of these sightings are **concentrated in the coastal
+areas of Queensland.** It is also particularly interesting to note that
+**one sighting observed in the Northern Territory indicating a
+possibility of migration and future possibilities of higher sightings in
+this region.**
 
-<div class="alert alert-block alert-warning">
-
-💡💡
-The Coastal Taipan's preference for coastal regions in Australia can be attributed to the habitat, climate, and prey availability in these areas. Coastal regions provide a favorable environment with adequate warmth, humidity, and shelter. These conditions are conducive for the Taipan's survival and reproduction. Additionally, coastal areas offer a rich biodiversity, ensuring ample prey for the snake. __The vegetation in these regions, like grasslands and woodlands, offers suitable hiding spots for the snake and its prey, leading to a higher likelihood of the Taipan being found in these areas.__
-</div>
+::: {.alert .alert-block .alert-warning}
+💡💡 The Coastal Taipan's preference for coastal regions in Australia
+can be attributed to the habitat, climate, and prey availability in
+these areas. Coastal regions provide a favorable environment with
+adequate warmth, humidity, and shelter. These conditions are conducive
+for the Taipan's survival and reproduction. Additionally, coastal areas
+offer a rich biodiversity, ensuring ample prey for the snake. **The
+vegetation in these regions, like grasslands and woodlands, offers
+suitable hiding spots for the snake and its prey, leading to a higher
+likelihood of the Taipan being found in these areas.**
+:::
 
 ### Has there been a rise in the number of Coastal Taipans in Australia over the years?
 
@@ -457,27 +635,48 @@ trend <- ggplot(population_count, aes(x = year, y = count)) +
 ggplotly(trend)
 
 ```
-@fig-trend demonstrates a noticeable increase in sightings over the years, potentially suggesting a growth in the Coastal Taipan population, indicating they __might not be "endangered".__ However, there are caveats to consider.
 
-:::{.callout-warning}
+@fig-trend demonstrates a noticeable increase in sightings over the
+years, potentially suggesting a growth in the Coastal Taipan population,
+indicating they **might not be "endangered".** However, there are
+caveats to consider.
+
+::: callout-warning
 # Caveats
-__Sightings vs. Population__: The number of sightings does not necessarily equate to the actual population. An increase in sightings could be due to increased human activity in the taipan's habitat or better reporting mechanisms.
 
-__Incomplete Data__: The dataset might not cover all sightings, especially as it has limited data sources or regions.
+**Sightings vs. Population**: The number of sightings does not
+necessarily equate to the actual population. An increase in sightings
+could be due to increased human activity in the taipan's habitat or
+better reporting mechanisms.
 
-__External Factors__: Factors like urban development, habitat destruction, or climate change can influence the habitats and distribution of species, which can subsequently influence sighting reports.
+**Incomplete Data**: The dataset might not cover all sightings,
+especially as it has limited data sources or regions.
+
+**External Factors**: Factors like urban development, habitat
+destruction, or climate change can influence the habitats and
+distribution of species, which can subsequently influence sighting
+reports.
 :::
 
 ### Are the Coastal Taipans limited to certain regions of Australia ?
 
-In @sec-ref2, we were able to observe that the Coastal Taipans are observed to be sighted close to the coasts. In this section, we will be focused on assessing whether the sighting locations of the Coastal Taipans suggest that these reptiles are limited to certain regions of Australia only. The same will be assessed through the generation of a null plot and testing a hypothesis. The hypothesis and the null generating mechanism are as follows:
+In @sec-ref2, we were able to observe that the Coastal Taipans are
+observed to be sighted close to the coasts. In this section, we will be
+focused on assessing whether the sighting locations of the Coastal
+Taipans suggest that these reptiles are limited to certain regions of
+Australia only. The same will be assessed through the generation of a
+null plot and testing a hypothesis. The hypothesis and the null
+generating mechanism are as follows:
 
-<div class="alert alert-block alert-warning">
-$H_o$ : Coastal Taipans are not limited to a single region and can be sighted all over Australia. \
-$H_1$ : Coastal Taipans are limited to certain regions of Australia, particularly in humid and warm conditions.
+::: {.alert .alert-block .alert-warning}
+$H_o$ : Coastal Taipans are not limited to a single region and can be
+sighted all over Australia.\
+$H_1$ : Coastal Taipans are limited to certain regions of Australia,
+particularly in humid and warm conditions.
 
-Null generating mechanism: Usage of the "null_permute" function to permute the `latitude` values of the Coastal Taipan sightings.
-</div>
+Null generating mechanism: Usage of the "null_permute" function to
+permute the `latitude` values of the Coastal Taipan sightings.
+:::
 
 ```{r}
 #| label: fig-nullplot
@@ -495,21 +694,43 @@ map_null_plot <- ggplot() + geom_polygon(data = australia_map, aes(x = long, y =
     axis.text = element_blank())
 map_null_plot
 ```
-:::{.callout-note}
+
+::: callout-note
 # Key takeaway
-Upon analysing the plot null lineup plots in @fig-nullplot, we observed that of the 8 test cases, __7 people were able to recognise the plot 4 as the most unique plot__ due to the scatter points (sighting locations) being limited to only the coastal regions of Australia. The P-value for the following result is __`r pvisual(7,8,20)[3]`__ which __suggests that the null hypothesis can be rejected__ and we can conclude that there is significant evidence in the data to suggest that Coastal Taipans are __majorly limited to the North-Eastern coast of Australia.__
+
+Upon analysing the plot null lineup plots in @fig-nullplot, we observed
+that of the 8 test cases, **7 people were able to recognise the plot 4
+as the most unique plot** due to the scatter points (sighting locations)
+being limited to only the coastal regions of Australia. The P-value for
+the following result is **`r pvisual(7,8,20)[3]`** which **suggests that
+the null hypothesis can be rejected** and we can conclude that there is
+significant evidence in the data to suggest that Coastal Taipans are
+**majorly limited to the North-Eastern coast of Australia.**
 :::
 
 ### Has the geographical distribution of Coastal Taipans remained consistent over the years?
 
-Snakes are typically reclusive and territorial. Given this characteristic, it's intriguing to consider whether coastal taipans exhibit similar behavior. Specifically, it's of interest to determine if coastal taipans remain in their established habitats due to their inherent nature or external factors or if there are distinct regions they consistently inhabit. This investigation will be facilitated by generating a null plot and conducting hypothesis testing. The pertinent hypotheses and the mechanism for generating the null distribution are outlined as follows:
+Snakes are typically reclusive and territorial. Given this
+characteristic, it's intriguing to consider whether coastal taipans
+exhibit similar behavior. Specifically, it's of interest to determine if
+coastal taipans remain in their established habitats due to their
+inherent nature or external factors or if there are distinct regions
+they consistently inhabit. This investigation will be facilitated by
+generating a null plot and conducting hypothesis testing. The pertinent
+hypotheses and the mechanism for generating the null distribution are
+outlined as follows:
 
-<div class="alert alert-block alert-warning">
-$H_o$: The geographical distribution of Coastal Taipan sightings has remained consistent over the years, with no significant difference in distribution between the periods pre-2000s and post-2000s. \
-$H_1$: The geographical distribution of Coastal Taipan sightings has changed between the periods pre-2000s and post-2000s.
+::: {.alert .alert-block .alert-warning}
+$H_o$: The geographical distribution of Coastal Taipan sightings has
+remained consistent over the years, with no significant difference in
+distribution between the periods pre-2000s and post-2000s.\
+$H_1$: The geographical distribution of Coastal Taipan sightings has
+changed between the periods pre-2000s and post-2000s.
 
-Null generating mechanism: Usage of the "null_permute" function to permute the `eventCategory` (Pre or Post 2000s categorisation) values of the Coastal Taipan sightings.
-</div>
+Null generating mechanism: Usage of the "null_permute" function to
+permute the `eventCategory` (Pre or Post 2000s categorisation) values of
+the Coastal Taipan sightings.
+:::
 
 ```{r}
 #| label: fig-lineup
@@ -532,14 +753,24 @@ ggplot(lineup(null_permute('eventCategory'), taipan_wild), aes(x = Longitude, y=
 
 ```
 
-:::{.callout-note}
+::: callout-note
 # Key takeaway
-Upon analysing the plot null lineup plots in @fig-lineup, we observed that of the 8 test cases, __only 2 people were able to recognise the plot 19 as the most unique plot due to the scatter points being limited to only the coastal regions of Australia.__ The P-value for the following result is __`r pvisual(2,8,20)[3]`__ which __suggests that the null hypothesis cannot be rejected based on 95% confidence__ and we can conclude that there is significant evidence in the data to suggest that Coastal Taipans are __consistently sighted in the same regions in Australia over the years.__
+
+Upon analysing the plot null lineup plots in @fig-lineup, we observed
+that of the 8 test cases, **only 2 people were able to recognise the
+plot 19 as the most unique plot due to the scatter points being limited
+to only the coastal regions of Australia.** The P-value for the
+following result is **`r pvisual(2,8,20)[3]`** which **suggests that the
+null hypothesis cannot be rejected based on 95% confidence** and we can
+conclude that there is significant evidence in the data to suggest that
+Coastal Taipans are **consistently sighted in the same regions in
+Australia over the years.**
 :::
 
-### How are the weather conditions like in the areas with Coastal Taipan sightings ? 
+### How are the weather conditions like in the areas with Coastal Taipan sightings ?
 
-In this section, we will be interested to find any insights with respect to the weather in the locations with high Coastal Taipan sightings.
+In this section, we will be interested to find any insights with respect
+to the weather in the locations with high Coastal Taipan sightings.
 
 #### Does rain play a role in the sightings of the Coastal Taipans ? ⛈️
 
@@ -559,15 +790,24 @@ rain_plot <-
   labs(x = "Rain indication for the day of sighting",y = "Total number of sightings")
 rain_plot + scale_fill_brewer(palette = "Set3")
 ```
-:::{.callout-note}
+
+::: callout-note
 # Key takeaway
-Based on our analysis of @fig-rain, we can observe that of the 27 observations, __23 of the sightings took place on days with no recorded precipitation__ while __only 4 sightings took place on days with recorded precipitation__. This suggests that the __precipitation may not have a strong association with the Coastal Taipan sightings__. However, it must also be kept in mind that the current sample of the dataset is too small to generate any strong conclusions from the data and we may require further data to support our analysis. 
+
+Based on our analysis of @fig-rain, we can observe that of the 27
+observations, **23 of the sightings took place on days with no recorded
+precipitation** while **only 4 sightings took place on days with
+recorded precipitation**. This suggests that the **precipitation may not
+have a strong association with the Coastal Taipan sightings**. However,
+it must also be kept in mind that the current sample of the dataset is
+too small to generate any strong conclusions from the data and we may
+require further data to support our analysis.
 :::
 
 #### How are the temperatures during the days of sightings ? ☀️
 
-Let us now explore the minimum and maximum temperatures on the given day of Coastal Taipan sightings and analyse any further insights. 
-
+Let us now explore the minimum and maximum temperatures on the given day
+of Coastal Taipan sightings and analyse any further insights.
 
 ```{r warning=FALSE}
 #| label: fig-temp
@@ -609,65 +849,168 @@ pl_temp + geom_vline(xintercept = mean(taipan_weather1$tmax,na.rm = TRUE),alpha 
 
 ```
 
-:::{.callout-note}
+::: callout-note
 # Key takeaway
-Upon analysing the maximum and minimum temperatures on the days of Coastal Taipan sightings as illustrated by @fig-temp, we can observe that the majority of the sightings were recorded on days with relatively higher maximum and minimum temperatures. This suggests that the __mobility of the reptiles are higher during warmer conditions__ leading to higher probability of their sightings. __Higher temperatures also induce lower mobility among the prey of the Taipans to protect themselves from the heat, as a result of which, the reptiles are also on the move to hunt__.
 
-The average maximum and minimum temperatures visualised by the two vertical lines in the plot are 28.1 and 19 degree celsius respectively, suggesting warm conditions.
+Upon analysing the maximum and minimum temperatures on the days of
+Coastal Taipan sightings as illustrated by @fig-temp, we can observe
+that the majority of the sightings were recorded on days with relatively
+higher maximum and minimum temperatures. This suggests that the
+**mobility of the reptiles are higher during warmer conditions** leading
+to higher probability of their sightings. **Higher temperatures also
+induce lower mobility among the prey of the Taipans to protect
+themselves from the heat, as a result of which, the reptiles are also on
+the move to hunt**.
+
+The average maximum and minimum temperatures visualised by the two
+vertical lines in the plot are 28.1 and 19 degree celsius respectively,
+suggesting warm conditions.
 :::
 
-## Summary 
+## Summary
 
+Based on our detailed analysis of the Coastal Taipan sightings,
+following are our key takeaways:
 
-Based on our detailed analysis of the Coastal Taipan sightings, following are our key takeaways:
+::: {.alert .alert-block .alert-warning}
+💡💡\
+1. The spatial analysis suggests that the Coastal Taipans are
+territorial in nature, thereby inhabiting the coastal regions of
+Queensland with possibility of migration towards Northern Territory in
+the future.
 
+2.  Based on the frequency of sightings, the Coastal Taipans are not
+    endagered. However, they are extremely reclusive and avoid human
+    contact. Hence, their occurrences and sightings are rare as they are
+    mostly confined to their habitats.
 
-<div class="alert alert-block alert-warning">
+3.  While migration of the Coastal Taipans maybe a possibility in the
+    future, based on the data, there is not enough strong evidence to
+    suggest that there has been a significant change in the Coastal
+    Taipan's habitat.
+
+4.  Contrary to popular belief, the data does not exhibit a strong
+    evidence to suggest that the sightings of Coastal Taipans are higher
+    on days of recorded precipitation. However, the Coastal Taipans do
+    exhibit higher mobility during the monsoon period resulting in
+    higher sightings.
+
+5.  Coastal Taipans appear to be especially active on warm days,
+    possibly due to their increased mobility and metabolism,
+    consequently resulting in higher sightings on these days.
 
 💡💡
-\
-1. The spatial analysis suggests that the Coastal Taipans are territorial in nature, thereby inhabiting the coastal regions of Queensland with possibility of migration towards Northern Territory in the future.
+:::
 
-2. Based on the frequency of sightings, the Coastal Taipans are not endagered. However, they are extremely reclusive and avoid human contact. Hence, their occurrences and sightings are rare as they are mostly confined to their habitats.
+## **PART B**
 
-3. While migration of the Coastal Taipans maybe a possibility in the future, based on the data, there is not enough strong evidence to suggest that there has been a significant change in the Coastal Taipan's habitat.
+Loading in the tourism data:
 
-4. Contrary to popular belief, the data does not exhibit a strong evidence to suggest that the sightings of Coastal Taipans are higher on days of recorded precipitation. However, the Coastal Taipans do exhibit higher mobility during the monsoon period resulting in higher sightings.
+```{r}
 
-5. Coastal Taipans appear to be especially active on warm days, possibly due to their increased mobility and metabolism, consequently resulting in higher sightings on these days. 
+load("data/tourism.rda")
+```
 
-💡💡
-</div>
+In the first part of this exploration, we were able to find that the
+largest number of Coastal Taipan sightings occurred in two weather
+stations - Cooktown airport and Townsville aero.
+
+To understand whether seasonal patterns or decreasing or increasing
+trends exist - we will subset our tourism date to ares with the most
+sightings (as aforementioned).
+
+```{r}
+sightings_snake <- tourism[tourism$Region %in% c("Townsville City - North Ward", "Townsville Region nfd", "Townsville - South", "South Townsville - Railway Estate"),]
+```
+
+-   Townsville Region nfd
+
+-   Townsville City - North Ward
+
+-   Townsville - South
+
+-   South Townsville - Railway Estate
+
+All the Townsville options \^
+
+Couldn't find any Cooktown airport.
+
+**Do a temporal analysis to understand whether there are seasonal
+patterns, increasing or decreasing trends.**
 
 ## Citations:
 
-1. **Atlas of Living Australia (ALA)** - Belbin L, Wallis E, Hobern D, Zerger A (2021) The Atlas of Living Australia: History, current state and future directions. Biodiversity Data Journal 9: e65023. https://doi.org/10.3897/BDJ.9.e65023. 
-2. **The [galah](https://galah.ala.org.au) package** - Westgate M, Kellie D, Stevenson M, Newman P (2023). _galah: Biodiversity Data from the Living Atlas Community_. R package version 1.5.3,
-  <https://CRAN.R-project.org/package=galah>.
-3. __Tidyverse__ - Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G, Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL, Miller E, Bache SM,
-  Müller K, Ooms J, Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo K, Yutani H (2019). “Welcome to the tidyverse.” _Journal of
-  Open Source Software_, *4*(43), 1686. doi:10.21105/joss.01686 <https://doi.org/10.21105/joss.01686>.
-4. __ggplot2__ - H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
-5. __rnoaa__ - Chamberlain S, Hocking D (2023). _rnoaa: 'NOAA' Weather Data from R_. R package version 1.4.0, <https://CRAN.R-project.org/package=rnoaa>.
-6. __broom__ - Robinson D, Hayes A, Couch S (2023). _broom: Convert Statistical Objects into Tidy Tibbles_. R package version 1.0.5,
-  <https://CRAN.R-project.org/package=broom>.
-7. __leaflet__ - Cheng J, Schloerke B, Karambelkar B, Xie Y (2023). _leaflet: Create Interactive Web Maps with the JavaScript 'Leaflet' Library_. R package version
-  2.2.0, <https://CRAN.R-project.org/package=leaflet>.
-8. __ggalt__ - Rudis B, Bolker B, Schulz J (2017). _ggalt: Extra Coordinate Systems, 'Geoms', Statistical Transformations, Scales and Fonts for 'ggplot2'_. R package
-  version 0.4.0, <https://CRAN.R-project.org/package=ggalt>.
-9. __ggpubr__ - Kassambara A (2023). _ggpubr: 'ggplot2' Based Publication Ready Plots_. R package version 0.6.0, <https://CRAN.R-project.org/package=ggpubr>.
-10. __kableExtra__ - Zhu H (2021). _kableExtra: Construct Complex Table with 'kable' and Pipe Syntax_. R package version 1.3.4,
-  <https://CRAN.R-project.org/package=kableExtra>.
-11. __nullabor__ -Buja, A., Cook, D., Hofmann, H., Lawrence, M., Lee, E.-K., Swayne, D. F, Wickham, H. (2009) Statistical Inference for Exploratory Data Analysis and
-  Model Diagnostics Royal Society Philosophical Transactions A, 367(1906):4361-4383. URL
-  http://rsta.royalsocietypublishing.org/content/367/1906/4361.article-info
-12. __ggmap__ -  D. Kahle and H. Wickham. ggmap: Spatial Visualization with ggplot2. The R Journal, 5(1), 144-161. URL
-  http://journal.r-project.org/archive/2013-1/kahle-wickham.pdf
-  
-13. __maps__ - Becker OScbRA, Minka ARWRvbRBEbTP, Deckmyn. A (2022). _maps: Draw Geographical Maps_. R package version 3.4.1,
-  <https://CRAN.R-project.org/package=maps>.
-14. __ggthemes__ -Arnold J (2021). _ggthemes: Extra Themes, Scales and Geoms for 'ggplot2'_. R package version 4.2.4, <https://CRAN.R-project.org/package=ggthemes>.
-15. __sf__ - Pebesma, E., & Bivand, R. (2023). Spatial Data Science: With Applications in R. Chapman and Hall/CRC. https://doi.org/10.1201/9780429459016
-16. __R Studio__ - Integrated Development for R. RStudio, PBC, Boston, MA URL http://www.rstudio.com/.
-17. __plotly__ - C. Sievert. Interactive Web-Based Data Visualization with R, plotly, and shiny. Chapman and Hall/CRC Florida, 2020.
+1.  **Atlas of Living Australia (ALA)** - Belbin L, Wallis E, Hobern D,
+    Zerger A (2021) The Atlas of Living Australia: History, current
+    state and future directions. Biodiversity Data Journal 9:
+    e65023. https://doi.org/10.3897/BDJ.9.e65023.
 
+2.  **The [galah](https://galah.ala.org.au) package** - Westgate M,
+    Kellie D, Stevenson M, Newman P (2023). *galah: Biodiversity Data
+    from the Living Atlas Community*. R package version 1.5.3,
+    <https://CRAN.R-project.org/package=galah>.
+
+3.  **Tidyverse** - Wickham H, Averick M, Bryan J, Chang W, McGowan LD,
+    François R, Grolemund G, Hayes A, Henry L, Hester J, Kuhn M,
+    Pedersen TL, Miller E, Bache SM, Müller K, Ooms J, Robinson D,
+    Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo K, Yutani H
+    (2019). "Welcome to the tidyverse." *Journal of Open Source
+    Software*, *4*(43), 1686. doi:10.21105/joss.01686
+    <https://doi.org/10.21105/joss.01686>.
+
+4.  **ggplot2** - H. Wickham. ggplot2: Elegant Graphics for Data
+    Analysis. Springer-Verlag New York, 2016.
+
+5.  **rnoaa** - Chamberlain S, Hocking D (2023). *rnoaa: 'NOAA' Weather
+    Data from R*. R package version 1.4.0,
+    <https://CRAN.R-project.org/package=rnoaa>.
+
+6.  **broom** - Robinson D, Hayes A, Couch S (2023). *broom: Convert
+    Statistical Objects into Tidy Tibbles*. R package version 1.0.5,
+    <https://CRAN.R-project.org/package=broom>.
+
+7.  **leaflet** - Cheng J, Schloerke B, Karambelkar B, Xie Y (2023).
+    *leaflet: Create Interactive Web Maps with the JavaScript 'Leaflet'
+    Library*. R package version 2.2.0,
+    <https://CRAN.R-project.org/package=leaflet>.
+
+8.  **ggalt** - Rudis B, Bolker B, Schulz J (2017). *ggalt: Extra
+    Coordinate Systems, 'Geoms', Statistical Transformations, Scales and
+    Fonts for 'ggplot2'*. R package version 0.4.0,
+    <https://CRAN.R-project.org/package=ggalt>.
+
+9.  **ggpubr** - Kassambara A (2023). *ggpubr: 'ggplot2' Based
+    Publication Ready Plots*. R package version 0.6.0,
+    <https://CRAN.R-project.org/package=ggpubr>.
+
+10. **kableExtra** - Zhu H (2021). *kableExtra: Construct Complex Table
+    with 'kable' and Pipe Syntax*. R package version 1.3.4,
+    <https://CRAN.R-project.org/package=kableExtra>.
+
+11. **nullabor** -Buja, A., Cook, D., Hofmann, H., Lawrence, M., Lee,
+    E.-K., Swayne, D. F, Wickham, H. (2009) Statistical Inference for
+    Exploratory Data Analysis and Model Diagnostics Royal Society
+    Philosophical Transactions A, 367(1906):4361-4383. URL
+    http://rsta.royalsocietypublishing.org/content/367/1906/4361.article-info
+
+12. **ggmap** - D. Kahle and H. Wickham. ggmap: Spatial Visualization
+    with ggplot2. The R Journal, 5(1), 144-161. URL
+    http://journal.r-project.org/archive/2013-1/kahle-wickham.pdf
+
+13. **maps** - Becker OScbRA, Minka ARWRvbRBEbTP, Deckmyn. A (2022).
+    *maps: Draw Geographical Maps*. R package version 3.4.1,
+    <https://CRAN.R-project.org/package=maps>.
+
+14. **ggthemes** -Arnold J (2021). *ggthemes: Extra Themes, Scales and
+    Geoms for 'ggplot2'*. R package version 4.2.4,
+    <https://CRAN.R-project.org/package=ggthemes>.
+
+15. **sf** - Pebesma, E., & Bivand, R. (2023). Spatial Data Science:
+    With Applications in R. Chapman and Hall/CRC.
+    https://doi.org/10.1201/9780429459016
+
+16. **R Studio** - Integrated Development for R. RStudio, PBC, Boston,
+    MA URL http://www.rstudio.com/.
+
+17. **plotly** - C. Sievert. Interactive Web-Based Data Visualization
+    with R, plotly, and shiny. Chapman and Hall/CRC Florida, 2020.
