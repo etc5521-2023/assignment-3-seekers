@@ -91,6 +91,7 @@ library(ggalt)
 library(kableExtra)
 library(plotly)
 library(DT)
+library(tsibble)
 ```
 
 
@@ -647,6 +648,9 @@ load("data/tourism.rda")
 glimpse(tourism)
 ```
 
+Note 1: Why we didn't consider Cookstown
+Note 2: Each trip is one person as described in the survey method. https://www.tra.gov.au/en/domestic/national-visitor-survey-methodology.html#:~:text=The%20survey%20runs,a%20private%20dwelling.
+
 ```{r}
 #subset the tourism data to align with the sighting
 region_summary <- tourism %>% 
@@ -656,13 +660,43 @@ region_summary <- tourism %>%
 region_summary
 ```
 
-- The **Townsville City - North Ward** region is the prime candidate for in-depth analysis due to its remarkable lead in the sum of trips, a crucial metric. This data-centric choice prioritizes regions of particular interest for further analysis and significance within the broader analysis. The notably higher number of trips in this region suggests its pivotal role as a major tourism hub as compared to other parts of our study. Focusing on this region is strategic for uncovering valuable insights and patterns of sightings for Australia's Deadly Serpent(The Enigmatic Coastal Taipan). 
+- The **Townsville City - North Ward** region is the prime candidate for in-depth analysis due to its remarkable lead in the sum of trips, a crucial metric. This data-centric choice prioritizes regions of particular interest for further analysis and significance within the broader analysis. The notably higher number of trips in this region suggests its pivotal role as a major tourism hub as compared to other parts of our study. Also, the month ward is closer to the coastal regions where maximum sightings were recorded as per the part 1 of this report. Focusing on this region is strategic for uncovering valuable insights and patterns of sightings for Australia's Deadly Serpent(The Enigmatic Coastal Taipan). 
 
 
+```{r}
+#subset the data as per Townsville City - North Ward
+tourism_subset <- tourism %>% 
+  filter(Region == "Townsville City - North Ward")
+```
 
+Note 3: The tourism data breaks up only into quarters and not into months, days or hours which is one of the limitations of our temporal analysis. This prevents us from finding daily and seasonal pattterns in the data. 
+```{r}
+#Temporal Analysis
 
+temporal1 <- tourism_subset %>%
+  aggregate(Trips ~ year(Quarter) + Purpose, sum)
+graph1 <- temporal1 %>%
+  ggplot(aes(x = `year(Quarter)`, y = Trips)) +
+  geom_line(alpha = 0.5) +
+  geom_smooth()+
+  facet_wrap(~ Purpose, scales = "free_y") 
+graph1
+```
 
+- A common observation across all purposes is the prominent trend for the year 2020, which is heavily influenced by the global Covid-19 pandemic. As the pandemic swept across the world, a noticeable and significant decline in the number of trips becomes evident. This decline can be attributed to the fact that people were primarily confined to their homes during this period.
+- From the variability perspective, the highest degree of variability is observed in the Business category, followed by Holiday and Visiting. However, it's worth noting that the Other category exhibits the least variability among the purposes.
+- Shifting our focus to trends, we can observe that the curves for Other and Total appear quite similar showing an upward trend with a decline between 2015 to 2020 which is influenced by the Covid-19 pandemic. However, when examining Holiday, we notice that its curve is notably flat, with limited discernible trends.
 
+```{r}
+temporal2 <- tourism_subset %>%
+  aggregate(Trips ~ quarter(Quarter) + Purpose, sum)
+
+graph2 <- temporal2 %>%
+  ggplot(aes(x = `quarter(Quarter)`, y = Trips)) +
+  geom_line(alpha = 0.5) +
+  facet_wrap(~ Purpose, scales = "free_y") 
+graph2
+```
 
 
 
