@@ -698,6 +698,11 @@ graph2 <- temporal2 %>%
 graph2
 ```
 
+- Based on the above graphs, it can be inferred that the number of trips in quarter one is consistently lower across all travel purposes to Townsville - North Ward.
+- Since the trends for the Holiday and Total categories are similar, it is reasonable to assume that a significant proportion of the trips in the Total category have been influenced by the Holiday category.
+- This similarity also highlights that the maximum number of trips occurs in the third quarter for each category.
+- In all the categories, they initially exhibit an upward trend, followed by a downward slope. However, the Visiting graph stands out with a distinctive trend in the quarterly analysis.
+
 
 
 
