@@ -671,12 +671,50 @@ tourism %>% filter(str_detect(tourism$Region, "cooktown")) %>% dplyr::count()
 **Cooktown is not found in the tourism dataset!**
 
 
+```{r}
+townsville <- tourism %>% filter(Region == "Townsville City - North Ward")
 
+# Use total minus business trips
+sub_business <- townsville %>%
+  filter(Purpose == "Total") %>%
+  left_join(townsville %>% filter(Purpose == "Business"), by = "Quarter") %>%
+  summarise(sub_business = Trips.x - Trips.y) 
 
+# Plot sub_business on line plot 
+sub_business %>% 
+  ggplot(aes(x = Quarter, y = sub_business)) + 
+  geom_line() + 
+  geom_point(data = sub_business %>% filter(quarter(Quarter) == 3), 
+             aes(x = Quarter, y = sub_business), colour = "red") +
+  geom_smooth(se = FALSE)
 
+q3 <- townsville %>% filter(quarter(Quarter) == 3)
 
+# Plot total trips on line plot and highlight the Q3 of each year.
+townsville %>% 
+  filter(Purpose == "Total") %>% 
+  ggplot(aes(x = Quarter, 
+             y = Trips)) +
+  geom_line() + 
+  geom_point(data = q3 %>% filter(Purpose == "Total"), 
+             aes(x = Quarter, y = Trips), colour = "red") +
+  geom_smooth(method = "lm", se = FALSE)
 
+# Is facet_wrap on Purpose necessary?
+townsville %>%
+  ggplot(aes(x = Quarter, 
+             y = Trips)) +
+  geom_line() + 
+  geom_point(data = q3, aes(x = Quarter, y = Trips), colour = "red") +
+  geom_smooth(se = FALSE) +
+  facet_wrap(~Purpose)
+```
 
+**It might be rare for someone who is in a business trip to go near the coastal area. Since Taipan is mostly spot near coastal area, it might make sense to exclude the business trips?**
+
+**After highlighting Q3 obs of each year, it seems there is a seasonality which tourism peaks in Q3 for most of the years in our observations**
+
+**There seems a slight increase in tourism in Townsville**
 
 
 
