@@ -70,7 +70,9 @@ Although we will attempt to accurately analyse the data by obtaining it from rel
 <!--
 2. Download all the occurrence records from the Atlas of Living Australia, ideally scripted using the `atlas_occurrences()` function from the `galah` package. Make sure you include date, time, collector identification details. Save this into a `data-raw` folder in your repo.
 -->
-```{r echo=FALSE}
+```{r}
+#| message: false
+#| echo: false
 library(galah)
 library(tidyverse)
 library(visdat)
@@ -638,6 +640,54 @@ Based on our detailed analysis of the Coastal Taipan sightings, following are ou
 
 💡💡
 </div>
+
+
+# Part 2
+
+### Task 1
+
+```{r}
+#| message: false
+#| echo: false
+library(tsibble)
+```
+
+
+```{r}
+load(file = "data/tourism.rda")
+
+temp <- tourism %>% filter(str_detect(tourism$Region, "Townsville"))
+
+unique(temp$Region)
+
+temp %>% filter(Purpose == "Total") %>% 
+  arrange(-Trips)
+
+tourism %>% filter(str_detect(tourism$Region, "cooktown")) %>% dplyr::count()
+```
+
+**After doing research on Google maps, all "South Townsville - Railway Estate", "Townsville - South", "Townsville City - North Ward" are geagaphcially near Townsville aero. However, "Townsville City - North Ward" would be chosen for the purpose of analysis since it has the most tourism data among the four.**
+
+**Cooktown is not found in the tourism dataset!**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Citations:
 
