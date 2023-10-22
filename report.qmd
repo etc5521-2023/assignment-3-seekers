@@ -644,7 +644,7 @@ Based on our detailed analysis of the Coastal Taipan sightings, following are ou
 
 # Part 2
 
-### Task 1
+### Task 1 - Tourism data
 
 ```{r}
 #| message: false
@@ -698,7 +698,8 @@ townsville %>%
   geom_line() + 
   geom_point(data = q3 %>% filter(Purpose == "Total"), 
              aes(x = Quarter, y = Trips), colour = "red") +
-  geom_smooth(method = "lm", se = FALSE)
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed") + # shall I use linear or non-linear line of best fit?
+  theme_minimal()
 
 # Is facet_wrap on Purpose necessary?
 townsville %>%
@@ -716,7 +717,39 @@ townsville %>%
 
 **There seems a slight increase in tourism in Townsville**
 
+### Task 2 - Ecotourist interest
 
+```{r}
+wild_quarter <- subset_combined_data %>% 
+  filter(eventDate >= ymd("1998-01-01")) %>% 
+  mutate(Quarter = yearquarter(ymd(eventDate))) %>% 
+  group_by(Quarter) %>% 
+  summarise(total = n()) %>% 
+  as_tsibble(index = Quarter)
+
+# add the range of Quarter that match with the tourism dataset
+new_row <- tibble(Quarter = c(yearquarter("1998 Q1"), yearquarter("2022 Q4")), 
+                   total = c(0,0))
+
+wild_quarter <- wild_quarter %>% bind_rows(new_row)
+
+has_gaps(wild_quarter, .full = TRUE)
+
+wild_quarter <- wild_quarter %>% fill_gaps(.full = TRUE) %>% 
+  mutate(total = if_else(is.na(total), 0, total)) 
+
+townsville_total <- townsville %>% 
+  filter(Purpose == "Total")
+
+ecotourist <- left_join(wild_quarter, townsville_total, by = "Quarter")
+
+# computing the correlation between the wild sighting numbers and number of tourists 
+cor(ecotourist$total, ecotourist$Trips)
+
+ecotourist %>% lm(formula = total ~ Trips) %>% summary()   
+# R-squared is exceptionally low (i.e., 0.01092)
+# Doesn't make sense to have a negative intercept as the wild sighting can't go negative
+```
 
 
 
