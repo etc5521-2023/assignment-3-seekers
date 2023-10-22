@@ -751,7 +751,13 @@ ecotourist %>% lm(formula = total ~ Trips) %>% summary()
 # Doesn't make sense to have a negative intercept as the wild sighting can't go negative
 ```
 
-
+```{r}
+# Plot the line chart of the log of total trips and wild sightings number to examine correlation visually
+ecotourist %>% 
+  ggplot() + 
+  geom_line(aes(x = Quarter, y = total), colour = "orangered") + 
+  geom_line(aes(x = Quarter, y = log10(Trips)), colour = "blue")
+```
 
 
 
