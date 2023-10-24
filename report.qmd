@@ -33,7 +33,7 @@ being the most renowned. These reptiles are highly venomous and belong
 to the elapid family, which includes other infamous snakes like the king
 cobra and the black mamba. According to @markwell2016killer, what sets
 the taipan apart, however, is its reputation as having the **most toxic
-venom of any snake in the world !**
+venom of any snake in the world!**
 
 In our current analysis, we will be focusing on the occurrences of a
 specific subspecies of the Coastal Taipan across the various states of
@@ -183,7 +183,7 @@ taipan <- atlas_occurrences(
 save(taipan, file=here::here("data-raw/taipan_raw.rda"))
 ```
 
-```{r}
+```{r 2}
 taipan %>% head() %>% DT::datatable()
 ```
 
@@ -195,7 +195,7 @@ organized into a tidy format. Below is a detailed description of each
 salient variable:
 
 | Variable Name    | Data Type | Description                                                                                             |
-|-------------------------------|-------------------|----------------------|
+|------------|------------|------------------------------------------------|
 | decimalLatitude  | dbl       | The latitude coordinate of the observation location.                                                    |
 | decimalLongitude | dbl       | The longitude coordinate of the observation location.                                                   |
 | eventDate        | date      | The date when the observation was made.                                                                 |
@@ -902,9 +902,26 @@ the future.
 💡💡
 :::
 
-## **PART B**
+## **PART B - Ecotourism & Tourism**
+
+## INTRODUCTION
+
+Now that we have learn
+
+-   data resources explained
+
+    -   Tourism data and how it was created
+
+-   limitations
+
+-   expectations
+
+-   look into tourism for this snake
 
 Loading in the tourism data:
+
+\*\* need to do data description for tourism data. - include - IDA (what
+was done in the rda script)
 
 ```{r}
 
@@ -921,47 +938,285 @@ trends exist - we will subset our tourism date to ares with the most
 sightings (as aforementioned).
 
 ```{r}
-snake_sightings <- tourism[tourism$Region %in% c("Townsville City - North Ward", "Townsville Region nfd", "Townsville - South", "South Townsville - Railway Estate"),]
+tourism_subset <- tourism[tourism$Region %in% c("Ingham", "Townsville City - North Ward", "Mackay", "Tewantin","Rockhampton City", "Gladstone", "Redcliffe", "Cairns City", "Daintree"),]
 ```
 
--   Townsville Region nfd
-
--   Townsville City - North Ward
-
--   Townsville - South
-
--   South Townsville - Railway Estate
-
-All the Townsville options \^
-
-Couldn't find any Cooktown airport.
-
-**Do a temporal analysis to understand whether there are seasonal
-patterns, increasing or decreasing trends.**
-
-Looking at the snake_sightings dataset, we can see there are 5 different
-reasons for which tourism stemmed for under the variable 'Purpose'.
-These include business, holiday, total, visiting and other.
-
-To discover potential trends, anomalies or seasonality in the data - we
-created time series plots for the different purposes for tourism.
+## ECOTOURISM
 
 ```{r}
+#creating dataframe for unique regions
+unique_regions_tourism <- data.frame(Region = unique(tourism_subset$Region), Country = "AUS")
 
-library(tidyverse)
-#splitting the purposes and plotting timeseries
+unique_regions_tourism$Region[unique_regions_tourism$Region == "Townsville City - North Ward"] <- "Townsville"
 
-snake_sightings %>%
-  group_by(Purpose) %>%
-  filter(Purpose != "Total") %>% #decide if we wanna time series total
-  ggplot(aes(x= Quarter, y = Trips)) +
-  geom_line() +
-  facet_wrap(~Purpose, scales = "free_y") +
-  labs(title = "Temporal Analysis of Trips by Purpose",
-       x = "Quarter",
-       y = "Numer of Trips") +
-  theme_minimal()
 ```
+
+```{r}
+library(RJSONIO)
+nrow <- nrow(unique_regions_tourism)
+counter <- 1
+unique_regions_tourism$lon[counter] <- 0
+unique_regions_tourism$lat[counter] <- 0
+while (counter <= nrow){
+  CityName <- gsub(' ','%20',unique_regions_tourism$Region[counter])
+  CountryCode <- unique_regions_tourism$Country[counter]
+  url <- paste(
+    "http://nominatim.openstreetmap.org/search?city="
+    , CityName
+    , "&countrycodes="
+    , CountryCode
+    , "&limit=9&format=json"
+    , sep="")
+  x <- fromJSON(url)
+  if(is.vector(x)){
+    unique_regions_tourism$lon[counter] <- x[[1]]$lon
+    unique_regions_tourism$lat[counter] <- x[[1]]$lat    
+  }
+  counter <- counter + 1
+}
+```
+
+```{r}
+unique_regions_tourism$lon <- as.numeric(as.character(unique_regions_tourism$lon))
+unique_regions_tourism$lat <- as.numeric(as.character(unique_regions_tourism$lat))
+```
+
+```{r}
+qld_map <- read_sf("qld-march-2018-esri 2/E_AUGEC_region.shp") %>% 
+   mutate(DivisionNm = toupper(Elect_div)) %>%
+  st_zm(geometry)
+```
+
+::: callout-note
+## What is Ecotourism?
+
+Ecotourism encompasses nature-based activities and responsible travel
+that conserves the environment and increases visitor appreciation and
+understanding of natural and cultural values.
+:::
+
+***Why is Ecotourism important for the coastal Taipan?*** 🐍
+
+For Queensland, where our regions are for which we subset our data -
+Tourism is a [\$23 billion
+industry](https://parks.des.qld.gov.au/management/ecotourism/about%5D).
+For the Coastal Taipan, the ecotourism industry allows visitors the
+chance to observe and appreciate this species in its natural habitat -
+without causing harm. Exploring and understanding sustainable ecotourism
+can be significant in ensuring its survival and protection for future
+generations.
+
+## Does the Data Suggest Ecotourist Interest in the Coastal Taipan?
+
+### Visual Inference of Ecotourism
+
+As aforementioned, Queensland generates a lot of money from its tourism
+industry. Given this, it would be interesting to investigate the
+possibility of ecotourism centered around the coastal Taipan. To explore
+this, a null plot will be generated to investigate the relationship
+between tourist regions and coastal Taipan sightings.
+
+::: {.alert .alert-block .alert-warning}
+$H_o$ (null hypothesis): There is no association between popular tourist
+regions and Taipain sightings.
+
+$H_1$ (alternative hypothesis): There is an association between tourist
+regions and Taipan sightings.
+
+Null generating mechanism: usage of 'null_permute' function to permute
+the "latitude" values of the combined dataset, breaking existing
+relationships between 'Sightings' and 'Tourism Regions'.
+:::
+
+```{r}
+#| label: fig-tourist-null
+#| fig-cap: "Null Plot of Tourism and Taipan Sightings"
+
+# Load necessary libraries
+library(dplyr)
+library(ggplot2)
+library(nullabor)
+library(maps)
+set.seed(1232536)
+
+#data prep to combine datasets to be able to do permutation
+unique_regions_tourism <- unique_regions_tourism %>%
+  rename(latitude = lat, longitude = lon)
+
+# Selecting only relevant columns
+combined_data_sub <- combined_data %>%
+  select(latitude, longitude)
+
+unique_regions_tourism_sub <- unique_regions_tourism %>%
+  select(latitude, longitude)
+
+# Add type columns to the data frames
+combined_data_sub$type <- "Sightings"
+unique_regions_tourism_sub$type <- "Tourism Regions"
+
+# Combine new datasets together to be able to permute that
+combined_all <- rbind(combined_data_sub, unique_regions_tourism_sub)
+
+# Get Australia's map
+australia_map <- map_data("world", region = "Australia")
+
+# Permuted set of all data
+all_data_permuted <- lineup(null_permute("latitude"), combined_all, n=20)
+
+
+map_null_plot <- ggplot() + 
+  geom_polygon(data = australia_map, aes(x = long, y = lat, group = group), fill = "white", color = "black") +
+
+  geom_point(data = subset(all_data_permuted, type == "Sightings"), 
+             aes(x = longitude, y = latitude), 
+             color = "pink", alpha = 0.4) +
+
+  geom_point(data = subset(all_data_permuted, type == "Tourism Regions"), 
+             aes(x = longitude, y = latitude),
+             color = "red", alpha = 0.4) +
+  
+  theme_classic() + 
+  theme(legend.position = "none",
+        axis.title = element_blank(),
+        axis.text = element_blank()) +
+  
+
+  facet_wrap(~.sample)
+
+
+map_null_plot
+
+
+
+```
+
+::: callout-note
+# Key takeaway
+
+When analysing the null plots in @fig-tourist-null, we were able to
+deduce that 7 out of the 8 people asked were able to recognise **plot
+15** as the most unique plot, as the points were lined up on the coast
+where as in other plots, the points went into the water. The p-value for
+the following result is **`r pvisual(8,8,20)[3]`**. With an extremely
+low p-value, it suggests all 8 observers were unlikely to be able to
+pick the genuine plot purely by chance. This then suggests that there is
+evidence against the null hypothesis (`$H_o$`), suggesting there may be
+an association between tourist regions and coastal Taipan sighting.
+:::
+
+```{r}
+library(nullabor)
+pvisual(8,8,20)
+```
+
+### Does the data support ecotourism for the coastal Taipan?
+
+To explore whether ecotourist interest may potentially exist for the
+Coastal Taipan, a map of Queensland was created using electoral division
+data retrieved from the [Australian Electoral
+Commission](https://www.aec.gov.au/Electorates/Redistributions/2017/qld/final-report/maps-data.htm).
+Layered on top of this map, we placed points in pink of the sightings of
+the Coastal Taipan. We also layered points which were major tourism
+points that overlapped both in our sightings data and tourism data.
+These points were collected using the `RJSONIO` library, which fetched
+latitude and longitude details for each region in
+`unique_regions_tourism` utilising the OpenStreetMap's Nominatim
+service.
+
+The generated plot in @fig-tourist-map showcases the regions in
+Queensland with Coastal Taipan sightings in pink and tourism regions in
+red. This plot therefore can assist in visualising the distribution of
+these points and proximity of tourism regions to Taipain sighting to get
+a better understanding in potential ecotourist interest in the Coastal
+Taipan.
+
+```{r}
+#creating dataframe for unique regions
+unique_regions_tourism <- data.frame(Region = unique(tourism_subset$Region), Country = "AUS")
+
+unique_regions_tourism$Region[unique_regions_tourism$Region == "Townsville City - North Ward"] <- "Townsville"
+
+```
+
+```{r}
+library(RJSONIO)
+nrow <- nrow(unique_regions_tourism)
+counter <- 1
+unique_regions_tourism$lon[counter] <- 0
+unique_regions_tourism$lat[counter] <- 0
+while (counter <= nrow){
+  CityName <- gsub(' ','%20',unique_regions_tourism$Region[counter]) #remove space for URLs
+  CountryCode <- unique_regions_tourism$Country[counter]
+  url <- paste(
+    "http://nominatim.openstreetmap.org/search?city="
+    , CityName
+    , "&countrycodes="
+    , CountryCode
+    , "&limit=9&format=json"
+    , sep="")
+  x <- fromJSON(url)
+  if(is.vector(x)){
+    unique_regions_tourism$lon[counter] <- x[[1]]$lon
+    unique_regions_tourism$lat[counter] <- x[[1]]$lat    
+  }
+  counter <- counter + 1
+}
+```
+
+```{r}
+unique_regions_tourism$lon <- as.numeric(as.character(unique_regions_tourism$lon))
+unique_regions_tourism$lat <- as.numeric(as.character(unique_regions_tourism$lat))
+```
+
+```{r}
+qld_map <- read_sf("qld-march-2018-esri 2/E_AUGEC_region.shp") %>% 
+   mutate(DivisionNm = toupper(Elect_div)) %>%
+  st_zm(geometry)
+```
+
+```{r}
+#| label: fig-tourist-map
+#| fig-cap: "Map of Tourism Regions and Sightings"
+library(plotly)
+library(ggplot2)
+library(sf)
+#improved plot with legend and Region in hovering
+p <- ggplot(data = qld_map) +
+  geom_sf(aes(geometry = geometry),  color = "black") +
+  geom_point(data = combined_data, 
+             aes(x=longitude, y=latitude, colour="Sightings", 
+                 text=paste("Region:", combined_data$name, "<br>Longitude:", longitude, "<br>Latitude:", latitude))) +
+  geom_point(data = unique_regions_tourism, 
+             aes(x=lon, y=lat, colour="Tourism Regions", 
+                 text=paste("Region:", unique_regions_tourism$Region, "<br>Longitude:", lon, "<br>Latitude:", lat))) +
+  scale_color_manual(name = "Legend", 
+                     values = c("Sightings" = "pink", "Tourism Regions" = "red")) +
+  coord_sf(xlim = c(138, 154), ylim = c(-29, -10)) +
+  xlab("Longitude") +
+  ylab("Latitude") +
+  ggtitle("Coastal Taipan Sightings and Tourism Regions in Queensland",
+          subtitle = "QLD") 
+
+ggplotly(p, tooltip="text")
+
+```
+
+::: callout-tip
+## Ecotourism and Taipan Sightings
+
+Based on @fig-tourist-map we can gather two main insights in relation to
+Tourism Regions and Coastal Taipan sightings in Queensland:
+
+1.  We can see a lot of Taipans represented by the pink points on the
+    map along the eastern coast of Queensland - however there are some
+    sightings more inland.
+
+2.  The red points - the tourism regions - overlap some of the Taipan
+    sightings however there are absence of tourist regions in the north
+    of Queensland where some sightings are.
+:::
+
+
 
 ## Citations:
 
