@@ -170,6 +170,7 @@ library(ggalt)
 library(kableExtra)
 library(plotly)
 library(DT)
+library(tsibble)
 ```
 
 ```{r include=FALSE}
@@ -934,7 +935,7 @@ largest number of Coastal Taipan sightings occurred in two weather
 stations - Cooktown airport and Townsville aero.
 
 To understand whether seasonal patterns or decreasing or increasing
-trends exist - we will subset our tourism date to ares with the most
+trends exist - we will subset our tourism data to areas with the most
 sightings (as aforementioned).
 
 ```{r}
@@ -942,6 +943,27 @@ tourism_subset <- tourism[tourism$Region %in% c("Ingham", "Townsville City - Nor
 ```
 
 ## ECOTOURISM
+
+```{r}
+########### David's modification
+
+# Regions' name that match with sighting data
+top <- c("ingham composite", "townsville aero", "mackay aero", "tewantin rsl park", "rockhampton aero", "gladstone airport", "redcliffe", "cairns aero", "cooktown airport")
+
+# Regions' name that match with tourism data (P.S. Daintree is used as a proxy for Cooktown)
+top_location <- c("Ingham", "Townsville City - North Ward", "Mackay", "Tewantin","Rockhampton City", "Gladstone", "Redcliffe", "Cairns City", "Daintree")
+
+top_tourism_avg <- tourism %>% 
+  filter(Region %in% top_location) %>% 
+  filter(Purpose == "Total") %>%
+  ungroup(Quarter) %>% 
+  as.tibble() %>% 
+  group_by(Region) %>% 
+  summarise(Avg_trips = mean(Trips))
+
+top_tourism_avg$Region[top_tourism_avg$Region == "Townsville City - North Ward"] <- "Townsville"
+```
+
 
 ```{r}
 #creating dataframe for unique regions
@@ -980,6 +1002,12 @@ while (counter <= nrow){
 unique_regions_tourism$lon <- as.numeric(as.character(unique_regions_tourism$lon))
 unique_regions_tourism$lat <- as.numeric(as.character(unique_regions_tourism$lat))
 ```
+
+```{r}
+########### David's modification
+unique_regions_tourism <- left_join(unique_regions_tourism, top_tourism_avg, by = "Region")
+```
+
 
 ```{r}
 qld_map <- read_sf("qld-march-2018-esri 2/E_AUGEC_region.shp") %>% 
@@ -1090,6 +1118,55 @@ map_null_plot
 
 ```
 
+
+```{r}
+########### David's modification
+# Load necessary libraries
+library(dplyr)
+library(ggplot2)
+library(nullabor)
+library(maps)
+set.seed(1232536)
+
+#data prep to combine datasets to be able to do permutation
+unique_regions_tourism <- unique_regions_tourism %>%
+  rename(latitude = lat, longitude = lon)
+
+# Selecting only relevant columns
+combined_data_sub <- combined_data %>%
+  select(latitude, longitude)
+
+unique_regions_tourism_sub <- unique_regions_tourism %>%
+  select(latitude, longitude, Avg_trips)
+
+# Add type columns to the data frames
+combined_data_sub$type <- "Sightings"
+unique_regions_tourism_sub$type <- "Tourism Regions"
+
+# Get Australia's map
+australia_map <- map_data("world", region = "Australia")
+
+# Permute on the average trips of each tourism region
+ggplot(lineup(null_permute('Avg_trips'), unique_regions_tourism_sub),
+       aes(x = longitude, y = latitude)) +
+  geom_polygon(data = australia_map, aes(x = long, y = lat, group = group), fill = "white", color = "black") +
+  geom_point(aes(size = Avg_trips), alpha = 0.4, colour = "red") +
+  geom_point(data = combined_data_sub, aes(x = longitude, y = latitude), colour = "blue", alpha = 0.4) +
+  facet_wrap(~.sample, ncol = 5) +
+  theme_void() + 
+  theme(axis.text = element_blank(), 
+        panel.border = element_rect(fill = NA, colour = "black")) +
+  guides(size = "none")
+
+
+# Origin plots on the selected tourism regions
+unique_regions_tourism_sub %>% 
+  ggplot(aes(x = longitude, y = latitude)) + 
+  geom_polygon(data = australia_map, aes(x = long, y = lat, group = group), fill = "white", color = "black") +
+  geom_point(aes(size = Avg_trips), alpha = 0.4, colour = "red")
+```
+
+
 ::: callout-note
 # Key takeaway
 
@@ -1191,6 +1268,39 @@ p <- ggplot(data = qld_map) +
                  text=paste("Region:", unique_regions_tourism$Region, "<br>Longitude:", lon, "<br>Latitude:", lat))) +
   scale_color_manual(name = "Legend", 
                      values = c("Sightings" = "pink", "Tourism Regions" = "red")) +
+  coord_sf(xlim = c(138, 154), ylim = c(-29, -10)) +
+  xlab("Longitude") +
+  ylab("Latitude") +
+  ggtitle("Coastal Taipan Sightings and Tourism Regions in Queensland",
+          subtitle = "QLD") 
+
+ggplotly(p, tooltip="text")
+
+```
+
+
+```{r}
+########### David's modification
+library(plotly)
+library(ggplot2)
+library(sf)
+#improved plot with legend and Region in hovering
+p <- ggplot(data = qld_map) +
+  geom_sf(aes(geometry = geometry),  color = "black") +
+  geom_point(data = combined_data, 
+             aes(x=longitude, y=latitude, colour="Sightings", 
+                 text=paste("Region:", combined_data$name, 
+                            "<br>Longitude:", longitude, 
+                            "<br>Latitude:", latitude))) +
+  geom_point(data = unique_regions_tourism_sub, 
+             aes(x=longitude, y=latitude, colour="Tourism Regions", size = Avg_trips, 
+                 text=paste("Region:", unique_regions_tourism$Region, 
+                            "<br>Longitude:", longitude, 
+                            "<br>Latitude:", latitude, 
+                            "<br>Quarterly average trips (in thousand):", round(Avg_trips, 2))), 
+             alpha = 0.6) +
+  scale_color_manual(name = "Legend", 
+                     values = c("Sightings" = "blue", "Tourism Regions" = "red")) +
   coord_sf(xlim = c(138, 154), ylim = c(-29, -10)) +
   xlab("Longitude") +
   ylab("Latitude") +
