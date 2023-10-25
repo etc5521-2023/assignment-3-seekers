@@ -656,63 +656,114 @@ Based on our detailed analysis of the Coastal Taipan sightings, following are ou
 ```{r}
 #download the tourism data
 load("data/tourism.rda")
-glimpse(tourism)
 ```
 
-Note 1: Why we didn't consider Cookstown
-Note 2: Each trip is one person as described in the survey method. https://www.tra.gov.au/en/domestic/national-visitor-survey-methodology.html#:~:text=The%20survey%20runs,a%20private%20dwelling.
+- Each trip is one person as described in the survey method. https://www.tra.gov.au/en/domestic/national-visitor-survey-methodology.html#:~:text=The%20survey%20runs,a%20private%20dwelling.
+
+- 
 
 ```{r}
-#subset the tourism data to align with the sighting
-region_summary <- tourism %>% 
-  filter(grepl("Townsville", Region)) %>% 
-  group_by(Region) %>% 
-  summarize(sum = sum(Trips))
-region_summary
+temp <- tourism %>% filter(str_detect(tourism$Region, "Townsville"))
+
+unique(temp$Region)
+
+temp %>% filter(Purpose == "Total") %>% 
+  arrange(-Trips)
 ```
 
-- The **Townsville City - North Ward** region is the prime candidate for in-depth analysis due to its remarkable lead in the sum of trips, a crucial metric. This data-centric choice prioritizes regions of particular interest for further analysis and significance within the broader analysis. The notably higher number of trips in this region suggests its pivotal role as a major tourism hub as compared to other parts of our study. Also, the month ward is closer to the coastal regions where maximum sightings were recorded as per the part 1 of this report. Focusing on this region is strategic for uncovering valuable insights and patterns of sightings for Australia's Deadly Serpent(The Enigmatic Coastal Taipan). 
+- **After doing research on Google maps, all "South Townsville - Railway Estate", "Townsville - South", "Townsville City - North Ward" are geagaphcially near Townsville aero. However, "Townsville City - North Ward" would be chosen for the purpose of analysis since it has the most tourism data among the four.**
+
+**Cooktown is not found in the tourism dataset!** 
 
 
 ```{r}
-#subset the data as per Townsville City - North Ward
-tourism_subset <- tourism %>% 
-  filter(Region == "Townsville City - North Ward")
+Townsville only
+townsville <- tourism %>% filter(Region == "Townsville City - North Ward")
+
+# Use total minus business trips
+sub_business <- townsville %>%
+  filter(Purpose == "Total") %>%
+  left_join(townsville %>% filter(Purpose == "Business"), by = "Quarter") %>%
+  summarise(sub_business = Trips.x - Trips.y) 
+
+# Plot sub_business on line plot 
+sub_business %>% 
+  ggplot(aes(x = Quarter, y = sub_business)) + 
+  geom_line() + 
+  geom_point(data = sub_business %>% filter(quarter(Quarter) == 3), 
+             aes(x = Quarter, y = sub_business), colour = "red") +
+  geom_smooth(se = FALSE)
+
+q3 <- townsville %>% filter(quarter(Quarter) == 3)
+
+# Plot total trips on line plot and highlight the Q3 of each year.
+townsville %>% 
+  filter(Purpose == "Total") %>% 
+  ggplot(aes(x = Quarter, 
+             y = Trips)) +
+  geom_line() + 
+  geom_point(data = q3 %>% filter(Purpose == "Total"), 
+             aes(x = Quarter, y = Trips), colour = "red") +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed") + # shall I use linear or non-linear line of best fit?
+  theme_minimal()
+
+# Is facet_wrap on Purpose necessary?
+townsville %>%
+  ggplot(aes(x = Quarter, 
+             y = Trips)) +
+  geom_line() + 
+  geom_point(data = q3, aes(x = Quarter, y = Trips), colour = "red") +
+  geom_smooth(se = FALSE) +
+  facet_wrap(~Purpose)
 ```
 
-Note 3: The tourism data breaks up only into quarters and not into months, days or hours which is one of the limitations of our temporal analysis. This prevents us from finding daily and seasonal pattterns in the data. 
+-  
 ```{r}
 #Temporal Analysis
 
-temporal1 <- tourism_subset %>%
-  aggregate(Trips ~ year(Quarter) + Purpose, sum)
-graph1 <- temporal1 %>%
-  ggplot(aes(x = `year(Quarter)`, y = Trips)) +
-  geom_line(alpha = 0.5) +
-  geom_smooth()+
-  facet_wrap(~ Purpose, scales = "free_y") 
-graph1
+############################## top 10 locations
+
+top_location <- c("Ingham", "Townsville City - North Ward", "Mackay", "Tewantin","Rockhampton City", "Gladstone", "Redcliffe", "Cairns City", "Daintree")
+
+top_tourism <- tourism %>% filter(Region %in% top_location)
+
+top_tourism <- top_tourism %>% 
+  index_by(Quarter) %>% 
+  group_by(Purpose) %>% 
+  summarise(Trips = mean(Trips))
+
+q3 <- top_tourism %>% filter(quarter(Quarter) == 3)
+
+# Facet by visiting reasons
+facet_purpose <- top_tourism %>%
+  ggplot(aes(x = Quarter, 
+             y = Trips)) +
+  geom_line() + 
+  geom_point(data = q3, aes(x = Quarter, y = Trips), colour = "red") +
+  geom_smooth(se = FALSE) +
+  facet_wrap(~Purpose)
+
+total_tourism <- top_tourism %>% 
+  filter(Purpose == "Total") %>% 
+  ggplot(aes(x = Quarter, 
+             y = Trips)) +
+  geom_line() + 
+  geom_point(data = q3 %>% filter(Purpose == "Total"), 
+             aes(x = Quarter, y = Trips), colour = "red") +
+  geom_smooth(method = "loess", se = FALSE, linetype = "dashed") +  
+  theme_minimal() # shall I use linear or non-linear line of best fit?
+
+ggplotly(facet_purpose)
+
+ggplotly(total_tourism)
 ```
 
-- A common observation across all purposes is the prominent trend for the year 2020, which is heavily influenced by the global Covid-19 pandemic. As the pandemic swept across the world, a noticeable and significant decline in the number of trips becomes evident. This decline can be attributed to the fact that people were primarily confined to their homes during this period.
-- From the variability perspective, the highest degree of variability is observed in the Business category, followed by Holiday and Visiting. However, it's worth noting that the Other category exhibits the least variability among the purposes.
-- Shifting our focus to trends, we can observe that the curves for Other and Total appear quite similar showing an upward trend with a decline between 2015 to 2020 which is influenced by the Covid-19 pandemic. However, when examining Holiday, we notice that its curve is notably flat, with limited discernible trends.
 
-```{r}
-temporal2 <- tourism_subset %>%
-  aggregate(Trips ~ quarter(Quarter) + Purpose, sum)
+- *It might be rare for someone who is in a business trip to go near the coastal area. Since Taipan is mostly spot near coastal area, it might make sense to exclude the business trips?*
 
-graph2 <- temporal2 %>%
-  ggplot(aes(x = `quarter(Quarter)`, y = Trips)) +
-  geom_line(alpha = 0.5) +
-  facet_wrap(~ Purpose, scales = "free_y") 
-graph2
-```
+*After highlighting Q3 obs of each year, it seems there is a seasonality which tourism peaks in Q3 for most of the years in our observations*
 
-- Based on the above graphs, it can be inferred that the number of trips in quarter one is consistently lower across all travel purposes to Townsville - North Ward.
-- Since the trends for the Holiday and Total categories are similar, it is reasonable to assume that a significant proportion of the trips in the Total category have been influenced by the Holiday category.
-- This similarity also highlights that the maximum number of trips occurs in the third quarter for each category.
-- In all the categories, they initially exhibit an upward trend, followed by a downward slope. However, the Visiting graph stands out with a distinctive trend in the quarterly analysis.
+*There seems a slight increase in tourism in Townsville*
 
 # task 2
 
