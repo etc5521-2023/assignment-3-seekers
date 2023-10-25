@@ -149,6 +149,7 @@ delineated as follows:
 2. Download all the occurrence records from the Atlas of Living Australia, ideally scripted using the `atlas_occurrences()` function from the `galah` package. Make sure you include date, time, collector identification details. Save this into a `data-raw` folder in your repo.
 -->
 ```
+
 ```{r echo=FALSE}
 library(galah)
 library(tidyverse)
@@ -957,7 +958,7 @@ top_tourism_avg <- tourism %>%
   filter(Region %in% top_location) %>% 
   filter(Purpose == "Total") %>%
   ungroup(Quarter) %>% 
-  as.tibble() %>% 
+  as_tibble() %>% 
   group_by(Region) %>% 
   summarise(Avg_trips = mean(Trips))
 
@@ -1128,9 +1129,6 @@ library(nullabor)
 library(maps)
 set.seed(1232536)
 
-#data prep to combine datasets to be able to do permutation
-unique_regions_tourism <- unique_regions_tourism %>%
-  rename(latitude = lat, longitude = lon)
 
 # Selecting only relevant columns
 combined_data_sub <- combined_data %>%
@@ -1333,7 +1331,7 @@ Tourism Regions and Coastal Taipan sightings in Queensland:
 1.  **Atlas of Living Australia (ALA)** - Belbin L, Wallis E, Hobern D,
     Zerger A (2021) The Atlas of Living Australia: History, current
     state and future directions. Biodiversity Data Journal 9:
-    e65023. https://doi.org/10.3897/BDJ.9.e65023.
+    e65023. <https://doi.org/10.3897/BDJ.9.e65023>
 
 2.  **The [galah](https://galah.ala.org.au) package** - Westgate M,
     Kellie D, Stevenson M, Newman P (2023). *galah: Biodiversity Data
