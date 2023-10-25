@@ -819,7 +819,8 @@ ecotourist <- left_join(wild_quarter, top_tourism_total, by = "Quarter")
 # computing the correlation between the wild sighting numbers and number of tourists 
 cor(ecotourist$total, ecotourist$Trips)
 
-ecotourist %>% lm(formula = total ~ Trips) %>% summary()   
+ecotourist %>% lm(formula = total ~ Trips) %>% tidy()
+ecotourist %>% lm(formula = total ~ Trips) %>% glance()   
 # R-squared is exceptionally low (i.e., 0.01092)
 # Doesn't make sense to have a negative intercept as the wild sighting can't go negative
 ```
