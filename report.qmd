@@ -642,6 +642,9 @@ Based on our detailed analysis of the Coastal Taipan sightings, following are ou
 
 
 # part b
+
+# task 1
+
 ```{r}
 #download the tourism data
 load("data/tourism.rda")
@@ -703,8 +706,59 @@ graph2
 - This similarity also highlights that the maximum number of trips occurs in the third quarter for each category.
 - In all the categories, they initially exhibit an upward trend, followed by a downward slope. However, the Visiting graph stands out with a distinctive trend in the quarterly analysis.
 
+# task 2
 
 
+```{r}
+#mutate the columns year and quarter (Q) in the taipan_wild dataset
+taipan_wild_new <- taipan_wild %>% 
+  mutate(Year = year(eventDate),
+         Q = quarter(eventDate)) %>%
+  group_by(Q,Year) %>% 
+  summarise(Sightings = n())
+
+#mutate the columns year and quarter (Q) in the tourism_subset dataset
+tourism_subset_new <- tourism_subset %>% mutate(Year = year(Quarter),
+                                                      Q = quarter(Quarter))
+
+#joining the animal data with the tourism data
+joined <- right_join(taipan_wild_new, tourism_subset_new, by = c("Year", "Q"))
+joined$Sightings <- ifelse(is.na(joined$Sightings),0,joined$Sightings)
+```
+
+```{r}
+ joined %>%
+  filter(Purpose == "Total") %>%
+  group_by(Year) %>%
+  summarise(total_sightings = sum(Sightings),
+            trips_total = sum(Trips)) %>%
+  ggplot() +
+  geom_line(aes(x = Year, y = trips_total, color = "Trips"), size = 1) +
+  geom_line(aes(x = Year, y = total_sightings * 100, color = "Sightings * 100"), size = 1) +
+  theme_minimal() +
+  scale_color_manual(
+    values = c("Trips" = "green", "Sightings * 100" = "red"),
+    labels = c("Trips", "Sightings * 100")
+  ) +
+  labs(color = "Legend Title")
+```
+
+```{r}
+ joined %>%
+  filter(Purpose == "Total") %>%
+  group_by(Q) %>%
+  summarise(total_sightings = sum(Sightings),
+            trips_total = sum(Trips)) %>%
+  ggplot() +
+  geom_line(aes(x = Q, y = trips_total, color = "Trips"), size = 1) +
+  geom_line(aes(x = Q, y = total_sightings * 100, color = "Sightings * 100"), size = 1) +
+  theme_minimal() +
+  scale_color_manual(
+    values = c("Trips" = "green", "Sightings * 100" = "red"),
+    labels = c("Trips", "Sightings * 100")
+  ) +
+  labs(color = "Legend Title")
+```
 
 
 ## Citations:
