@@ -716,11 +716,11 @@ ggplotly(total_tourism)
 ```
 
 
-- *It might be rare for someone who is in a business trip to go near the coastal area. Since Taipan is mostly spot near coastal area, it might make sense to exclude the business trips?*
+- **Business trips often allows travelers to reside or roam near coastal areas, which means that including them in your plans to visit Taipan, a predominantly coastal location, may not be the most logical choice.**
+- **The interactive capabilities of Plotly have made it possible to discover that the majority of peaks corresponding to the various reasons for these trips occur in Quarter 3, upon analyzing the facet plot representing trip purposes.**
+- **Based on those peaks, it is safe to assert that seasonality can be easily identified.**
+- **We can also see an upward trend in the yearly trend for the number of trips taken to Townsville, with the exception of the sharp decline in 2020, which is primarily affected by the COVID-19 pandemic.**
 
-- *After highlighting Q3 obs of each year, it seems there is a seasonality which tourism peaks in Q3 for most of the years in our observations*
-
-*There seems a slight increase in tourism in Townsville*
 
 # task 2
 
