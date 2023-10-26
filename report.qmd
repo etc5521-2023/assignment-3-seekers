@@ -743,7 +743,6 @@ ggplotly(total_tourism)
 ```
 
 
-- **Business trips often allows travelers to reside or roam near coastal areas, which means that including them in your plans to visit Taipan, a predominantly coastal location, may not be the most logical choice.**
 - **The interactive capabilities of Plotly have made it possible to discover that the majority of peaks corresponding to the various reasons for these trips occur in Quarter 3, upon analyzing the facet plot representing trip purposes.**
 - **Based on those peaks, it is safe to assert that seasonality can be easily identified.**
 - **We can also see an upward trend in the yearly trend for the number of trips taken to regions of Ingham, "Townsville City - North Ward, Mackay, Tewantin, Rockhampton City, Gladstone, Redcliffe, Cairns City, Daintree , with the exception of the sharp decline in 2020, which is primarily affected by the COVID-19 pandemic.**
@@ -756,9 +755,10 @@ ggplotly(total_tourism)
 - **We began with a tourism dataset and specifically focused on regions near Townsville, as it was one of the primary areas where we could observe the presence of the wild species "Coastal Taipans (Oxyuranus Scutellatus Scutellatus)."**
 - **Next, we had to narrow our focus to Townsville City - North Ward, as it exhibited a significantly higher number of wild sightings compared to areas closer to the Townsville airport.** 
 - **Subsequently, we identified the top nine regions with the highest number of wild sightings for our temporal analysis. This list includes Ingham, Townsville City - North Ward, Mackay, Tewantin, Rockhampton City, Gladstone, Redcliffe, Cairns City, and Daintree.** 
-- **Then, we merged the tourism dataset with our wild sighting data and investigated whether there was any correlation between tourism activity in a specific location and the number of occurrences of wild species sightings.**
-- **Upon visualizing the joined data and conducting a more precise analysis using permutation tests, we asked the input of 10 individuals to check if there are any variations within the visuals. But, none of them were able to identify any distinctions among the visual representations.**
-- **This testing leaves us to conclude that the tourism in the regions had nothing to do with the number of wild sightings, as those sightings were scattered away from the hot spots (where maximum trips were taken)**
+- **Then, we merged the tourism dataset with our wild sighting data and investigated whether there was any significant relationship between tourism activity in a specific location and the number of occurrences of wild species sightings.**
+- **Upon visualizing the joined data and conducting a more precise analysis using permutation tests, we asked the input of 8 individuals to check if there are any variations within the visuals. But, only one of them were able to identify any distinctions among the visual representations, that was just by chance and have no valid reason to support it.**
+- **This hypothesis testing leaves us with the p-value of 1 because of which we fail to reject the null hypothesis which is $H_o$ (null hypothesis): There is no association between popularity of
+the tourist regions and coastal Taipan sightings.
 
 
 ## Citations:
