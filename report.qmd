@@ -671,7 +671,7 @@ temp %>% filter(Purpose == "Total") %>%
   arrange(-Trips)
 ```
 
-- **Following research on Google Maps, we've observed that "South Townsville - Railway Estate," "Townsville - South," and "Townsville City - North Ward" are all geographically close to Townsville Airport. However, for the purpose of our analysis, we have selected "Townsville City - North Ward" due to its greater availability of tourism data compared to the other three areas. This choice allows us to conduct a more comprehensive and robust analysis.**
+- **Following research on Google Maps, we've observed that "South Townsville - Railway Estate," "Townsville - South," and "Townsville City - North Ward" are all geographically close to Townsville Airport. However, for the purpose of our analysis, we have selected Townsville City - North Ward" due to its greater availability of tourism data compared to the other three areas. This choice allows us to conduct a more comprehensive and robust analysis.**
 - **Cookstown Airport, initially part of our dataset, is absent from the tourism dataset. As a result, we have excluded it from our analysis.** 
 - **The table presents the number of trips taken during each quarterly period in the aforementioned regions, categorized by various purposes.**
 
@@ -719,62 +719,19 @@ ggplotly(total_tourism)
 - **Business trips often allows travelers to reside or roam near coastal areas, which means that including them in your plans to visit Taipan, a predominantly coastal location, may not be the most logical choice.**
 - **The interactive capabilities of Plotly have made it possible to discover that the majority of peaks corresponding to the various reasons for these trips occur in Quarter 3, upon analyzing the facet plot representing trip purposes.**
 - **Based on those peaks, it is safe to assert that seasonality can be easily identified.**
-- **We can also see an upward trend in the yearly trend for the number of trips taken to Townsville, with the exception of the sharp decline in 2020, which is primarily affected by the COVID-19 pandemic.**
+- **We can also see an upward trend in the yearly trend for the number of trips taken to regions of Ingham, "Townsville City - North Ward, Mackay, Tewantin, Rockhampton City, Gladstone, Redcliffe, Cairns City, Daintree , with the exception of the sharp decline in 2020, which is primarily affected by the COVID-19 pandemic.**
 
 
 # task 2
 
+# Summary
 
-```{r}
-#mutate the columns year and quarter (Q) in the taipan_wild dataset
-taipan_wild_new <- taipan_wild %>% 
-  mutate(Year = year(eventDate),
-         Q = quarter(eventDate)) %>%
-  group_by(Q,Year) %>% 
-  summarise(Sightings = n())
-
-#mutate the columns year and quarter (Q) in the tourism_subset dataset
-tourism_subset_new <- tourism_subset %>% mutate(Year = year(Quarter),
-                                                      Q = quarter(Quarter))
-
-#joining the animal data with the tourism data
-joined <- right_join(taipan_wild_new, tourism_subset_new, by = c("Year", "Q"))
-joined$Sightings <- ifelse(is.na(joined$Sightings),0,joined$Sightings)
-```
-
-```{r}
- joined %>%
-  filter(Purpose == "Total") %>%
-  group_by(Year) %>%
-  summarise(total_sightings = sum(Sightings),
-            trips_total = sum(Trips)) %>%
-  ggplot() +
-  geom_line(aes(x = Year, y = trips_total, color = "Trips"), size = 1) +
-  geom_line(aes(x = Year, y = total_sightings * 100, color = "Sightings * 100"), size = 1) +
-  theme_minimal() +
-  scale_color_manual(
-    values = c("Trips" = "green", "Sightings * 100" = "red"),
-    labels = c("Trips", "Sightings * 100")
-  ) +
-  labs(color = "Legend Title")
-```
-
-```{r}
- joined %>%
-  filter(Purpose == "Total") %>%
-  group_by(Q) %>%
-  summarise(total_sightings = sum(Sightings),
-            trips_total = sum(Trips)) %>%
-  ggplot() +
-  geom_line(aes(x = Q, y = trips_total, color = "Trips"), size = 1) +
-  geom_line(aes(x = Q, y = total_sightings * 100, color = "Sightings * 100"), size = 1) +
-  theme_minimal() +
-  scale_color_manual(
-    values = c("Trips" = "green", "Sightings * 100" = "red"),
-    labels = c("Trips", "Sightings * 100")
-  ) +
-  labs(color = "Legend Title")
-```
+- **We began with a tourism dataset and specifically focused on regions near Townsville, as it was one of the primary areas where we could observe the presence of the wild species "Coastal Taipans (Oxyuranus Scutellatus Scutellatus)."**
+- **Next, we had to narrow our focus to Townsville City - North Ward, as it exhibited a significantly higher number of wild sightings compared to areas closer to the Townsville airport.** 
+- **Subsequently, we identified the top nine regions with the highest number of wild sightings for our temporal analysis. This list includes Ingham, Townsville City - North Ward, Mackay, Tewantin, Rockhampton City, Gladstone, Redcliffe, Cairns City, and Daintree.** 
+- **Then, we merged the tourism dataset with our wild sighting data and investigated whether there was any correlation between tourism activity in a specific location and the number of occurrences of wild species sightings.**
+- **Upon visualizing the joined data and conducting a more precise analysis using permutation tests, we asked the input of 10 individuals to check if there are any variations within the visuals. But, none of them were able to identify any distinctions among the visual representations.**
+- **This testing leaves us to conclude that the tourism in the regions had nothing to do with the number of wild sightings, as those sightings were scattered away from the hot spots (where maximum trips were taken)**
 
 
 ## Citations:
