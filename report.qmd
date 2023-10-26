@@ -1218,9 +1218,8 @@ ggplotly(p, tooltip="text")
 ::: callout-tip
 ## Ecotourism and Taipan Sightings
 
-Referring to @fig-tourist-map, we can draw a couple significant insights
-in relation to Tourism Regions and Coastal Taipan sightings in
-Queensland:
+Referring to @fig-tourist-map, we can draw some insights in relation to
+Tourism Regions and Coastal Taipan sightings in Queensland:
 
 1.  Coastal Taipans, represented by the blue points can be seen
     predominantly along the eastern coast of Queesland, with some
