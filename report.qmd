@@ -24,41 +24,41 @@ and conservation studies.
 
 ## Introduction {#sec-ref1}
 
-The Taipan class of reptiles are indigenous to the land mass of
-Australia as well as Papua New Guinea, and are considered to be one of
-the deadliest snakes on the planet. The Taipan, scientifically known as
-the Oxyuranus genus, comprises several species, with the Coastal Taipan
-(Oxyuranus scutellatus) and the Inland Taipan (Oxyuranus microlepidotus)
-being the most renowned. These reptiles are highly venomous and belong
-to the elapid family, which includes other infamous snakes like the king
-cobra and the black mamba. According to @markwell2016killer, what sets
-the taipan apart, however, is its reputation as having the **most toxic
-venom of any snake in the world!**
-
-In our current analysis, we will be focusing on the occurrences of a
-specific subspecies of the Coastal Taipan across the various states of
-Australia. The subgroup of the Coastal Taipans which has been
-scientifically named as Oxyuranus Scutellatus Scutellatus, is commonly
-found in the northern regions of Australia and is renowned for its
-agility and speed. It primarily feeds on small mammals, birds, and
-occasionally reptiles, using its potent venom to immobilize its prey
-swiftly.
+Australia, with its beautiful landscapes and unique wildlife, is a
+popular destination for tourists from around the world. Among the
+fascinating creatures found in this region, the Coastal Taipan
+(Oxyuranus Scutellatus Scutellatus) takes the spotlight. These snakes
+are native to both Australia and Papua New Guinea and are known for
+their extremely venomous bites, making them some of the deadliest snakes
+in the world. According to Markwell and Cushing (2016), what sets the
+taipan apart, however, is its reputation as having the most toxic venom
+of any snake in the world !
 
 ![The coastal taipan (Oxyuranus scutellatus)](taipan.jpg){#fig-taipan}
 
-Characterized by its slender body, shiny scales, and formidable fangs,
-the Taipan is a formidable predator. Despite its fearsome reputation,
-these snakes are generally reclusive and rarely encountered by humans.
-They prefer to inhabit coastal regions, woodlands, and savannas,
-blending seamlessly into their natural surroundings as can be observed
-in @fig-taipan.
+But there's more to these snakes than their dangerous reputation. The
+Coastal Taipan and the Inland Taipan are the most well-known species in
+their group, and they primarily inhabit the northern regions of
+Australia, blending seamlessly into environments like coastal areas,
+woodlands, and savannas as can be observed in Figure 1.
 
-While the Coastal Taipans are not classified as endangered species,
-however, with rapid human activities such as urbanisation and
-encroachment of wildlife area for agricultural purposes, the habitat of
-these reptiles have been increasingly affected as a result of which,
-steps have been taken by wild life conservationists to preserve their
-natural habitats to the best extent possible.
+In this detailed analysis, we aim to explore the complex connection
+between tourism in Australia and the encounters people have with the
+Coastal Taipan. Our journey begins by carefully examining tourism data.
+We'll look at trends such as the number of tourists, their reasons for
+traveling, and their favorite destinations in different parts of
+Australia. This initial step will help us understand when and where
+tourists visit.
+
+Moving from tourism to the study of nature, we will investigate data
+related to sightings of Coastal Taipans. By combining this ecological
+information with tourism trends, we hope to identify places where
+tourism and these snakes' habitats overlap.
+
+In the final part of our analysis, we will delve into the core question:
+is there a significant link between the presence of these snakes and the
+level of tourism in a particular area? Our goal is to decide whether
+tourism has an impact on the sightings of these unique reptiles.
 
 ### Data source:
 
@@ -95,6 +95,18 @@ assumptions while moving forward with our analysis:
     numbers**.
 5.  The Coastal Taipans, like any other snakes are **territorial in
     nature and do not migrate from their region over the years**.
+6.  We anticipate minimal convergence between snake sightings and
+    tourist destinations, primarily due to the Taipan's reputation as
+    the most venomous snake globally. It is unlikely that tourists would
+    desire encountering them in their natural habitat; instead, they are
+    more inclined to prefer observing these snakes in controlled
+    environments such as sanctuaries or zoos.
+7.  We would expect a consistent seasonality to be demonstrated for
+    different visit reasons of the tourism in Queensland.
+8.  We would expect that 'holiday' would be the main purpose of tourist
+    travel to the selected regions in Queensland since it has a lot of
+    tourist destination such as the [Great Barrier
+    Reef](https://www.queensland.com/au/en/plan-your-holiday/news-and-articles/queensland-news/queensland-top-tourist-destination-in-the-world).
 :::
 
 Although we will attempt to accurately analyse the data by obtaining it
@@ -140,6 +152,18 @@ delineated as follows:
     -   The data maybe misclassified or filled in non-uniform units by
         the various sources, leading to lack of accuracy of the overall
         dataset.
+
+6.  The sample size of the wild sightings of Taipan might be too limited
+    to draw any meaning conclusion.
+
+7.  Lack of available data in the tourism data set. Some of the major
+    regions with sightings could not be found in the tourism data set
+    (e.g. Cooktown) leading to Daintree being used as a proxy.
+
+8.  Assumption of NA's being treated as wild sightings under "eventID"
+    column would lead to overestimation of wild sightings of Taipan as
+    we cannot distinguish whether the NA's were due to missing
+    information.
 :::
 
 ## Data description
@@ -149,10 +173,10 @@ delineated as follows:
 2. Download all the occurrence records from the Atlas of Living Australia, ideally scripted using the `atlas_occurrences()` function from the `galah` package. Make sure you include date, time, collector identification details. Save this into a `data-raw` folder in your repo.
 -->
 ```
-
-```{r echo=FALSE}
+```{r}
 #| message: false
 #| echo: false
+#| warning: false
 
 library(galah)
 library(tidyverse)
@@ -177,9 +201,10 @@ library(DT)
 library(tsibble)
 ```
 
-
 ```{r}
 #| echo: false
+#| message: false
+#| warning: false
 galah_config(email = "aani0005@student.monash.edu",
              download_reason_id = 10, 
              verbose = TRUE)
@@ -189,11 +214,10 @@ taipan <- atlas_occurrences(
 save(taipan, file=here::here("data-raw/taipan_raw.rda"))
 ```
 
-
 ```{r}
 #| echo: false
-#| eval: false
-taipan %>% head() %>% DT::datatable()
+
+taipan %>% DT::datatable()
 ```
 
 ### Description of the Variables in the Dataset
@@ -203,49 +227,149 @@ The dataset contains data on observations of the Coastal Taipans
 organized into a tidy format. Below is a detailed description of each
 salient variable:
 
-+------------+------------+------------------------------------------+
-| Variable   | Data Type  | Description                              |
-| Name       |            |                                          |
-+============+============+==========================================+
-| decim      | dbl        | The latitude coordinate of the           |
-| alLatitude |            | observation location.                    |
-+------------+------------+------------------------------------------+
-| decima     | dbl        | The longitude coordinate of the          |
-| lLongitude |            | observation location.                    |
-+------------+------------+------------------------------------------+
-| eventDate  | date       | The date when the observation was made.  |
-+------------+------------+------------------------------------------+
-| scie       | chr        | The scientific name of the observed      |
-| ntificName |            | species. In this dataset, it's           |
-|            |            | *Oxyuranus scutellatus scutellatus*.     |
-+------------+------------+------------------------------------------+
-| taxo       | chr        | A unique URL that provides information   |
-| nConceptID |            | about the taxonomic concept for the      |
-|            |            | species.                                 |
-+------------+------------+------------------------------------------+
-| recordID   | chr        | A unique identifier for each observation |
-|            |            | record.                                  |
-+------------+------------+------------------------------------------+
-| dataRe     | chr        | The name of the data resource/provider.  |
-| sourceName |            |                                          |
-+------------+------------+------------------------------------------+
-| occurr     | chr        | The status of the observation,           |
-| enceStatus |            | indicating if the species is present or  |
-|            |            | absent at the location.                  |
-+------------+------------+------------------------------------------+
-| ev         | chr        | Special remarks related to the event     |
-| entRemarks |            | sighting.                                |
-+------------+------------+------------------------------------------+
-| eventTime  | datetime   | Time of the event sighting.              |
-+------------+------------+------------------------------------------+
-| eventID    | chr        | A unique ID for each event observation.  |
-+------------+------------+------------------------------------------+
-| samp       | chr        | An variable to indicate the sampling     |
-| lingEffort |            | technique used.                          |
-+------------+------------+------------------------------------------+
-| sampli     | chr        | A remark for the type of sighting.       |
-| ngProtocol |            |                                          |
-+------------+------------+------------------------------------------+
++------------+------------+------------+
+| Variable   | Data Type  | D          |
+| Name       |            | escription |
++============+============+============+
+| decim      | dbl        | The        |
+| alLatitude |            | latitude   |
+|            |            | coordinate |
+|            |            | of the     |
+|            |            | o          |
+|            |            | bservation |
+|            |            | location.  |
++------------+------------+------------+
+| decima     | dbl        | The        |
+| lLongitude |            | longitude  |
+|            |            | coordinate |
+|            |            | of the     |
+|            |            | o          |
+|            |            | bservation |
+|            |            | location.  |
++------------+------------+------------+
+| eventDate  | date       | The date   |
+|            |            | when the   |
+|            |            | o          |
+|            |            | bservation |
+|            |            | was made.  |
++------------+------------+------------+
+| scie       | chr        | The        |
+| ntificName |            | scientific |
+|            |            | name of    |
+|            |            | the        |
+|            |            | observed   |
+|            |            | species.   |
+|            |            | In this    |
+|            |            | dataset,   |
+|            |            | it's       |
+|            |            | *          |
+|            |            | Oxyuranuss |
+|            |            | c          |
+|            |            | utellatuss |
+|            |            | cu         |
+|            |            | tellatus*. |
++------------+------------+------------+
+| taxo       | chr        | A unique   |
+| nConceptID |            | URL that   |
+|            |            | provides   |
+|            |            | i          |
+|            |            | nformation |
+|            |            | about the  |
+|            |            | taxonomic  |
+|            |            | concept    |
+|            |            | for the    |
+|            |            | species.   |
++------------+------------+------------+
+| recordID   | chr        | A unique   |
+|            |            | identifier |
+|            |            | for each   |
+|            |            | o          |
+|            |            | bservation |
+|            |            | record.    |
++------------+------------+------------+
+| dataRe     | chr        | The name   |
+| sourceName |            | of the     |
+|            |            | data res   |
+|            |            | our c      |
+|            |            | e          |
+|            |            | /provider. |
++------------+------------+------------+
+| occurr     | chr        | The status |
+| enceStatus |            | of the     |
+|            |            | ob         |
+|            |            | servation, |
+|            |            | indicating |
+|            |            | if the     |
+|            |            | species is |
+|            |            | present or |
+|            |            | absent at  |
+|            |            | the        |
+|            |            | location.  |
++------------+------------+------------+
+| ev         | chr        | Special    |
+| entRemarks |            | remarks    |
+|            |            | related to |
+|            |            | the event  |
+|            |            | sighting.  |
++------------+------------+------------+
+| eventTime  | datetime   | Time of    |
+|            |            | the event  |
+|            |            | sighting.  |
++------------+------------+------------+
+| eventID    | chr        | A unique   |
+|            |            | ID for     |
+|            |            | each event |
+|            |            | ob         |
+|            |            | servation. |
++------------+------------+------------+
+| samp       | chr        | An         |
+| lingEffort |            | variable   |
+|            |            | to         |
+|            |            | indicate   |
+|            |            | the        |
+|            |            | sampling   |
+|            |            | technique  |
+|            |            | used.      |
++------------+------------+------------+
+| sampli     | chr        | A remark   |
+| ngProtocol |            | for the    |
+|            |            | type of    |
+|            |            | sighting.  |
++------------+------------+------------+
+| Quarter    | qtr        | A          |
+|            |            | c          |
+|            |            | ombination |
+|            |            | of year    |
+|            |            | and        |
+|            |            | quarter,   |
+|            |            | re         |
+|            |            | presenting |
+|            |            | t          |
+|            |            | imestamps. |
++------------+------------+------------+
+| Region     | chr        | Text       |
+|            |            | characters |
+|            |            | denoting   |
+|            |            | region or  |
+|            |            | area       |
+|            |            | names.     |
++------------+------------+------------+
+| Purpose    | chr        | Text       |
+|            |            | characters |
+|            |            | related to |
+|            |            | the        |
+|            |            | purpose or |
+|            |            | usage.     |
++------------+------------+------------+
+| Trips      | dbl        | Numerical  |
+|            |            | data       |
+|            |            | re         |
+|            |            | presenting |
+|            |            | quantities |
+|            |            | (e.g.,     |
+|            |            | trip       |
+|            |            | counts).   |
++------------+------------+------------+
 
 ## Initial data analysis
 
@@ -259,29 +383,34 @@ sightings was sourced from [National Climatic Data Centre
 (NCDC)](https://www.ncdc.noaa.gov/cdo-web/datasets) using `rnoaa`
 package in R.
 
+Tourism data was downloaded from Monash A-Z Databases: ["Tourism
+Research Australia online for students"](https://www.tra.gov.au/).
+
 ### Data Cleaning
 
 **Data Cleaning Steps:**
 
+[Sightings Data]{.underline}
+
 1.  The datatype for `eventDate` has been changed to datetime for
-    accurate temporal analysis.\
+    accurate temporal analysis.
 2.  Observations with missing event dates, longitude, or latitude were
     filtered out.
 3.  Redundant variables were dropped from the dataset to keep only the
     salient variables important for the current analysis.
 
-**Methods to Check and Clean Data:**
+[Tourism Data]{.underline}
 
--   **Validity Checks and outlier analysis:** Ensure that the latitude
-    and longitude values are within valid ranges. For latitude (-90
-    to 90) and for longitude (-180 to 180). This would help detect any
-    unusual or erroneous data points.
--   **Consistency Checks:** Make sure there aren't any discrepancies in
-    the way data is represented across rows.
--   **Missing Value Analysis:** Any missing values should be analyzed to
-    understand the reason behind them.
--   **Date Consistency:** Ensure that the event dates fall within
-    expected ranges and are formatted correctly.
+1.  **Quarter -** Missing values are filled using `fill()` function. N/A
+    values filled with the last observed non-N/A value. Rows with
+    'Total' were filtered out.
+2.  **Region -** Rows with 'Total' were filtered out, excluding summary
+    data.
+3.  **Purpose -** Created with `pivot_longer()`, where "Holiday" and
+    "Total" were put into two new columns "Purpose" (reason for travel)
+    and "Trips" (number of trips for that purpose).
+4.  **Trips** **-** Contains the number of trips for each purpose. Data
+    was sourced from "Total" column via `pivot_longer().`
 
 ### Data Quality Check
 
@@ -292,8 +421,12 @@ package in R.
 vis_miss(taipan)
 ```
 
-
-The result of the vis_miss() indicates __that about half of the total dataset has missing values__. These missing values can be observed majorly in the variables of eventRemarks, eventTime and eventID. In order to improve the quality of the overall data, we will consider either transforming these variables or removing them as a part of feature selection in the following sections.
+The result of the vis_miss() indicates **that about half of the total
+dataset has missing values**. These missing values can be observed
+majorly in the variables of eventRemarks, eventTime and eventID. In
+order to improve the quality of the overall data, we will consider
+either transforming these variables or removing them as a part of
+feature selection in the following sections.
 
 ```{r}
 #| label: tbl-fivenum
@@ -315,17 +448,6 @@ kable(summary_table, format = "html", table.attr = "class='table'") %>%
   row_spec(0, bold = TRUE, color = "white", background = "lightblue")
 
 ```
-
-The `fivenum()` function in R provides a summary of five-number
-statistics: the minimum, lower-hinge (25th percentile or first
-quartile), median (50th percentile), upper-hinge (75th percentile or
-third quartile), and the maximum.
-
-By analyzing these statistics in @tbl-fivenum, we can get an overview of
-the distribution of latitudes and longitudes in the dataset. **The five
-number summary of the latitude and longitude values further allows us to
-validate the values with each latitude and longitude observation being
-within the maximum and minimum possible limits.**
 
 ### Data transformation and feature selection
 
@@ -421,7 +543,7 @@ filtered those data whose last reported conditions were relayed after
 the year of 2020.
 
 ```{r}
-
+#| echo: false
 aus_stations <- ghcnd_stations() |>
   filter(str_starts(id, "ASN")) |>
   filter(last_year >= 2020) |>
@@ -450,8 +572,6 @@ the following code chunk. ‼️
 :::
 
 ```{r}
-
-
 # Convert the datasets into spatial objects
 taipan_sf <- st_as_sf(taipan_wild, coords = c("Longitude", "Latitude"), crs = 4326)
 aus_stations_sf <- st_as_sf(aus_stations, coords = c("longitude", "latitude"), crs = 4326)
@@ -479,7 +599,6 @@ combined_count <- combined_data %>%
   summarise(Count = n())
 
 top_2 <- c("cooktown airport","townsville aero")
-top <- c("ingham composite", "townsville aero", "mackay aero", "tewantin rsl park", "rockhampton aero", "gladstone airport", "redcliffe", "cairns aero", "cooktown airport")
 
 ggplot(combined_count,aes(x = reorder(name,Count),y = Count)) + 
   geom_col() + 
@@ -501,10 +620,10 @@ weather information.
 
 Here, we observe that the weather stations Cooktown Airport and
 Townsville Aero have significantly higher number of sightings when
-compared to the rest of the data. Let us pull the weather information
-for these weather stations through the below code chunk.
+compared to the rest of the data.
 
 ```{r}
+#| echo: false
 narrogin <- aus_stations |>
   filter(name %in% top_2) |>
   rowwise() |>
@@ -519,10 +638,6 @@ narrogin <- aus_stations |>
 
 ```
 
-In the next part, we will create a new variable called `sighting` with
-values of either 0 or 1 to mark the sighting of the Coastal Taipan. This
-variable is important because,
-
 ::: {.alert .alert-block .alert-warning}
 the weather data obtained is for all the possible dates which match our
 time period filter. **This does not necessarily mean that a Coastal
@@ -535,9 +650,8 @@ weather stations.
 :::
 
 ```{r}
+#| echo: false
 subset_combined_data <- combined_data %>% filter(name %in% top_2)
-
-top_combined_data <- combined_data %>% filter(name %in% top)
 
 taipan_weather <- right_join(subset_combined_data,narrogin,by = c("id","eventDate"="date"))
 taipan_weather <- taipan_weather %>% mutate(sighting = if_else(!is.na(occurrenceStatus) ,1,0))
@@ -639,6 +753,7 @@ leaflet(data = taipan) %>%
 #| label: tbl-source
 #| tbl-cap: "Number of sightings reported by each data source"
 #| echo: false
+#| include: false
 sourceSightings <- taipan %>% 
                    group_by(dataResourceName) %>% 
                    summarise(count = n())
@@ -651,14 +766,7 @@ kable(sourceSightings, format = "html", table.attr = "class='table'") %>%
 ```
 
 @fig-sightloc illustrates that, in alignment with its name, most Coastal
-Taipan sightings occur in coastal regions. Additionally, considering
-that a significant portion of the data comes from the "Queensland Museum
-provider for OZCAM" as observed by @tbl-source, it can be determined
-that a majority of these sightings are **concentrated in the coastal
-areas of Queensland.** It is also particularly interesting to note that
-**one sighting observed in the Northern Territory indicating a
-possibility of migration and future possibilities of higher sightings in
-this region.**
+Taipan sightings occur in coastal regions.
 
 ::: {.alert .alert-block .alert-warning}
 💡💡 The Coastal Taipan's preference for coastal regions in Australia
@@ -670,103 +778,6 @@ offer a rich biodiversity, ensuring ample prey for the snake. **The
 vegetation in these regions, like grasslands and woodlands, offers
 suitable hiding spots for the snake and its prey, leading to a higher
 likelihood of the Taipan being found in these areas.**
-:::
-
-### Has there been a rise in the number of Coastal Taipans in Australia over the years?
-
-```{r}
-#| label: fig-trend
-#| fig-cap: "Trend of Coastal Taipan Sightings Over the years of 1915-2020"
-#| echo: false
-population_count <- taipan_wild %>% 
-  mutate(year = year(eventDate)) %>% 
-  group_by(year) %>% 
-  filter(year != "1915") %>%
-  summarise(count = n())
-
-trend <- ggplot(population_count, aes(x = year, y = count)) +
-  geom_line(aes(color = "Yearly Count"), linewidth = 1) +
-  geom_smooth(aes(color = "Trend Line"), method = "loess", se = FALSE, size = 1.5,linetype = 'dashed') +
-  labs(title = "Trend of Coastal Taipan Sightings Over the Years",
-       x = "Year",
-       y = "Number of Sightings",
-       color = "Legend") +
-  theme_classic()
-ggplotly(trend)
-
-```
-
-@fig-trend demonstrates a noticeable increase in sightings over the
-years, potentially suggesting a growth in the Coastal Taipan population,
-indicating they **might not be "endangered".** However, there are
-caveats to consider.
-
-::: callout-warning
-# Caveats
-
-**Sightings vs. Population**: The number of sightings does not
-necessarily equate to the actual population. An increase in sightings
-could be due to increased human activity in the taipan's habitat or
-better reporting mechanisms.
-
-**Incomplete Data**: The dataset might not cover all sightings,
-especially as it has limited data sources or regions.
-
-**External Factors**: Factors like urban development, habitat
-destruction, or climate change can influence the habitats and
-distribution of species, which can subsequently influence sighting
-reports.
-:::
-
-### Are the Coastal Taipans limited to certain regions of Australia ?
-
-In @sec-ref2, we were able to observe that the Coastal Taipans are
-observed to be sighted close to the coasts. In this section, we will be
-focused on assessing whether the sighting locations of the Coastal
-Taipans suggest that these reptiles are limited to certain regions of
-Australia only. The same will be assessed through the generation of a
-null plot and testing a hypothesis. The hypothesis and the null
-generating mechanism are as follows:
-
-::: {.alert .alert-block .alert-warning}
-$H_o$ : Coastal Taipans are not limited to a single region and can be
-sighted all over Australia.\
-$H_1$ : Coastal Taipans are limited to certain regions of Australia,
-particularly in humid and warm conditions.
-
-Null generating mechanism: Usage of the "null_permute" function to
-permute the `latitude` values of the Coastal Taipan sightings.
-:::
-
-```{r}
-#| label: fig-nullplot
-#| fig-cap: "Null lineup plot for occurrences of Coastal Taipan sightings"
-#| echo: false
-set.seed(1232536)
-australia_map <- map_data("world", region = "Australia")
-
-
-# Overlay the soccer pitch as a custom annotation on the scatter plot
-map_null_plot <- ggplot() + geom_polygon(data = australia_map, aes(x = long, y = lat, group = group), fill = "white", color = "black") +
-   geom_point(data = lineup(null_permute("Latitude"),taipan_wild, n = 20),
-                      aes(x = Longitude,y = Latitude),color = "red",alpha = 0.4) + facet_wrap(~.sample) + theme_classic() + theme(
-    legend.position = "none",
-    axis.title = element_blank(),
-    axis.text = element_blank())
-map_null_plot
-```
-
-::: callout-note
-# Key takeaway
-
-Upon analysing the plot null lineup plots in @fig-nullplot, we observed
-that of the 8 test cases, **7 people were able to recognise the plot 4
-as the most unique plot** due to the scatter points (sighting locations)
-being limited to only the coastal regions of Australia. The P-value for
-the following result is **`r pvisual(7,8,20)[3]`** which **suggests that
-the null hypothesis can be rejected** and we can conclude that there is
-significant evidence in the data to suggest that Coastal Taipans are
-**majorly limited to the North-Eastern coast of Australia.**
 :::
 
 ### Has the geographical distribution of Coastal Taipans remained consistent over the years?
@@ -872,10 +883,11 @@ require further data to support our analysis.
 Let us now explore the minimum and maximum temperatures on the given day
 of Coastal Taipan sightings and analyse any further insights.
 
-```{r warning=FALSE}
+```{r}
 #| label: fig-temp
 #| fig-cap: "Temperature range on the days of Coastal Taipan sightings"
 #| echo: false
+#| warning: false
 taipan_weather1 <- taipan_weather %>% filter(sighting == 1) 
 taipan_weather1 <- taipan_weather1 %>% mutate(observation = 1:nrow(taipan_weather1))
 taipan_weather1$observation <- factor(taipan_weather1$observation)
@@ -913,24 +925,6 @@ pl_temp + geom_vline(xintercept = mean(taipan_weather1$tmax,na.rm = TRUE),alpha 
 
 ```
 
-
-
-
-```{r}
-taipan_weather %>% 
-  filter(!is.na(tmax)) %>% 
-  ggplot(aes(x = tmax, 
-             y = after_stat(density), fill = as_factor(sighting))) +
-  geom_density(alpha = 0.5)
-
-taipan_weather %>% 
-  filter(!is.na(tmin)) %>% 
-  ggplot(aes(x = tmin, 
-             y = after_stat(density), 
-             fill = as_factor(sighting))) +
-  geom_density(alpha = 0.5)
-```
-
 ::: callout-note
 # Key takeaway
 
@@ -956,30 +950,50 @@ following are our key takeaways:
 
 ::: {.alert .alert-block .alert-warning}
 💡💡\
-1. The spatial analysis suggests that the Coastal Taipans are
-territorial in nature, thereby inhabiting the coastal regions of
-Queensland with possibility of migration towards Northern Territory in
-the future.
+The analysis focused on the behavior and distribution of Coastal Taipans
+(Oxyuranus Scutellatus Scutellatus) in the coastal regions of
+Queensland. The findings suggest that Coastal Taipans are territorial
+creatures, primarily inhabiting Queensland's coastal areas, with
+potential migration towards the Northern Territory in the future.
 
-2.  Based on the frequency of sightings, the Coastal Taipans are not
-    endagered. However, they are extremely reclusive and avoid human
-    contact. Hence, their occurrences and sightings are rare as they are
-    mostly confined to their habitats.
+Despite being less frequent in sightings, Coastal Taipans are not
+considered endangered. They are elusive and tend to avoid human contact,
+making their sightings rare as they prefer to stay within their
+habitats.
 
-3.  While migration of the Coastal Taipans maybe a possibility in the
-    future, based on the data, there is not enough strong evidence to
-    suggest that there has been a significant change in the Coastal
-    Taipan's habitat.
+Contrary to popular belief, the data does not strongly support the idea
+that Coastal Taipans are more commonly sighted on days with recorded
+precipitation. However, they do exhibit higher mobility during the
+monsoon period, leading to an increase in sightings.
 
-4.  Contrary to popular belief, the data does not exhibit a strong
-    evidence to suggest that the sightings of Coastal Taipans are higher
-    on days of recorded precipitation. However, the Coastal Taipans do
-    exhibit higher mobility during the monsoon period resulting in
-    higher sightings.
+The research with the tourism dataset, initially focusing on regions
+near Townsville due to their connection to Coastal Taipan sightings. The
+study then narrowed its focus to Townsville City - North Ward, which had
+a significantly higher number of wild sightings compared to areas near
+the Townsville airport. Subsequently, the analysis identified the top
+nine regions with the highest number of wild sightings for temporal
+analysis: Ingham, Townsville City - North Ward, Mackay, Tewantin,
+Rockhampton City, Gladstone, Redcliffe, Cairns City, and Daintree.
 
-5.  Coastal Taipans appear to be especially active on warm days,
-    possibly due to their increased mobility and metabolism,
-    consequently resulting in higher sightings on these days.
+The research merged the tourism dataset with the wild sighting data to
+investigate the relationship between tourism activity and the
+occurrences of Coastal Taipan sightings. The visualizations and more
+precise analysis, including permutation tests, were carried out.
+However, when eight individuals assessed these visuals, none of them
+could identify distinctions among the representations, which seemed to
+be due to chance rather than any valid reasons.
+
+The hypothesis testing led to a p-value of 1, resulting in a failure to
+reject the **null hypothesis (**$H_o$): There is no association between
+the popularity of tourist regions and Coastal Taipan sightings.
+
+In summary, the study reveals that Coastal Taipans are territorial and
+not endangered, although they are reclusive and rarely seen due to their
+preference for isolated habitats. The data does not strongly support the
+idea that precipitation directly influences their sightings. and the
+analysis of tourism data did not find a significant association between
+tourist popularity and Coastal Taipan sightings, as indicated by the
+p-value of 1.
 
 💡💡
 :::
@@ -987,41 +1001,6 @@ the future.
 ## **PART B - Ecotourism & Tourism**
 
 ## INTRODUCTION
-
-+-----------+--------------------+------------------------------------+
-| Variable  | Type/Class         | Cleaning Method                    |
-+===========+====================+====================================+
-| Quarter   | yearquarter        | Missing values are filled using    |
-|           |                    | `fill()` fuction. NA values filled |
-|           | vctrs_vctr         | with the last observed non-NA      |
-|           |                    | value.                             |
-|           |                    |                                    |
-|           |                    | Rows with 'Total' are filtered     |
-|           |                    | out.                               |
-+-----------+--------------------+------------------------------------+
-| Region    | character          | Rows with 'Total' were filtered    |
-|           |                    | out, excluding summary data.       |
-+-----------+--------------------+------------------------------------+
-| Purpose   | character          | Created with `pivot_longer()`,     |
-|           |                    | where "Holiday" and "Total" were   |
-|           |                    | put into two new columns "Purpose" |
-|           |                    | (reason for travel) and "Trips"    |
-|           |                    | (number of trips for that          |
-|           |                    | purpose).                          |
-+-----------+--------------------+------------------------------------+
-| Trips     | numeric            | Contains the number of trips for   |
-|           |                    | each purpose. Data was sourced     |
-|           |                    | from "Total" column via            |
-|           |                    | `pivot_longer().`                  |
-+-----------+--------------------+------------------------------------+
-
-Data was sourced from "Tourism Research Australia online for students".
-
-```{r}
-
-load("data/tourism.rda")
-
-```
 
 In the first part of this exploration, we were able to find that the
 largest number of Coastal Taipan sightings occurred in two weather
@@ -1031,18 +1010,169 @@ To understand whether seasonal patterns or decreasing or increasing
 trends exist - we will subset our tourism data to areas with the most
 sightings (as aforementioned).
 
+-   We will conduct an extensive analysis of tourism data in Australia
+    to better understand how it may affect the sightings of Coastal
+    Taipans (Oxyuranus Scutellatus Scutellatus), shedding light on the
+    intricate relationship between human travel for different purposes
+    and the sighting of these remarkable reptiles.
+-   Our initial step involves the collection and analysis of tourism
+    data, where we will scrutinize trends such as number of tourist,
+    their travel purpose, and their preferred destinations across
+    different states of Australia. This data will help us gain insights
+    into the fluctuations in tourist visits, including peak seasons,
+    busy quarter of the year and popular regions of visit.
+-   Subsequently, we will delve into ecological data related to the
+    sightings of Coastal Taipans. By combining this ecological data with
+    tourism trends, we can identify potential areas where tourism
+    activities and the sightings of these snakes may overlap.
+-   Finally, we will investigate whether there is a significant
+    relationship between the presence of the species and the level of
+    tourism in the region. This analysis will allow us to decide weather
+    we reject the null hypothesis or not.
+
+### Data description
+
++--------------+--------------+--------------+
+| Variable     | Type/Class   | Cleaning     |
+|              |              | Method       |
++==============+==============+==============+
+| Quarter      | yearquarter  | Missing      |
+|              |              | values are   |
+|              | vctrs_vctr   | filled using |
+|              |              | `fill()`     |
+|              |              | fuction. NA  |
+|              |              | values       |
+|              |              | filled with  |
+|              |              | the last     |
+|              |              | observed     |
+|              |              | non-NA       |
+|              |              | value. Rows  |
+|              |              | with 'Total' |
+|              |              | are filtered |
+|              |              | out.         |
++--------------+--------------+--------------+
+| Region       | character    | Rows with    |
+|              |              | 'Total' were |
+|              |              | filtered     |
+|              |              | out,         |
+|              |              | excluding    |
+|              |              | summary      |
+|              |              | data.        |
++--------------+--------------+--------------+
+| Purpose      | character    | Created with |
+|              |              | `piv o       |
+|              |              | t_longer()`, |
+|              |              | where        |
+|              |              | "Holiday"    |
+|              |              | and "Total"  |
+|              |              | were put     |
+|              |              | into two new |
+|              |              | columns      |
+|              |              | "Purpose"    |
+|              |              | (reason for  |
+|              |              | travel) and  |
+|              |              | "Trips"      |
+|              |              | (number of   |
+|              |              | trips for    |
+|              |              | that         |
+|              |              | purpose).    |
++--------------+--------------+--------------+
+| Trips        | numeric      | Contains the |
+|              |              | number of    |
+|              |              | trips for    |
+|              |              | each         |
+|              |              | purpose.     |
+|              |              | Data was     |
+|              |              | sourced from |
+|              |              | "Total"      |
+|              |              | column via   |
+|              |              | `piv o       |
+|              |              | t_longer().` |
++--------------+--------------+--------------+
+
 ```{r}
+load("data/tourism.rda")
+
 tourism_subset <- tourism[tourism$Region %in% c("Ingham", "Townsville City - North Ward", "Mackay", "Tewantin","Rockhampton City", "Gladstone", "Redcliffe", "Cairns City", "Daintree"),]
 ```
+
+The 9 tourism regions in the code chunk above were selected as they were
+available and overlapped in the most frequent sightings closest to
+weather stations as established in @fig-wstation. Moreover, 'Daintree'
+has been used as a proxy of 'Cooktown' due to the lack of data
+availability in the tourism data.
+
+### Task 1 - Tourism data
+
+```{r}
+top_location <- c("Ingham", "Townsville City - North Ward", "Mackay", "Tewantin","Rockhampton City", "Gladstone", "Redcliffe", "Cairns City", "Daintree")
+
+top_tourism <- tourism %>% filter(Region %in% top_location)
+
+top_tourism <- top_tourism %>% 
+  index_by(Quarter) %>% 
+  group_by(Purpose) %>% 
+  summarise(Trips = mean(Trips))
+```
+
+---------- explanation needed for the code chunk above
+
+```{r}
+#| echo: false
+#| label: fig-facet
+#| fig-cap: "Quarterly average tourism trips in selected regions, categorised by purpose"
+q3 <- top_tourism %>% filter(quarter(Quarter) == 3)
+
+# Facet by visiting reasons
+facet_purpose <- top_tourism %>%
+  ggplot(aes(x = Quarter, 
+             y = Trips)) +
+  geom_line() + 
+  geom_point(data = q3, aes(x = Quarter, y = Trips), colour = "red") +
+  geom_smooth(se = FALSE, linetype = "solid") +
+  facet_wrap(~Purpose)
+
+ggplotly(facet_purpose)
+```
+
+```{r}
+#| echo: false
+#| label: fig-total
+#| fig-cap: "Total quarterly average tourism trips in selected regions"
+
+total_tourism <- top_tourism %>% 
+  filter(Purpose == "Total") %>% 
+  ggplot(aes(x = Quarter, 
+             y = Trips)) +
+  geom_line() + 
+  geom_point(data = q3 %>% filter(Purpose == "Total"), 
+             aes(x = Quarter, y = Trips), colour = "red") +
+  geom_smooth(method = "loess", se = FALSE, linetype = "solid") +
+  theme_minimal()
+
+ggplotly(total_tourism)
+```
+
+-   The interactive capabilities of Plotly have made it possible to
+    discover that the majority of peaks corresponding to the various
+    reasons for these trips occur in Quarter 3, upon analyzing the facet
+    plot representing trip purposes.
+-   Based on those peaks, it is safe to assert that seasonality can be
+    easily identified.
+-   We can also see an upward trend in the yearly trend for the number
+    of trips taken to regions of Ingham, "Townsville City - North Ward,
+    Mackay, Tewantin, Rockhampton City, Gladstone, Redcliffe, Cairns
+    City, Daintree , with the exception of the sharp decline in 2020,
+    which is primarily affected by the COVID-19 pandemic.
+
+**After highlighting Q3 obs of each year, it seems there is a
+seasonality which tourism peaks in Q3 for most of the years in our
+observations**
 
 ## ECOTOURISM
 
 ```{r}
-
 top <- c("ingham composite", "townsville aero", "mackay aero", "tewantin rsl park", "rockhampton aero", "gladstone airport", "redcliffe", "cairns aero", "cooktown airport")
-
-
-top_location <- c("Ingham", "Townsville City - North Ward", "Mackay", "Tewantin","Rockhampton City", "Gladstone", "Redcliffe", "Cairns City", "Daintree")
 
 top_tourism_avg <- tourism %>% 
   filter(Region %in% top_location) %>% 
@@ -1055,8 +1185,11 @@ top_tourism_avg <- tourism %>%
 top_tourism_avg$Region[top_tourism_avg$Region == "Townsville City - North Ward"] <- "Townsville"
 ```
 
-```{r}
+-- Quarterly average of total tourism trips for each of the selected
+regions was determined and made into a tibble.
 
+```{r}
+#| echo: false
 unique_regions_tourism <- data.frame(Region = unique(tourism_subset$Region), Country = "AUS")
 
 unique_regions_tourism$Region[unique_regions_tourism$Region == "Townsville City - North Ward"] <- "Townsville"
@@ -1064,6 +1197,7 @@ unique_regions_tourism$Region[unique_regions_tourism$Region == "Townsville City 
 ```
 
 ```{r}
+#| echo: false
 library(RJSONIO)
 nrow <- nrow(unique_regions_tourism)
 counter <- 1
@@ -1089,16 +1223,20 @@ while (counter <= nrow){
 ```
 
 ```{r}
+#| echo: false
 unique_regions_tourism$lon <- as.numeric(as.character(unique_regions_tourism$lon))
 unique_regions_tourism$lat <- as.numeric(as.character(unique_regions_tourism$lat))
 ```
 
 ```{r}
-
+#| echo: false
 unique_regions_tourism <- left_join(unique_regions_tourism, top_tourism_avg, by = "Region")
+
+unique_regions_tourism %>% DT::datatable()
 ```
 
 ```{r}
+#| echo: false
 qld_map <- read_sf("qld-march-2018-esri 2/E_AUGEC_region.shp") %>% 
    mutate(DivisionNm = toupper(Elect_div)) %>%
   st_zm(geometry)
@@ -1134,28 +1272,31 @@ this, a null plot will be generated to investigate the relationship
 between tourist regions and coastal Taipan sightings.
 
 ::: {.alert .alert-block .alert-warning}
-$H_o$ (null hypothesis): There is no association between tourist regions
-and coastal Taipan sightings.
+$H_o$ (null hypothesis): There is no association between popularity of
+the tourist regions and coastal Taipan sightings.
 
 $H_1$ (alternative hypothesis): There is an association between tourist
 regions and coastal Taipan sightings.
 
 Null generating mechanism: usage of 'null_permute' function to permute
-the "Avg_trips" (average trips computing for the subset regions) values,
-breaking existing relationships between 'Sightings' of the Coastal
-Taipan and 'Tourism Regions' with consideration to the average number of
-trips to each tourist region.
+the "Avg_trips" (quarterly average trips computing for the subset
+regions) values, breaking existing relationships between quarterly
+average trips and tourism regions.
 :::
 
 ```{r}
 #| label: fig-tourist-null
 #| fig-cap: "Null Plot of Tourism and Taipan Sightings"
+#| echo: false
 
 library(dplyr)
 library(ggplot2)
 library(nullabor)
 library(maps)
 set.seed(1232536)
+
+unique_regions_tourism <- unique_regions_tourism %>% 
+  rename(longitude = lon, latitude = lat)
 
 combined_data_sub <- combined_data %>%
   select(latitude, longitude)
@@ -1167,12 +1308,12 @@ combined_data_sub$type <- "Sightings"
 unique_regions_tourism_sub$type <- "Tourism Regions"
 
 
-australia_map <- map_data("world", region = "Australia")
-
+australia_map <- map_data("world", region = "Australia") %>% 
+  rename(longitude = long, latitude = lat)
 
 ggplot(lineup(null_permute('Avg_trips'), unique_regions_tourism_sub),
        aes(x = longitude, y = latitude)) +
-  geom_polygon(data = australia_map, aes(x = long, y = lat, group = group), fill = "white", color = "black") +
+  geom_polygon(data = australia_map, aes(x = longitude, y = latitude, group = group), fill = "white", color = "black") +
   geom_point(aes(size = Avg_trips), alpha = 0.4, colour = "red") +
   geom_point(data = combined_data_sub, aes(x = longitude, y = latitude), colour = "blue", alpha = 0.4) +
   facet_wrap(~.sample, ncol = 5) +
@@ -1180,37 +1321,72 @@ ggplot(lineup(null_permute('Avg_trips'), unique_regions_tourism_sub),
   theme(axis.text = element_blank(), 
         panel.border = element_rect(fill = NA, colour = "black")) +
   guides(size = "none")
+```
 
+```{r}
+#| echo: false
 
+top_combined_data <- combined_data %>% filter(name %in% top)
 
-unique_regions_tourism_sub %>% 
-  ggplot(aes(x = longitude, y = latitude)) + 
-  geom_polygon(data = australia_map, aes(x = long, y = lat, group = group), fill = "white", color = "black") +
-  geom_point(aes(size = Avg_trips), alpha = 0.4, colour = "red")
+wild_quarter <- top_combined_data %>% 
+  filter(eventDate >= ymd("1998-01-01")) %>% 
+  mutate(Quarter = yearquarter(ymd(eventDate))) %>% 
+  group_by(Quarter) %>% 
+  summarise(total = n()) %>% 
+  as_tsibble(index = Quarter)
 
+has_gaps(wild_quarter, .full = TRUE)
+
+# add the range of Quarter that match with the tourism dataset
+new_row <- tibble(Quarter = c(yearquarter("1998 Q1"), yearquarter("2022 Q4")), 
+                   total = c(0,0))
+
+wild_quarter <- wild_quarter %>% bind_rows(new_row)
+
+wild_quarter <- wild_quarter %>% fill_gaps(.full = TRUE) %>% 
+  mutate(total = if_else(is.na(total), 0, total)) 
+
+top_tourism_total <- top_tourism %>% 
+  filter(Purpose == "Total")
+
+ecotourist <- left_join(wild_quarter, top_tourism_total, by = "Quarter")
+
+# computing the correlation between the wild sighting numbers and number of tourists 
+corr <- cor(ecotourist$total, ecotourist$Trips)
+
+r_squared <- ecotourist %>% lm(formula = total ~ Trips) %>% glance()
+
+tibble("Correlation" = corr, 
+       "R-squared" = r_squared[[1]])
+# R-squared is exceptionally low (i.e., 0.01092)
+# Doesn't make sense to have a negative intercept as the wild sighting can't go negative
 ```
 
 ::: callout-note
 # Key takeaway
 
 When analysing the null plots in @fig-tourist-null, we were able to
-deduce that 1 out of the 8 people asked were able to recognise **plot
-20** as the most unique plot, and this was based purely on guessing
-without a stated reason. The p-value for the following result is
-**`r pvisual(1,8,20)[3]`**. With an significance level of 0.05 set, the
-p-value derived suggests there is weak evidence against the null
-hypothesis ($H_o$) that is that there is no association between Taipan
-sightings and tourist regions.
+deduce that 0 out of the 8 people asked were able to recognise **plot
+20** as the most unique plot, and this was based on not being able to
+see a pattern which stood out differently to the other plots. The
+p-value for the following result is **`r pvisual(0,8,20)[3]`**. With an
+significance level of 0.05 set, the p-value derived suggests there is
+weak evidence against the null hypothesis ($H_o$) that is that there is
+no association between Taipan sightings and the popularity of tourist
+regions. Furthermore, we run a correlation test and linear regression
+model with wild sighting being the dependent variable and quarter
+average trips being the independent variable. The correlation
+(`r round(corr, 4)`) between the two variables is insignificant as well
+as the R-square (`r round(r_squared[[1]], 4)`) of the linear regression
+model is negligible.
 
 Thus, with this p-value you would fail to reject the null hypothesis, as
 the data suggests there is no strong evidence of an association between
-the tourist regions and Taipan sightings.
+the popular tourist regions and Taipan sightings.
 :::
 
 ```{r}
-library(nullabor)
-pval <- pvisual(1,8,20)
-pval
+pvisual(0,8,20)
 ```
 
 ### Does the data support ecotourism for the coastal Taipan?
@@ -1219,24 +1395,26 @@ To explore whether ecotourist interest may potentially exist for the
 Coastal Taipan, a map of Queensland was created using electoral division
 data retrieved from the [Australian Electoral
 Commission](https://www.aec.gov.au/Electorates/Redistributions/2017/qld/final-report/maps-data.htm).
-Layered on top of this map, we placed points in pink of the sightings of
-the Coastal Taipan. We also layered points which were major tourism
-points that overlapped both in our sightings data and tourism data.
+Layered on top of this map, we placed points representing the sightings
+of the Coastal Taipan. We also layered points which were illustrated
+major tourism regions, with size indicating popularity of that region.
 These points were collected using the `RJSONIO` library, which fetched
-latitude and longitude details for each region in
+latitude and longitude details for each selected tourist region in
 `unique_regions_tourism` utilising the OpenStreetMap's Nominatim
 service.
 
 The generated plot in @fig-tourist-map showcases the regions in
-Queensland with Coastal Taipan sightings in pink and tourism regions in
+Queensland with Coastal Taipan sightings in blue and tourism regions in
 red. This plot therefore can assist in visualising the distribution of
 these points and proximity of tourism regions to Taipain sighting to get
 a better understanding in potential ecotourist interest in the Coastal
-Taipan.
+Taipan, as well as if popularity in tourism region contributes to higher
+likelihood of sightings.
 
 ```{r}
 #| label: fig-tourist-map
 #| fig-cap: "Map of Tourism Regions and Sightings"
+#| echo: false
 
 library(plotly)
 library(ggplot2)
@@ -1300,181 +1478,37 @@ regions, there are also some important things to consider:
     available tourism data. This impedes a comprehensive understanding
     of potential ecotourism for the coastal Taipan.
 
-
-## Part 2
-
-### Task 1 - Tourism data
-
-## Introduction 
-
-- We will conduct an extensive analysis of tourism data in Australia to better understand how it may affect the sightings of Coastal Taipans (Oxyuranus Scutellatus Scutellatus), shedding light on the intricate relationship between human travel for different purposes and the sighting of these remarkable reptiles.
-- Our initial step involves the collection and analysis of tourism data, where we will scrutinize trends such as number of tourist, their travel purpose, and their preferred destinations across different states of Australia. This data will help us gain insights into the fluctuations in tourist visits, including peak seasons, busy quarter of the year and popular regions of visit.
-- Subsequently, we will delve into ecological data related to the sightings of Coastal Taipans. By combining this ecological data with tourism trends, we can identify potential areas where tourism activities and the  sightings of these snakes may overlap. 
-- Finally, we will investigate whether there is a significant relationship between the presence of the species and the level of tourism in the region. This analysis will allow us to decide weather we reject the null hypothesis or not. 
-
-```{r}
-#| message: false
-#| echo: false
-library(tsibble)
-```
-
-
-```{r}
-load(file = "data/tourism.rda")
-```
-
-- Each trip is one person as described in the survey method. https://www.tra.gov.au/en/domestic/national-visitor-survey-methodology.html#:~:text=The%20survey%20runs,a%20private%20dwelling.
-
-**After doing research on Google maps, all "South Townsville - Railway Estate", "Townsville - South", "Townsville City - North Ward" are geagaphcially near Townsville aero. However, "Townsville City - North Ward" would be chosen for the purpose of analysis since it has the most tourism data among the four.**
-
-**Cooktown is not found in the tourism dataset!**
-
-```{r}
-############################## top 10 locations
-
-top_location <- c("Ingham", "Townsville City - North Ward", "Mackay", "Tewantin","Rockhampton City", "Gladstone", "Redcliffe", "Cairns City", "Daintree")
-
-top_tourism <- tourism %>% filter(Region %in% top_location)
-
-top_tourism <- top_tourism %>% 
-  index_by(Quarter) %>% 
-  group_by(Purpose) %>% 
-  summarise(Trips = mean(Trips))
-
-q3 <- top_tourism %>% filter(quarter(Quarter) == 3)
-
-# Facet by visiting reasons
-facet_purpose <- top_tourism %>%
-  ggplot(aes(x = Quarter, 
-             y = Trips)) +
-  geom_line() + 
-  geom_point(data = q3, aes(x = Quarter, y = Trips), colour = "red") +
-  geom_smooth(se = FALSE) +
-  facet_wrap(~Purpose)
-
-total_tourism <- top_tourism %>% 
-  filter(Purpose == "Total") %>% 
-  ggplot(aes(x = Quarter, 
-             y = Trips)) +
-  geom_line() + 
-  geom_point(data = q3 %>% filter(Purpose == "Total"), 
-             aes(x = Quarter, y = Trips), colour = "red") +
-  geom_smooth(method = "loess", se = FALSE, linetype = "dashed") + # shall I use linear or non-linear line of best fit?
-  theme_minimal()
-
-ggplotly(facet_purpose)
-
-ggplotly(total_tourism)
-```
-
-
-- Business trips often allows travelers to reside or roam near coastal areas, which means that including them in your plans to visit Taipan, a predominantly coastal location, may not be the most logical choice.
-- The interactive capabilities of Plotly have made it possible to discover that the majority of peaks corresponding to the various reasons for these trips occur in Quarter 3, upon analyzing the facet plot representing trip purposes.
-- Based on those peaks, it is safe to assert that seasonality can be easily identified.
-- We can also see an upward trend in the yearly trend for the number of trips taken to regions of Ingham, "Townsville City - North Ward, Mackay, Tewantin, Rockhampton City, Gladstone, Redcliffe, Cairns City, Daintree , with the exception of the sharp decline in 2020, which is primarily affected by the COVID-19 pandemic.
-
-**It might be rare for someone who is in a business trip to go near the coastal area. Since Taipan is mostly spot near coastal area, it might make sense to exclude the business trips?**
-
-**After highlighting Q3 obs of each year, it seems there is a seasonality which tourism peaks in Q3 for most of the years in our observations**
-
-**There seems a slight increase in tourism in Townsville**
-
-### Task 2 - Ecotourist interest
-
-```{r}
-############################## townsville only
-wild_quarter <- subset_combined_data %>% 
-  filter(eventDate >= ymd("1998-01-01")) %>% 
-  mutate(Quarter = yearquarter(ymd(eventDate))) %>% 
-  group_by(Quarter) %>% 
-  summarise(total = n()) %>% 
-  as_tsibble(index = Quarter)
-
-# add the range of Quarter that match with the tourism dataset
-new_row <- tibble(Quarter = c(yearquarter("1998 Q1"), yearquarter("2022 Q4")), 
-                   total = c(0,0))
-
-wild_quarter <- wild_quarter %>% bind_rows(new_row)
-
-has_gaps(wild_quarter, .full = TRUE)
-
-wild_quarter <- wild_quarter %>% fill_gaps(.full = TRUE) %>% 
-  mutate(total = if_else(is.na(total), 0, total)) 
-
-townsville_total <- townsville %>% 
-  filter(Purpose == "Total")
-
-ecotourist <- left_join(wild_quarter, townsville_total, by = "Quarter")
-
-# computing the correlation between the wild sighting numbers and number of tourists 
-cor(ecotourist$total, ecotourist$Trips)
-
-ecotourist %>% lm(formula = total ~ Trips) %>% summary()   
-# R-squared is exceptionally low (i.e., 0.01092)
-# Doesn't make sense to have a negative intercept as the wild sighting can't go negative
-```
-
-
-```{r}
-############################## top 10 locations
-wild_quarter <- top_combined_data %>% 
-  filter(eventDate >= ymd("1998-01-01")) %>% 
-  mutate(Quarter = yearquarter(ymd(eventDate))) %>% 
-  group_by(Quarter) %>% 
-  summarise(total = n()) %>% 
-  as_tsibble(index = Quarter)
-
-# add the range of Quarter that match with the tourism dataset
-new_row <- tibble(Quarter = c(yearquarter("1998 Q1"), yearquarter("2022 Q4")), 
-                   total = c(0,0))
-
-wild_quarter <- wild_quarter %>% bind_rows(new_row)
-
-has_gaps(wild_quarter, .full = TRUE)
-
-wild_quarter <- wild_quarter %>% fill_gaps(.full = TRUE) %>% 
-  mutate(total = if_else(is.na(total), 0, total)) 
-
-top_tourism_total <- top_tourism %>% 
-  filter(Purpose == "Total")
-
-ecotourist <- left_join(wild_quarter, top_tourism_total, by = "Quarter")
-
-# computing the correlation between the wild sighting numbers and number of tourists 
-cor(ecotourist$total, ecotourist$Trips)
-
-ecotourist %>% lm(formula = total ~ Trips) %>% tidy()
-ecotourist %>% lm(formula = total ~ Trips) %>% glance()   
-# R-squared is exceptionally low (i.e., 0.01092)
-# Doesn't make sense to have a negative intercept as the wild sighting can't go negative
-```
-
-```{r}
-# Plot the line chart of the log of total trips and wild sightings number to examine correlation visually
-ecotourist %>% 
-  ggplot() + 
-  geom_line(aes(x = Quarter, y = total), colour = "orangered") + 
-  geom_line(aes(x = Quarter, y = log10(Trips)), colour = "blue")
-```
-
-
-
-
 ## Summary
 
-- We began with a tourism dataset and specifically focused on regions near Townsville, as it was one of the primary areas where we could observe the presence of the wild species "Coastal Taipans (Oxyuranus Scutellatus Scutellatus)."
+-   We began with a tourism dataset and specifically focused on regions
+    near Townsville, as it was one of the primary areas where we could
+    observe the presence of the wild species "Coastal Taipans (Oxyuranus
+    Scutellatus Scutellatus)."
 
-- Next, we had to narrow our focus to Townsville City - North Ward, as it exhibited a significantly higher number of wild sightings compared to areas closer to the Townsville airport.
+-   Next, we had to narrow our focus to Townsville City - North Ward, as
+    it exhibited a significantly higher number of wild sightings
+    compared to areas closer to the Townsville airport.
 
-- Subsequently, we identified the top nine regions with the highest number of wild sightings for our temporal analysis. This list includes Ingham, Townsville City - North Ward, Mackay, Tewantin, Rockhampton City, Gladstone, Redcliffe, Cairns City, and Daintree.
+-   Subsequently, we identified the top nine regions with the highest
+    number of wild sightings for our temporal analysis. This list
+    includes Ingham, Townsville City - North Ward, Mackay, Tewantin,
+    Rockhampton City, Gladstone, Redcliffe, Cairns City, and Daintree.
 
-- Then, we merged the tourism dataset with our wild sighting data and investigated whether there was any correlation between tourism activity in a specific location and the number of occurrences of wild species sightings.
+-   Then, we merged the tourism dataset with our wild sighting data and
+    investigated whether there was any correlation between tourism
+    activity in a specific location and the number of occurrences of
+    wild species sightings.
 
-- Upon visualizing the joined data and conducting a more precise analysis using permutation tests, we asked the input of 10 individuals to check if there are any variations within the visuals. But, none of them were able to identify any distinctions among the visual representations.
+-   Upon visualizing the joined data and conducting a more precise
+    analysis using permutation tests, we asked the input of 10
+    individuals to check if there are any variations within the visuals.
+    But, none of them were able to identify any distinctions among the
+    visual representations.
 
-- This testing leaves us to conclude that the tourism in the regions had nothing to do with the number of wild sightings, as those sightings were scattered away from the hot spots (where maximum trips were taken)
-
-
+-   This testing leaves us to conclude that the tourism in the regions
+    had nothing to do with the number of wild sightings, as those
+    sightings were scattered away from the hot spots (where maximum
+    trips were taken)
 
 ## Citations:
 
