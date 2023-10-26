@@ -650,12 +650,39 @@ Based on our detailed analysis of the Coastal Taipan sightings, following are ou
 - Subsequently, we will delve into ecological data related to the sightings of Coastal Taipans. By combining this ecological data with tourism trends, we can identify potential areas where tourism activities and the  sightings of these snakes may overlap. 
 - Finally, we will investigate whether there is a significant relationship between the presence of the species and the level of tourism in the region. This analysis will allow us to decide weather we reject the null hypothesis or not. 
 
+## data description
 
-# task 1
+```{r}
+
+# data description for the tourism dataset
+
+tourism_desc <- data.frame(
+  VariableName = c("Quarter", "Region", "Purpose", "Trips"),
+  DataType = c("yearquarter", "character", "character", "numeric"),
+  Explanation = c(
+    "A combination of year and quarter, representing timestamps.",
+    "Text characters denoting region or area names.",
+    "Text characters related to the purpose or usage.",
+    "Numerical data representing quantities (e.g., trip counts)."
+  )
+)
+
+kable(tourism_desc, format = "html", caption = "Variable Information") %>%
+  kable_styling(bootstrap_options = "striped", full_width = FALSE) %>%
+  column_spec(1, width = "20%") %>%
+  column_spec(2, width = "20%") %>%
+  column_spec(3, width = "60%")
+
+```
+
+
+
+## task 1
 
 ```{r}
 #download the tourism data
 load("data/tourism.rda")
+glimpse(tourism)
 ```
 
 - Each trip is one person as described in the survey method. https://www.tra.gov.au/en/domestic/national-visitor-survey-methodology.html#:~:text=The%20survey%20runs,a%20private%20dwelling.
@@ -724,7 +751,7 @@ ggplotly(total_tourism)
 
 # task 2
 
-# Summary
+## Summary
 
 - **We began with a tourism dataset and specifically focused on regions near Townsville, as it was one of the primary areas where we could observe the presence of the wild species "Coastal Taipans (Oxyuranus Scutellatus Scutellatus)."**
 - **Next, we had to narrow our focus to Townsville City - North Ward, as it exhibited a significantly higher number of wild sightings compared to areas closer to the Townsville airport.** 
