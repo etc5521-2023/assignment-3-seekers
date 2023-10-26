@@ -1,6 +1,6 @@
 ---
 title: "The Enigmatic Coastal Taipan: Australia's Deadly Serpent 🐍"
-author: "Aishwarya Anil Kumar, Arindom Baruah"
+author: "Minghao Zeng, Tashya Sathyajit, Disha Rathod"
 format: html
 bibliography: references.bib
 number-sections: true
@@ -60,16 +60,6 @@ is there a significant link between the presence of these snakes and the
 level of tourism in a particular area? Our goal is to decide whether
 tourism has an impact on the sightings of these unique reptiles.
 
-### Data source:
-
--   The data was sourced from the [Atlas of Living Australia
-    (ALA)](https://www.ala.org.au/) using the `galah` R package.
-
--   The weather station data to study impact of weather conditions on
-    sightings was sourced from [National Climatic Data Centre
-    (NCDC)](https://www.ncdc.noaa.gov/cdo-web/datasets) using `rnoaa`
-    package in R.
-
 ::: callout-note
 # Key assumptions
 
@@ -109,62 +99,7 @@ assumptions while moving forward with our analysis:
     Reef](https://www.queensland.com/au/en/plan-your-holiday/news-and-articles/queensland-news/queensland-top-tourist-destination-in-the-world).
 :::
 
-Although we will attempt to accurately analyse the data by obtaining it
-from reliable repositories, however, it is important to consider the
-limitations of the dataset while making critical conclusions based on
-the data in hand. Some of the limitations of the current dataset are
-delineated as follows:
 
-::: callout-warning
-# Limitations of the data
-
-1.  Since the data which has been obtained from the [Atlast of Living
-    Australia](https://www.ala.org.au) falls under the category of
-    **observational data**, there could be instances of missing values.
-    These instances will need to be filtered out while analysing the
-    data from the repository.
-
-2.  Since the data is obtained from various sources, there could be
-    inconsistencies in reporting the data.
-
-3.  While the data collection was done in an extensive and granular
-    manner, there could be a lack of precision of the observations made
-    for the exact latitude and longitude.
-
-4.  The dataset obtained from the Atlas of Living Australia **only
-    reports for all the Coastal Taipans that have been sighted and
-    recorded**. Hence, it does not report the entire population of these
-    reptiles across the various regions of Australia. This may lead to
-    inaccurate conclusions post analysis of the limited data in hand.
-
-5.  The dataset here consist of **observational data** and in
-    particular, occurrences data. Some of the limitations that are
-    prevalent in such datasets are as follows :
-
-    -   The data here is obtained from various sources. As a result,
-        there may be **non-uniformity in the data provided**. Each
-        reporting authority may have their own interpretations of the
-        data they may have provided.
-    -   The current dataset obtained is a subset of an observational
-        data. These types of data are often plagued with lack of
-        randomisation during the selection of data. This may lead to
-        biases in the dataset such as selection and systematic bias.
-    -   The data maybe misclassified or filled in non-uniform units by
-        the various sources, leading to lack of accuracy of the overall
-        dataset.
-
-6.  The sample size of the wild sightings of Taipan might be too limited
-    to draw any meaning conclusion.
-
-7.  Lack of available data in the tourism data set. Some of the major
-    regions with sightings could not be found in the tourism data set
-    (e.g. Cooktown) leading to Daintree being used as a proxy.
-
-8.  Assumption of NA's being treated as wild sightings under "eventID"
-    column would lead to overestimation of wild sightings of Taipan as
-    we cannot distinguish whether the NA's were due to missing
-    information.
-:::
 
 ## Data description
 
@@ -385,6 +320,63 @@ package in R.
 
 Tourism data was downloaded from Monash A-Z Databases: ["Tourism
 Research Australia online for students"](https://www.tra.gov.au/).
+
+Although we will attempt to accurately analyse the data by obtaining it
+from reliable repositories, however, it is important to consider the
+limitations of the dataset while making critical conclusions based on
+the data in hand. Some of the limitations of the current dataset are
+delineated as follows:
+
+::: callout-warning
+# Limitations of the data
+
+1.  Since the data which has been obtained from the [Atlast of Living
+    Australia](https://www.ala.org.au) falls under the category of
+    **observational data**, there could be instances of missing values.
+    These instances will need to be filtered out while analysing the
+    data from the repository.
+
+2.  Since the data is obtained from various sources, there could be
+    inconsistencies in reporting the data.
+
+3.  While the data collection was done in an extensive and granular
+    manner, there could be a lack of precision of the observations made
+    for the exact latitude and longitude.
+
+4.  The dataset obtained from the Atlas of Living Australia **only
+    reports for all the Coastal Taipans that have been sighted and
+    recorded**. Hence, it does not report the entire population of these
+    reptiles across the various regions of Australia. This may lead to
+    inaccurate conclusions post analysis of the limited data in hand.
+
+5.  The dataset here consist of **observational data** and in
+    particular, occurrences data. Some of the limitations that are
+    prevalent in such datasets are as follows :
+
+    -   The data here is obtained from various sources. As a result,
+        there may be **non-uniformity in the data provided**. Each
+        reporting authority may have their own interpretations of the
+        data they may have provided.
+    -   The current dataset obtained is a subset of an observational
+        data. These types of data are often plagued with lack of
+        randomisation during the selection of data. This may lead to
+        biases in the dataset such as selection and systematic bias.
+    -   The data maybe misclassified or filled in non-uniform units by
+        the various sources, leading to lack of accuracy of the overall
+        dataset.
+
+6.  The sample size of the wild sightings of Taipan might be too limited
+    to draw any meaning conclusion.
+
+7.  Lack of available data in the tourism data set. Some of the major
+    regions with sightings could not be found in the tourism data set
+    (e.g. Cooktown) leading to Daintree being used as a proxy.
+
+8.  Assumption of NA's being treated as wild sightings under "eventID"
+    column would lead to overestimation of wild sightings of Taipan as
+    we cannot distinguish whether the NA's were due to missing
+    information.
+:::
 
 ### Data Cleaning
 
@@ -1031,6 +1023,25 @@ ggplotly(total_tourism)
 
 ## ECOTOURISM
 
+::: callout-note
+## What is Ecotourism?
+
+Ecotourism encompasses nature-based activities and responsible travel
+that conserves the environment and increases visitor appreciation and
+understanding of natural and cultural values.
+:::
+
+***Why is Ecotourism important for the coastal Taipan?*** 🐍
+
+For Queensland, where our regions are for which we subset our data -
+Tourism is a [\$23 billion
+industry](https://parks.des.qld.gov.au/management/ecotourism/about%5D).
+For the Coastal Taipan, the ecotourism industry allows visitors the
+chance to observe and appreciate this species in its natural habitat -
+without causing harm. Exploring and understanding sustainable ecotourism
+can be significant in ensuring its survival and protection for future
+generations.
+
 ```{r}
 top <- c("ingham composite", "townsville aero", "mackay aero", "tewantin rsl park", "rockhampton aero", "gladstone airport", "redcliffe", "cairns aero", "cooktown airport")
 
@@ -1104,25 +1115,6 @@ qld_map <- read_sf("qld-march-2018-esri 2/E_AUGEC_region.shp") %>%
   st_zm(geometry)
 ```
 
-::: callout-note
-## What is Ecotourism?
-
-Ecotourism encompasses nature-based activities and responsible travel
-that conserves the environment and increases visitor appreciation and
-understanding of natural and cultural values.
-:::
-
-***Why is Ecotourism important for the coastal Taipan?*** 🐍
-
-For Queensland, where our regions are for which we subset our data -
-Tourism is a [\$23 billion
-industry](https://parks.des.qld.gov.au/management/ecotourism/about%5D).
-For the Coastal Taipan, the ecotourism industry allows visitors the
-chance to observe and appreciate this species in its natural habitat -
-without causing harm. Exploring and understanding sustainable ecotourism
-can be significant in ensuring its survival and protection for future
-generations.
-
 ## Does the Data Suggest Ecotourist Interest in the Coastal Taipan?
 
 ### Visual Inference of Ecotourism
@@ -1131,7 +1123,7 @@ As aforementioned, Queensland generates a lot of money from its tourism
 industry. Given this, it would be interesting to investigate the
 possibility of ecotourism centered around the coastal Taipan. To explore
 this, a null plot will be generated to investigate the relationship
-between tourist regions and coastal Taipan sightings.
+between popular tourist regions and coastal Taipan sightings.
 
 ::: {.alert .alert-block .alert-warning}
 $H_o$ (null hypothesis): There is no association between popularity of
