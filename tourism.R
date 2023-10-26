@@ -38,3 +38,4 @@ tourism <- qtr_data %>%
   as_tsibble(key = c(Region, Purpose), index = Quarter)
 usethis::use_data(tourism, overwrite = TRUE, compress = "xz")
 
+
