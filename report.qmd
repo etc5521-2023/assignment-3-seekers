@@ -943,152 +943,10 @@ vertical lines in the plot are 28.1 and 19 degree celsius respectively,
 suggesting warm conditions.
 :::
 
-## Summary
 
-Based on our detailed analysis of the Coastal Taipan sightings,
-following are our key takeaways:
-
-::: {.alert .alert-block .alert-warning}
-💡💡\
-The analysis focused on the behavior and distribution of Coastal Taipans
-(Oxyuranus Scutellatus Scutellatus) in the coastal regions of
-Queensland. The findings suggest that Coastal Taipans are territorial
-creatures, primarily inhabiting Queensland's coastal areas, with
-potential migration towards the Northern Territory in the future.
-
-Despite being less frequent in sightings, Coastal Taipans are not
-considered endangered. They are elusive and tend to avoid human contact,
-making their sightings rare as they prefer to stay within their
-habitats.
-
-Contrary to popular belief, the data does not strongly support the idea
-that Coastal Taipans are more commonly sighted on days with recorded
-precipitation. However, they do exhibit higher mobility during the
-monsoon period, leading to an increase in sightings.
-
-The research with the tourism dataset, initially focusing on regions
-near Townsville due to their connection to Coastal Taipan sightings. The
-study then narrowed its focus to Townsville City - North Ward, which had
-a significantly higher number of wild sightings compared to areas near
-the Townsville airport. Subsequently, the analysis identified the top
-nine regions with the highest number of wild sightings for temporal
-analysis: Ingham, Townsville City - North Ward, Mackay, Tewantin,
-Rockhampton City, Gladstone, Redcliffe, Cairns City, and Daintree.
-
-The research merged the tourism dataset with the wild sighting data to
-investigate the relationship between tourism activity and the
-occurrences of Coastal Taipan sightings. The visualizations and more
-precise analysis, including permutation tests, were carried out.
-However, when eight individuals assessed these visuals, none of them
-could identify distinctions among the representations, which seemed to
-be due to chance rather than any valid reasons.
-
-The hypothesis testing led to a p-value of 1, resulting in a failure to
-reject the **null hypothesis (**$H_o$): There is no association between
-the popularity of tourist regions and Coastal Taipan sightings.
-
-In summary, the study reveals that Coastal Taipans are territorial and
-not endangered, although they are reclusive and rarely seen due to their
-preference for isolated habitats. The data does not strongly support the
-idea that precipitation directly influences their sightings. and the
-analysis of tourism data did not find a significant association between
-tourist popularity and Coastal Taipan sightings, as indicated by the
-p-value of 1.
-
-💡💡
-:::
-
-## **PART B - Ecotourism & Tourism**
-
-## INTRODUCTION
-
-In the first part of this exploration, we were able to find that the
-largest number of Coastal Taipan sightings occurred in two weather
-stations - Cooktown airport and Townsville aero.
-
-To understand whether seasonal patterns or decreasing or increasing
-trends exist - we will subset our tourism data to areas with the most
-sightings (as aforementioned).
-
--   We will conduct an extensive analysis of tourism data in Australia
-    to better understand how it may affect the sightings of Coastal
-    Taipans (Oxyuranus Scutellatus Scutellatus), shedding light on the
-    intricate relationship between human travel for different purposes
-    and the sighting of these remarkable reptiles.
--   Our initial step involves the collection and analysis of tourism
-    data, where we will scrutinize trends such as number of tourist,
-    their travel purpose, and their preferred destinations across
-    different states of Australia. This data will help us gain insights
-    into the fluctuations in tourist visits, including peak seasons,
-    busy quarter of the year and popular regions of visit.
--   Subsequently, we will delve into ecological data related to the
-    sightings of Coastal Taipans. By combining this ecological data with
-    tourism trends, we can identify potential areas where tourism
-    activities and the sightings of these snakes may overlap.
--   Finally, we will investigate whether there is a significant
-    relationship between the presence of the species and the level of
-    tourism in the region. This analysis will allow us to decide weather
-    we reject the null hypothesis or not.
+## **PART 2 - Ecotourism & Tourism**
 
 ### Data description
-
-+--------------+--------------+--------------+
-| Variable     | Type/Class   | Cleaning     |
-|              |              | Method       |
-+==============+==============+==============+
-| Quarter      | yearquarter  | Missing      |
-|              |              | values are   |
-|              | vctrs_vctr   | filled using |
-|              |              | `fill()`     |
-|              |              | fuction. NA  |
-|              |              | values       |
-|              |              | filled with  |
-|              |              | the last     |
-|              |              | observed     |
-|              |              | non-NA       |
-|              |              | value. Rows  |
-|              |              | with 'Total' |
-|              |              | are filtered |
-|              |              | out.         |
-+--------------+--------------+--------------+
-| Region       | character    | Rows with    |
-|              |              | 'Total' were |
-|              |              | filtered     |
-|              |              | out,         |
-|              |              | excluding    |
-|              |              | summary      |
-|              |              | data.        |
-+--------------+--------------+--------------+
-| Purpose      | character    | Created with |
-|              |              | `piv o       |
-|              |              | t_longer()`, |
-|              |              | where        |
-|              |              | "Holiday"    |
-|              |              | and "Total"  |
-|              |              | were put     |
-|              |              | into two new |
-|              |              | columns      |
-|              |              | "Purpose"    |
-|              |              | (reason for  |
-|              |              | travel) and  |
-|              |              | "Trips"      |
-|              |              | (number of   |
-|              |              | trips for    |
-|              |              | that         |
-|              |              | purpose).    |
-+--------------+--------------+--------------+
-| Trips        | numeric      | Contains the |
-|              |              | number of    |
-|              |              | trips for    |
-|              |              | each         |
-|              |              | purpose.     |
-|              |              | Data was     |
-|              |              | sourced from |
-|              |              | "Total"      |
-|              |              | column via   |
-|              |              | `piv o       |
-|              |              | t_longer().` |
-+--------------+--------------+--------------+
 
 ```{r}
 load("data/tourism.rda")
@@ -1096,11 +954,13 @@ load("data/tourism.rda")
 tourism_subset <- tourism[tourism$Region %in% c("Ingham", "Townsville City - North Ward", "Mackay", "Tewantin","Rockhampton City", "Gladstone", "Redcliffe", "Cairns City", "Daintree"),]
 ```
 
+::: {.alert .alert-block .alert-warning}
 The 9 tourism regions in the code chunk above were selected as they were
 available and overlapped in the most frequent sightings closest to
 weather stations as established in @fig-wstation. Moreover, 'Daintree'
 has been used as a proxy of 'Cooktown' due to the lack of data
 availability in the tourism data.
+:::
 
 ### Task 1 - Tourism data
 
@@ -1115,7 +975,9 @@ top_tourism <- top_tourism %>%
   summarise(Trips = mean(Trips))
 ```
 
----------- explanation needed for the code chunk above
+::: {.alert .alert-block .alert-warning}
+In the code chunk above, we subset the tourism dataset to the 9 chosen tourism regions only and calculate the total of the average trips for the 9 regions based on different travelling purpose.
+:::
 
 ```{r}
 #| echo: false
@@ -1153,6 +1015,7 @@ total_tourism <- top_tourism %>%
 ggplotly(total_tourism)
 ```
 
+::: callout-note
 -   The interactive capabilities of Plotly have made it possible to
     discover that the majority of peaks corresponding to the various
     reasons for these trips occur in Quarter 3, upon analyzing the facet
@@ -1164,10 +1027,7 @@ ggplotly(total_tourism)
     Mackay, Tewantin, Rockhampton City, Gladstone, Redcliffe, Cairns
     City, Daintree , with the exception of the sharp decline in 2020,
     which is primarily affected by the COVID-19 pandemic.
-
-**After highlighting Q3 obs of each year, it seems there is a
-seasonality which tourism peaks in Q3 for most of the years in our
-observations**
+:::
 
 ## ECOTOURISM
 
@@ -1185,8 +1045,10 @@ top_tourism_avg <- tourism %>%
 top_tourism_avg$Region[top_tourism_avg$Region == "Townsville City - North Ward"] <- "Townsville"
 ```
 
--- Quarterly average of total tourism trips for each of the selected
+::: {.alert .alert-block .alert-warning}
+Quarterly average of total tourism trips for each of the selected
 regions was determined and made into a tibble.
+:::
 
 ```{r}
 #| echo: false
@@ -1275,13 +1137,13 @@ between tourist regions and coastal Taipan sightings.
 $H_o$ (null hypothesis): There is no association between popularity of
 the tourist regions and coastal Taipan sightings.
 
-$H_1$ (alternative hypothesis): There is an association between tourist
-regions and coastal Taipan sightings.
+$H_1$ (alternative hypothesis): There is an association between popular
+tourist regions and coastal Taipan sightings.
 
 Null generating mechanism: usage of 'null_permute' function to permute
 the "Avg_trips" (quarterly average trips computing for the subset
 regions) values, breaking existing relationships between quarterly
-average trips and tourism regions.
+average trips and popular tourism regions.
 :::
 
 ```{r}
@@ -1357,7 +1219,7 @@ corr <- cor(ecotourist$total, ecotourist$Trips)
 r_squared <- ecotourist %>% lm(formula = total ~ Trips) %>% glance()
 
 tibble("Correlation" = corr, 
-       "R-squared" = r_squared[[1]])
+       "R-squared" = r_squared[[1]]) 
 # R-squared is exceptionally low (i.e., 0.01092)
 # Doesn't make sense to have a negative intercept as the wild sighting can't go negative
 ```
@@ -1480,35 +1342,58 @@ regions, there are also some important things to consider:
 
 ## Summary
 
--   We began with a tourism dataset and specifically focused on regions
-    near Townsville, as it was one of the primary areas where we could
-    observe the presence of the wild species "Coastal Taipans (Oxyuranus
-    Scutellatus Scutellatus)."
+Based on our detailed analysis of the Coastal Taipan sightings,
+following are our key takeaways:
 
--   Next, we had to narrow our focus to Townsville City - North Ward, as
-    it exhibited a significantly higher number of wild sightings
-    compared to areas closer to the Townsville airport.
+::: {.alert .alert-block .alert-warning}
+💡💡\
+The analysis focused on the behavior and distribution of Coastal Taipans
+(Oxyuranus Scutellatus Scutellatus) in the coastal regions of
+Queensland. The findings suggest that Coastal Taipans are territorial
+creatures, primarily inhabiting Queensland's coastal areas, with
+potential migration towards the Northern Territory in the future.
 
--   Subsequently, we identified the top nine regions with the highest
-    number of wild sightings for our temporal analysis. This list
-    includes Ingham, Townsville City - North Ward, Mackay, Tewantin,
-    Rockhampton City, Gladstone, Redcliffe, Cairns City, and Daintree.
+Despite being less frequent in sightings, Coastal Taipans are not
+considered endangered. They are elusive and tend to avoid human contact,
+making their sightings rare as they prefer to stay within their
+habitats.
 
--   Then, we merged the tourism dataset with our wild sighting data and
-    investigated whether there was any correlation between tourism
-    activity in a specific location and the number of occurrences of
-    wild species sightings.
+Contrary to popular belief, the data does not strongly support the idea
+that Coastal Taipans are more commonly sighted on days with recorded
+precipitation. However, they do exhibit higher mobility during the
+monsoon period, leading to an increase in sightings.
 
--   Upon visualizing the joined data and conducting a more precise
-    analysis using permutation tests, we asked the input of 10
-    individuals to check if there are any variations within the visuals.
-    But, none of them were able to identify any distinctions among the
-    visual representations.
+The research with the tourism dataset, initially focusing on regions
+near Townsville due to their connection to Coastal Taipan sightings. The
+study then narrowed its focus to Townsville City - North Ward, which had
+a significantly higher number of wild sightings compared to areas near
+the Townsville airport. Subsequently, the analysis identified the top
+nine regions with the highest number of wild sightings for temporal
+analysis: Ingham, Townsville City - North Ward, Mackay, Tewantin,
+Rockhampton City, Gladstone, Redcliffe, Cairns City, and Daintree.
 
--   This testing leaves us to conclude that the tourism in the regions
-    had nothing to do with the number of wild sightings, as those
-    sightings were scattered away from the hot spots (where maximum
-    trips were taken)
+The research merged the tourism dataset with the wild sighting data to
+investigate the relationship between tourism activity and the
+occurrences of Coastal Taipan sightings. The visualizations and more
+precise analysis, including permutation tests, were carried out.
+However, when eight individuals assessed these visuals, none of them
+could identify distinctions among the representations, which seemed to
+be due to chance rather than any valid reasons.
+
+The hypothesis testing led to a p-value of 1, resulting in a failure to
+reject the **null hypothesis (**$H_o$): There is no association between
+the popularity of tourist regions and Coastal Taipan sightings.
+
+In summary, the study reveals that Coastal Taipans are territorial and
+not endangered, although they are reclusive and rarely seen due to their
+preference for isolated habitats. The data does not strongly support the
+idea that precipitation directly influences their sightings. and the
+analysis of tourism data did not find a significant association between
+tourist popularity and Coastal Taipan sightings, as indicated by the
+p-value of 1.
+
+💡💡
+:::
 
 ## Citations:
 
