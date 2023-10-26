@@ -1082,16 +1082,16 @@ between tourist regions and coastal Taipan sightings.
 
 ::: {.alert .alert-block .alert-warning}
 $H_o$ (null hypothesis): There is no association between tourist regions
-and Taipain sightings.
+and coastal Taipan sightings.
 
 $H_1$ (alternative hypothesis): There is an association between tourist
-regions and Taipan sightings.
+regions and coastal Taipan sightings.
 
 Null generating mechanism: usage of 'null_permute' function to permute
-the "Avg_trips" (average trips computing for the subsetted regions)
-values, breaking existing relationships between 'Sightings' and 'Tourism
-Regions' with consideration to the average number of trips to each
-tourist region.
+the "Avg_trips" (average trips computing for the subset regions) values,
+breaking existing relationships between 'Sightings' of the Coastal
+Taipan and 'Tourism Regions' with consideration to the average number of
+trips to each tourist region.
 :::
 
 ```{r}
@@ -1149,9 +1149,9 @@ p-value derived suggests there is weak evidence against the null
 hypothesis ($H_o$) that is that there is no association between Taipan
 sightings and tourist regions.
 
-Thus, with this p-value you would fail to reject the hypothesis, as the
-data suggests there is no strong evidence of an association between the
-tourist regions and Taipan sightings.
+Thus, with this p-value you would fail to reject the null hypothesis, as
+the data suggests there is no strong evidence of an association between
+the tourist regions and Taipan sightings.
 :::
 
 ```{r}
